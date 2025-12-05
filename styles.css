@@ -51,7 +51,7 @@ body {
 }
 
 .logo {
-    height: 80px;
+    height: 240px;
     width: auto;
     display: block;
     transition: transform 0.3s ease;
@@ -264,7 +264,7 @@ html {
     }
 
     .logo {
-        height: 60px;
+        height: 180px;
     }
 
     .hero {
@@ -299,7 +299,7 @@ html {
 
 @media (max-width: 480px) {
     .logo {
-        height: 50px;
+        height: 150px;
     }
 
     .header {
