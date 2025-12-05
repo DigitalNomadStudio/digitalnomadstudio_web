@@ -284,7 +284,7 @@ body {
 /* Page Content Styles */
 .page-content {
     padding: 3rem 0 4rem;
-    background-color: var(--bg-light);
+    background: linear-gradient(135deg, #ffffff 0%, #f7fafc 100%);
 }
 
 .content-wrapper {
@@ -292,11 +292,18 @@ body {
     margin: 0 auto;
 }
 
+.page-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid var(--border-color);
+}
+
 .page-title {
     font-size: clamp(2.5rem, 5vw, 3.5rem);
     font-weight: 700;
     color: var(--text-primary);
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
     line-height: 1.2;
     letter-spacing: -0.02em;
 }
@@ -304,35 +311,48 @@ body {
 .page-subtitle {
     font-size: 1.25rem;
     color: var(--text-secondary);
-    margin-bottom: 3rem;
+    margin-bottom: 0;
     line-height: 1.7;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .last-updated {
-    font-size: 0.875rem;
+    font-size: 0.9rem;
     color: var(--text-secondary);
-    margin-bottom: 3rem;
+    margin-bottom: 0;
     font-style: italic;
+    opacity: 0.8;
 }
 
 .content-section {
-    margin-bottom: 3rem;
+    margin-bottom: 2.5rem;
+    background: white;
+    padding: 2.5rem;
+    border-radius: 16px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-color);
 }
 
 .content-section h2 {
     font-size: 1.875rem;
     font-weight: 600;
     color: var(--text-primary);
-    margin-bottom: 1rem;
-    margin-top: 2.5rem;
+    margin-bottom: 1.5rem;
+    margin-top: 0;
 }
 
 .content-section h3 {
-    font-size: 1.375rem;
+    font-size: 1.25rem;
     font-weight: 600;
     color: var(--text-primary);
     margin-bottom: 0.75rem;
-    margin-top: 1.5rem;
+    margin-top: 1.75rem;
+}
+
+.content-section h3:first-of-type {
+    margin-top: 0;
 }
 
 .content-section p {
@@ -358,6 +378,7 @@ body {
     color: var(--primary-color);
     text-decoration: none;
     transition: color 0.3s ease;
+    font-weight: 500;
 }
 
 .content-section a:hover {
@@ -365,76 +386,93 @@ body {
     text-decoration: underline;
 }
 
-/* Support Page Styles */
-.support-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-    margin-bottom: 4rem;
-}
-
-.support-card {
-    background: white;
-    padding: 2.5rem;
-    border-radius: 16px;
+/* Contact Box Styles */
+.contact-box {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    color: white;
+    padding: 3rem;
+    border-radius: 20px;
     text-align: center;
-    border: 1px solid var(--border-color);
-    transition: all 0.3s ease;
+    margin-bottom: 3rem;
+    box-shadow: var(--shadow-lg);
 }
 
-.support-card:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-md);
-    border-color: transparent;
+.contact-box-large {
+    padding: 4rem 3rem;
 }
 
-.support-icon {
-    font-size: 3rem;
+.contact-icon {
+    font-size: 4rem;
     margin-bottom: 1.5rem;
     display: block;
 }
 
-.support-card h2 {
-    font-size: 1.5rem;
+.contact-box h2 {
+    font-size: 2rem;
     font-weight: 600;
-    color: var(--text-primary);
+    color: white;
     margin-bottom: 1rem;
 }
 
-.support-card p {
-    font-size: 1rem;
-    color: var(--text-secondary);
+.contact-box p {
+    font-size: 1.125rem;
     line-height: 1.7;
-    margin-bottom: 1.5rem;
+    margin-bottom: 2rem;
+    opacity: 0.95;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.contact-box .btn {
+    background-color: white;
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.contact-box .btn:hover {
+    background-color: var(--bg-section);
+    transform: translateY(-2px);
 }
 
 .faq-item {
-    margin-bottom: 2.5rem;
-    padding-bottom: 2rem;
-    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 1.75rem;
+    padding: 1.75rem;
+    background: var(--bg-section);
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
 }
 
 .faq-item:last-child {
-    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.faq-item:hover {
+    border-color: var(--primary-color);
+    box-shadow: var(--shadow-sm);
 }
 
 .faq-item h3 {
-    font-size: 1.25rem;
+    font-size: 1.125rem;
     font-weight: 600;
     color: var(--text-primary);
     margin-bottom: 0.75rem;
+    margin-top: 0;
 }
 
 .faq-item p {
     font-size: 1rem;
     color: var(--text-secondary);
     line-height: 1.8;
+    margin-bottom: 0;
 }
 
 .faq-item a {
     color: var(--primary-color);
     text-decoration: none;
     transition: color 0.3s ease;
+    font-weight: 500;
 }
 
 .faq-item a:hover {
@@ -505,8 +543,13 @@ html {
         padding: 2rem 0 3rem;
     }
 
-    .support-grid {
-        grid-template-columns: 1fr;
+    .page-header {
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+    }
+
+    .content-section {
+        padding: 2rem 1.5rem;
     }
 
     .content-section h2 {
@@ -514,7 +557,27 @@ html {
     }
 
     .content-section h3 {
-        font-size: 1.25rem;
+        font-size: 1.125rem;
+    }
+
+    .contact-box {
+        padding: 2rem 1.5rem;
+    }
+
+    .contact-box-large {
+        padding: 2.5rem 1.5rem;
+    }
+
+    .contact-icon {
+        font-size: 3rem;
+    }
+
+    .contact-box h2 {
+        font-size: 1.5rem;
+    }
+
+    .faq-item {
+        padding: 1.5rem;
     }
 }
 
