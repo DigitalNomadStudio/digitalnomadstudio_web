@@ -1,355 +1,126 @@
-/* Reset and Base Styles */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-:root {
-    --primary-color: #1a365d;
-    --secondary-color: #2d5a87;
-    --accent-color: #ff6b35;
-    --text-primary: #1a202c;
-    --text-secondary: #4a5568;
-    --bg-light: #ffffff;
-    --bg-section: #f7fafc;
-    --border-color: #e2e8f0;
-    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
-    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
-    --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1);
-}
+    <meta name="description" content="Digital Nomad Studio Pty Ltd is an Australian app development company building iOS, Android, and web applications.">
+    <title>Digital Nomad Studio Pty Ltd</title>
 
-body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-    color: var(--text-primary);
-    line-height: 1.6;
-    background-color: var(--bg-light);
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-}
+    <link rel="stylesheet" href="styles.css">
 
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 2rem;
-}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
 
-/* Header */
-.header {
-    position: sticky;
-    top: 0;
-    background-color: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid var(--border-color);
-    z-index: 1000;
-    padding: 1.5rem 0;
-}
+<header class="header">
+    <div class="container">
+        <div class="logo-container">
+            <a href="index.html">
+                <img src="Logo.png" alt="Digital Nomad Studio Logo" class="logo">
+            </a>
+        </div>
+    </div>
+</header>
 
-.logo-container {
-    display: flex;
-    align-items: center;
-}
+<main>
 
-.logo-container a {
-    display: inline-block;
-    text-decoration: none;
-}
+    <section class="hero">
+        <div class="container">
+            <h1 class="hero-title">We Design & Build<br>Beautiful Apps</h1>
+            <p class="hero-subtitle">
+                Digital Nomad Studio Pty Ltd is an app development company that designs and builds our own mobile and web applications for iOS, Android, and the web.
+            </p>
+        </div>
+    </section>
 
-.logo {
-    height: 240px;
-    width: auto;
-    display: block;
-    transition: transform 0.3s ease;
-}
+    <section class="services" id="services">
+        <div class="container">
+            <h2 class="section-title">What We Build</h2>
 
-.logo:hover {
-    transform: scale(1.05);
-}
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">📱</div>
+                    <h3 class="service-title">iOS Apps</h3>
+                    <p class="service-description">
+                        We design and develop native iOS applications using Swift and SwiftUI.
+                    </p>
+                </div>
 
-/* Hero Section */
-.hero {
-    padding: 3rem 0 4rem;
-    text-align: center;
-    background: linear-gradient(135deg, #ffffff 0%, #f7fafc 100%);
-}
+                <div class="service-card">
+                    <div class="service-icon">🤖</div>
+                    <h3 class="service-title">Android Apps</h3>
+                    <p class="service-description">
+                        We build Android applications using Kotlin and modern Android architecture.
+                    </p>
+                </div>
 
-.hero-title {
-    font-size: clamp(2.5rem, 5vw, 4.5rem);
-    font-weight: 700;
-    color: var(--text-primary);
-    margin-bottom: 1.5rem;
-    line-height: 1.2;
-    letter-spacing: -0.02em;
-}
+                <div class="service-card">
+                    <div class="service-icon">🌐</div>
+                    <h3 class="service-title">Web Apps</h3>
+                    <p class="service-description">
+                        We create fast, responsive web applications with modern technologies.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-.hero-subtitle {
-    font-size: clamp(1.125rem, 2vw, 1.375rem);
-    color: var(--text-secondary);
-    max-width: 700px;
-    margin: 0 auto 2rem;
-    font-weight: 400;
-    line-height: 1.7;
-}
+    <section class="about" id="about">
+        <div class="container">
+            <h2 class="section-title">About Digital Nomad Studio</h2>
+            <p class="about-text">
+                Digital Nomad Studio Pty Ltd is an Australian software company focused on building high-quality mobile and web applications.
+            </p>
+            <p class="about-text">
+                We design and ship our own products across iOS, Android, and the web.
+            </p>
+        </div>
+    </section>
 
-.hero-buttons {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-    flex-wrap: wrap;
-}
+    <section class="contact" id="contact">
+        <div class="container">
+            <h2 class="section-title">Get In Touch</h2>
+            <p class="contact-subtitle">
+                Have a question or want to learn more about what we are building?
+            </p>
+            <a href="mailto:team@digitalnomadstudio.io" class="btn btn-primary">
+                Contact Us
+            </a>
+        </div>
+    </section>
 
-/* Buttons */
-.btn {
-    display: inline-block;
-    padding: 0.875rem 2rem;
-    font-size: 1rem;
-    font-weight: 500;
-    text-decoration: none;
-    border-radius: 8px;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    border: none;
-    font-family: inherit;
-}
+</main>
 
-.btn-primary {
-    background-color: var(--primary-color);
-    color: white;
-}
+<footer class="footer">
+    <div class="container">
+        <div class="footer-content">
 
-.btn-primary:hover {
-    background-color: var(--secondary-color);
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
-}
+            <div class="footer-legal">
+                <p><strong>Digital Nomad Studio Pty Ltd</strong></p>
+                <p>Digital Nomad Studio, 1 Letitia Close, Green Point NSW 2251, Australia</p>
+                <p>
+                    <a href="mailto:team@digitalnomadstudio.io">
+                        team@digitalnomadstudio.io
+                    </a>
+                </p>
+            </div>
 
-.btn-secondary {
-    background-color: transparent;
-    color: var(--primary-color);
-    border: 2px solid var(--primary-color);
-}
+            <p class="copyright">
+                © 2025 Digital Nomad Studio Pty Ltd. All rights reserved.
+            </p>
 
-.btn-secondary:hover {
-    background-color: var(--primary-color);
-    color: white;
-    transform: translateY(-2px);
-}
+            <div class="footer-links">
+                <a href="index.html">Home</a>
+                <a href="privacy.html">Privacy Policy</a>
+                <a href="support.html">Support</a>
+            </div>
 
-.btn-large {
-    padding: 1.125rem 2.5rem;
-    font-size: 1.125rem;
-}
+        </div>
+    </div>
+</footer>
 
-/* Services Section */
-.services {
-    padding: 3rem 0;
-    background-color: var(--bg-section);
-}
-
-.section-title {
-    font-size: clamp(2rem, 4vw, 3rem);
-    font-weight: 700;
-    text-align: center;
-    margin-bottom: 2rem;
-    color: var(--text-primary);
-    letter-spacing: -0.02em;
-}
-
-.services-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2.5rem;
-    margin-top: 1.5rem;
-}
-
-.service-card {
-    background: white;
-    padding: 2.5rem;
-    border-radius: 16px;
-    text-align: center;
-    transition: all 0.3s ease;
-    border: 1px solid var(--border-color);
-}
-
-.service-card:hover {
-    transform: translateY(-8px);
-    box-shadow: var(--shadow-lg);
-    border-color: transparent;
-}
-
-.service-icon {
-    font-size: 3.5rem;
-    margin-bottom: 1.5rem;
-    display: block;
-}
-
-.service-title {
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
-    color: var(--text-primary);
-}
-
-.service-description {
-    color: var(--text-secondary);
-    line-height: 1.7;
-    font-size: 1rem;
-}
-
-/* About Section */
-.about {
-    padding: 3rem 0;
-    background-color: var(--bg-light);
-}
-
-.about-content {
-    max-width: 800px;
-    margin: 0 auto;
-    text-align: center;
-}
-
-.about-text {
-    font-size: 1.125rem;
-    color: var(--text-secondary);
-    line-height: 1.8;
-    margin-bottom: 1.5rem;
-}
-
-/* Contact Section */
-.contact {
-    padding: 3rem 0;
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-    color: white;
-    text-align: center;
-}
-
-.contact .section-title {
-    color: white;
-    margin-bottom: 1.5rem;
-}
-
-.contact-subtitle {
-    font-size: 1.25rem;
-    margin-bottom: 1.5rem;
-    opacity: 0.95;
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.contact .btn-primary {
-    background-color: white;
-    color: var(--primary-color);
-}
-
-.contact .btn-primary:hover {
-    background-color: var(--bg-section);
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
-}
-
-/* Footer */
-.footer {
-    background-color: var(--text-primary);
-    color: rgba(255, 255, 255, 0.8);
-    padding: 2rem 0;
-    text-align: center;
-    font-size: 0.875rem;
-}
-
-.footer-content {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    align-items: center;
-}
-
-.footer-links {
-    display: flex;
-    gap: 2rem;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-.footer-links a {
-    color: rgba(255, 255, 255, 0.8);
-    text-decoration: none;
-    transition: color 0.3s ease;
-}
-
-.footer-links a:hover {
-    color: white;
-}
-
-/* FORCE footer legal email to white */
-.footer .footer-legal a,
-.footer .footer-legal a:visited,
-.footer .footer-legal a:hover,
-.footer .footer-legal a:active {
-    color: #ffffff !important;
-    text-decoration: none;
-}
-
-.footer .footer-legal a:hover {
-    text-decoration: underline;
-}
-
-/* Smooth Scrolling */
-html {
-    scroll-behavior: smooth;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .container {
-        padding: 0 1.5rem;
-    }
-
-    .logo {
-        height: 180px;
-    }
-
-    .hero {
-        padding: 2rem 0 3rem;
-    }
-
-    .hero-buttons {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .btn {
-        width: 100%;
-        text-align: center;
-    }
-
-    .services-grid {
-        grid-template-columns: 1fr;
-        gap: 2rem;
-    }
-
-    .service-card {
-        padding: 2rem;
-    }
-
-    .services,
-    .about,
-    .contact {
-        padding: 2.5rem 0;
-    }
-}
-
-@media (max-width: 480px) {
-    .logo {
-        height: 150px;
-    }
-
-    .header {
-        padding: 1rem 0;
-    }
-
-    .footer-links {
-        flex-direction: column;
-        gap: 1rem;
-    }
-}
+</body>
+</html>
