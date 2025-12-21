@@ -281,21 +281,17 @@ body {
     color: white;
 }
 
-/* Footer legal email link */
-.footer-legal a {
-    color: #ffffff;
+/* FORCE footer legal email to white */
+.footer .footer-legal a,
+.footer .footer-legal a:visited,
+.footer .footer-legal a:hover,
+.footer .footer-legal a:active {
+    color: #ffffff !important;
     text-decoration: none;
 }
 
-.footer-legal a:hover {
-    color: #ffffff;
+.footer .footer-legal a:hover {
     text-decoration: underline;
-}
-
-/* Page Content Styles */
-.page-content {
-    padding: 3rem 0 4rem;
-    background: linear-gradient(135deg, #ffffff 0%, #f7fafc 100%);
 }
 
 /* Smooth Scrolling */
