@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Mindset 4 Sports Performance (M4SP) - Your digital mental performance coach for athletes">
+    <title>M4SP - Mindset 4 Sports Performance - Digital Nomad Studio</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="logo-container">
+                <a href="index.html">
+                    <img src="Logo.png" alt="Digital Nomad Studio Logo" class="logo">
+                </a>
+            </div>
+            <nav class="nav">
+                <ul class="nav-menu" id="navMenu">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="products.html">Products</a></li>
+                    <li><a href="index.html#about">About</a></li>
+                    <li><a href="index.html#contact">Contact</a></li>
+                </ul>
+                <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu">
+                    <span class="hamburger"></span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="page-content">
+            <div class="container">
+                <div class="content-wrapper">
+                    <div class="page-header">
+                        <span class="product-badge" style="margin-bottom: 1rem;">Web App</span>
+                        <h1 class="page-title">Mindset 4 Sports Performance</h1>
+                        <p class="page-subtitle">Your digital mental performance coach, available 24/7</p>
+                    </div>
+
+                    <!-- Hero Image -->
+                    <div class="content-section">
+                        <img src="m4sp - image.JPG" alt="M4SP - Mindset 4 Sports Performance Interface" style="width: 100%; height: auto; border-radius: 12px; box-shadow: var(--shadow-md);">
+                    </div>
+
+                    <!-- Video Section -->
+                    <div class="content-section">
+                        <h2>See M4SP in Action</h2>
+                        <div class="video-container">
+                            <video controls preload="metadata" playsinline style="width: 100%; height: auto; border-radius: 12px; box-shadow: var(--shadow-md);">
+                                <source src="m4sp-video.MP4" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                    </div>
+
+                    <!-- About Section -->
+                    <div class="content-section">
+                        <h2>The Mental Game Matters</h2>
+                        <p>The mental game separates good athletes from great ones. Mindset 4 Sports Performance (M4SP) is your digital mental performance coach, available 24/7. Whether you're battling pre-game nerves, recovering from setbacks, or building unshakeable confidence, M4SP provides personalized guidance to strengthen your mental edge.</p>
+                    </div>
+
+                    <!-- Features Section -->
+                    <div class="content-section">
+                        <h2>Key Features</h2>
+                        <ul>
+                            <li>Personalized mental performance coaching tailored to your sport and goals</li>
+                            <li>Mental skills training: visualization, focus, confidence, resilience</li>
+                            <li>Pre-game preparation and post-game reflection tools</li>
+                            <li>Progress tracking and performance insights</li>
+                            <li>Accessible anywhere, anytime from any device</li>
+                        </ul>
+                    </div>
+
+                    <!-- CTA Section -->
+                    <div class="contact-box">
+                        <h2>Ready to Strengthen Your Mental Game?</h2>
+                        <p>Start your journey to peak mental performance today.</p>
+                        <a href="https://www.m4sp.digitalnomadstudio.io" class="btn btn-primary btn-large" target="_blank" rel="noopener">Launch M4SP</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p>&copy; 2025 Digital Nomad Studio. All rights reserved.</p>
+                <div class="footer-links">
+                    <a href="index.html">Home</a>
+                    <a href="products.html">Products</a>
+                    <a href="privacy.html">Privacy Policy</a>
+                    <a href="support.html">Support</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const navMenu = document.getElementById('navMenu');
+
+        mobileMenuToggle.addEventListener('click', () => {
+            mobileMenuToggle.classList.toggle('active');
+            navMenu.classList.toggle('active');
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.nav')) {
+                mobileMenuToggle.classList.remove('active');
+                navMenu.classList.remove('active');
+            }
+        });
+
+        // Close menu when clicking a link
+        navMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenuToggle.classList.remove('active');
+                navMenu.classList.remove('active');
+            });
+        });
+    </script>
+</body>
+</html>
