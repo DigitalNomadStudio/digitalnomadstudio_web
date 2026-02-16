@@ -737,7 +737,7 @@ html {
     }
 
     .hero {
-        padding: 2rem 0 3rem;
+        padding: 2rem 0 1.5rem;
     }
 
     .hero-buttons {
@@ -763,9 +763,12 @@ html {
 
     .services,
     .about,
-    .contact,
-    .products {
+    .contact {
         padding: 2.5rem 0;
+    }
+
+    .products {
+        padding: 1.5rem 0 2.5rem;
     }
 
     .product-buttons {
