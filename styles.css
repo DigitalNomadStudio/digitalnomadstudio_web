@@ -42,7 +42,7 @@ body {
     backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--border-color);
     z-index: 1000;
-    padding: 1.5rem 0;
+    padding: 0.75rem 0;
 }
 
 .header .container {
@@ -62,7 +62,7 @@ body {
 }
 
 .logo {
-    height: 240px;
+    height: 120px;
     width: auto;
     display: block;
     transition: transform 0.3s ease;
@@ -735,7 +735,7 @@ html {
     }
 
     .logo {
-        height: 180px;
+        height: 100px;
     }
 
     /* Mobile Navigation */
@@ -820,7 +820,7 @@ html {
 
 @media (max-width: 480px) {
     .logo {
-        height: 150px;
+        height: 80px;
     }
 
     .header {
