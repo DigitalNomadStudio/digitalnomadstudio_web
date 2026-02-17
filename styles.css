@@ -621,11 +621,13 @@ body {
 
 .featured-image {
     width: 100%;
-    height: 300px;
-    object-fit: cover;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    object-fit: contain;
     object-position: center;
     display: block;
     max-width: 100%;
+    background-color: var(--bg-section);
 }
 
 .featured-card .product-badge {
@@ -906,7 +908,7 @@ html {
     }
     
     .featured-image {
-        height: 200px;
+        aspect-ratio: 1 / 1;
     }
 }
 
