@@ -610,6 +610,8 @@ body {
     box-shadow: var(--shadow-md);
     transition: all 0.3s ease;
     border: 1px solid var(--border-color);
+    max-width: 600px;
+    margin: 0 auto;
 }
 
 .featured-card:hover {
@@ -619,9 +621,11 @@ body {
 
 .featured-image {
     width: 100%;
-    height: 250px;
+    height: 300px;
     object-fit: cover;
+    object-position: center;
     display: block;
+    max-width: 100%;
 }
 
 .featured-card .product-badge {
