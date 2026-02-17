@@ -830,7 +830,7 @@ html {
     .nav-menu {
         position: fixed;
         top: 0;
-        right: -100%;
+        right: -280px;
         width: 280px;
         height: 100vh;
         background-color: white;
@@ -840,13 +840,10 @@ html {
         box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
         transition: right 0.3s ease;
         z-index: 1000;
-        transform: translateX(0);
-        visibility: hidden;
     }
 
     .nav-menu.active {
         right: 0;
-        visibility: visible;
     }
 
     .nav-menu a::after {
