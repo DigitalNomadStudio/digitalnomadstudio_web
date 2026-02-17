@@ -19,6 +19,11 @@
     --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1);
 }
 
+html {
+    overflow-x: hidden;
+    width: 100%;
+}
+
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
     color: var(--text-primary);
@@ -26,6 +31,8 @@ body {
     background-color: var(--bg-light);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+    position: relative;
 }
 
 .container {
@@ -166,6 +173,31 @@ body {
 
 .mobile-menu-toggle.active .hamburger::after {
     transform: rotate(-45deg) translate(6px, -6px);
+}
+
+/* Menu Backdrop Overlay */
+.menu-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.menu-backdrop.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+@media (min-width: 769px) {
+    .menu-backdrop {
+        display: none;
+    }
 }
 
 /* Hero Section */
@@ -830,20 +862,26 @@ html {
     .nav-menu {
         position: fixed;
         top: 0;
-        right: -280px;
+        right: 0;
         width: 280px;
+        max-width: 80vw;
         height: 100vh;
+        height: 100dvh;
         background-color: white;
         flex-direction: column;
         padding: 6rem 2rem 2rem;
         gap: 2rem;
         box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
-        transition: right 0.3s ease;
+        transition: transform 0.3s ease;
         z-index: 1000;
+        transform: translateX(100%);
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        will-change: transform;
     }
 
     .nav-menu.active {
-        right: 0;
+        transform: translateX(0);
     }
 
     .nav-menu a::after {

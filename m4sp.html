@@ -32,6 +32,8 @@
         </div>
     </header>
 
+    <div class="menu-backdrop" id="menuBackdrop"></div>
+
     <main>
         <section class="page-content">
             <div class="container">
@@ -106,10 +108,21 @@
         // Mobile menu toggle
         const mobileMenuToggle = document.getElementById('mobileMenuToggle');
         const navMenu = document.getElementById('navMenu');
+        const menuBackdrop = document.getElementById('menuBackdrop');
 
         mobileMenuToggle.addEventListener('click', () => {
             mobileMenuToggle.classList.toggle('active');
             navMenu.classList.toggle('active');
+            menuBackdrop.classList.toggle('active');
+            document.body.style.overflow = navMenu.classList.contains('active') ? 'hidden' : '';
+        });
+
+        // Close menu when clicking backdrop
+        menuBackdrop.addEventListener('click', () => {
+            mobileMenuToggle.classList.remove('active');
+            navMenu.classList.remove('active');
+            menuBackdrop.classList.remove('active');
+            document.body.style.overflow = '';
         });
 
         // Close menu when clicking outside
@@ -117,6 +130,8 @@
             if (!e.target.closest('.nav')) {
                 mobileMenuToggle.classList.remove('active');
                 navMenu.classList.remove('active');
+                menuBackdrop.classList.remove('active');
+                document.body.style.overflow = '';
             }
         });
 
@@ -125,6 +140,8 @@
             link.addEventListener('click', () => {
                 mobileMenuToggle.classList.remove('active');
                 navMenu.classList.remove('active');
+                menuBackdrop.classList.remove('active');
+                document.body.style.overflow = '';
             });
         });
     </script>
