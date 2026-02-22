@@ -703,9 +703,10 @@ body {
 
 .products-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+    max-width: 1200px;
+    margin: 1.5rem auto 0;
     gap: 2.5rem;
-    margin-top: 1.5rem;
 }
 
 .product-card {
