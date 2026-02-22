@@ -644,6 +644,8 @@ body {
     border: 1px solid var(--border-color);
     max-width: 600px;
     margin: 0 auto;
+    display: flex;
+    flex-direction: column;
 }
 
 .featured-card:hover {
@@ -684,6 +686,7 @@ body {
     color: var(--text-secondary);
     line-height: 1.7;
     margin: 0 1.5rem 1.5rem;
+    flex-grow: 1;
 }
 
 .featured-card .btn {
