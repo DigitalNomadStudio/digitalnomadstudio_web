@@ -78,45 +78,53 @@
                 <h2 class="section-title">Our Products</h2>
                 <p class="section-subtitle">Apps we've built</p>
                 
-                <div class="featured-grid">
-                    <!-- MatchTagr Card -->
-                    <div class="featured-card">
-                        <img src="matchtagr-featured.png" alt="MatchTagr" class="featured-image">
-                        <span class="product-badge">iOS App</span>
-                        <h3 class="featured-title">MatchTagr</h3>
-                        <p class="featured-tagline">Every moment counts</p>
-                        <p class="featured-description">Tag tactical moments from your Apple Watch, import footage, and create highlight reels in minutes.</p>
-                        <a href="matchtagr.html" class="btn btn-primary">Learn More</a>
-                    </div>
+                <div class="featured-category">
+                    <h3 class="featured-category-title">Sports & Performance</h3>
+                    <div class="featured-grid">
+                        <!-- MatchTagr Card -->
+                        <div class="featured-card">
+                            <img src="matchtagr-featured.png" alt="MatchTagr" class="featured-image featured-image-clickable">
+                            <span class="product-badge">iOS App</span>
+                            <h3 class="featured-title">MatchTagr</h3>
+                            <p class="featured-tagline">Every moment counts</p>
+                            <p class="featured-description">Tag tactical moments from your Apple Watch, import footage, and create highlight reels in minutes.</p>
+                            <a href="matchtagr.html" class="btn btn-primary">Learn More</a>
+                        </div>
 
-                    <!-- M4SP Card -->
-                    <div class="featured-card">
-                        <img src="m4sp-featured.png" alt="M4SP" class="featured-image">
-                        <span class="product-badge">Web App</span>
-                        <h3 class="featured-title">Mindset 4 Sports Performance</h3>
-                        <p class="featured-tagline">Strengthen your mental edge</p>
-                        <p class="featured-description">Your digital mental performance coach, available 24/7 to help you build confidence and resilience.</p>
-                        <a href="m4sp.html" class="btn btn-primary">Learn More</a>
-                    </div>
+                        <!-- M4SP Card -->
+                        <div class="featured-card">
+                            <img src="m4sp-featured.png" alt="M4SP" class="featured-image featured-image-clickable">
+                            <span class="product-badge">Web App</span>
+                            <h3 class="featured-title">Mindset 4 Sports Performance</h3>
+                            <p class="featured-tagline">Strengthen your mental edge</p>
+                            <p class="featured-description">Your digital mental performance coach, available 24/7 to help you build confidence and resilience.</p>
+                            <a href="m4sp.html" class="btn btn-primary">Learn More</a>
+                        </div>
 
-                    <!-- TeamRelay Card -->
-                    <div class="featured-card">
-                        <img src="teamrelay-featured.png" alt="TeamRelay" class="featured-image">
-                        <span class="product-badge product-badge-coming-soon">Coming Soon</span>
-                        <h3 class="featured-title">TeamRelay</h3>
-                        <p class="featured-tagline">Speak one language, reach every player</p>
-                        <p class="featured-description">Real-time offline speech translation for sports teams and businesses. Coach speaks, everyone understands -- in their own language.</p>
-                        <a href="teamrelay.html" class="btn btn-primary">Join the Waitlist</a>
+                        <!-- TeamRelay Card -->
+                        <div class="featured-card">
+                            <img src="teamrelay-featured.png" alt="TeamRelay" class="featured-image featured-image-clickable">
+                            <span class="product-badge product-badge-coming-soon">Coming Soon</span>
+                            <h3 class="featured-title">TeamRelay</h3>
+                            <p class="featured-tagline">Speak one language, reach every player</p>
+                            <p class="featured-description">Real-time offline speech translation for sports teams and businesses. Coach speaks, everyone understands -- in their own language.</p>
+                            <a href="teamrelay.html" class="btn btn-primary">Join the Waitlist</a>
+                        </div>
                     </div>
+                </div>
 
-                    <!-- PropertyBuyWise Card -->
-                    <div class="featured-card">
-                        <img src="Property_featured.png" alt="PropertyBuyWise" class="featured-image">
-                        <span class="product-badge">Web App</span>
-                        <h3 class="featured-title">PropertyBuyWise</h3>
-                        <p class="featured-tagline">Make smarter property decisions</p>
-                        <p class="featured-description">Upload property reports and get instant analysis with risk ratings and negotiation points.</p>
-                        <a href="propertybuywise.html" class="btn btn-primary">Learn More</a>
+                <div class="featured-category">
+                    <h3 class="featured-category-title">Property & Real Estate</h3>
+                    <div class="featured-grid">
+                        <!-- PropertyBuyWise Card -->
+                        <div class="featured-card">
+                            <img src="Property_featured.png" alt="PropertyBuyWise" class="featured-image featured-image-clickable">
+                            <span class="product-badge">Web App</span>
+                            <h3 class="featured-title">PropertyBuyWise</h3>
+                            <p class="featured-tagline">Make smarter property decisions</p>
+                            <p class="featured-description">Upload property reports and get instant analysis with risk ratings and negotiation points.</p>
+                            <a href="propertybuywise.html" class="btn btn-primary">Learn More</a>
+                        </div>
                     </div>
                 </div>
                 
@@ -149,6 +157,12 @@
             </div>
         </div>
     </footer>
+
+    <!-- Image Lightbox Modal -->
+    <div class="lightbox-overlay" id="lightbox">
+        <button class="lightbox-close" id="lightboxClose" aria-label="Close">&times;</button>
+        <img class="lightbox-image" id="lightboxImg" src="" alt="">
+    </div>
 
     <script>
         // Mobile menu toggle
@@ -189,6 +203,33 @@
                 menuBackdrop.classList.remove('active');
                 document.body.style.overflow = '';
             });
+        });
+
+        // Image lightbox
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightboxImg');
+        const lightboxClose = document.getElementById('lightboxClose');
+
+        document.querySelectorAll('.featured-image-clickable').forEach(img => {
+            img.addEventListener('click', () => {
+                lightboxImg.src = img.src;
+                lightboxImg.alt = img.alt;
+                lightbox.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
+        });
+
+        function closeLightbox() {
+            lightbox.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        lightboxClose.addEventListener('click', closeLightbox);
+        lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox) closeLightbox();
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeLightbox();
         });
     </script>
 </body>
