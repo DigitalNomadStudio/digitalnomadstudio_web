@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="TeamRelay - Real-time offline speech translation for sports teams and businesses. Join the waitlist.">
+    <meta name="theme-color" content="#1a365d">
+    <title>TeamRelay - Multi-lingual Comms for Teams - Digital Nomad Studio</title>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png?v=2">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png?v=2">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=2">
+    <link rel="manifest" href="site.webmanifest?v=2">
+
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="logo-container">
+                <a href="index.html">
+                    <img src="Logo.png" alt="Digital Nomad Studio Logo" class="logo">
+                </a>
+            </div>
+            <nav class="nav">
+                <ul class="nav-menu" id="navMenu">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="products.html">Products</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="index.html#contact">Contact</a></li>
+                </ul>
+                <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu">
+                    <span class="hamburger"></span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <div class="menu-backdrop" id="menuBackdrop"></div>
+
+    <main>
+        <section class="page-content">
+            <div class="container">
+                <div class="content-wrapper">
+                    <div class="page-header">
+                        <span class="product-badge product-badge-coming-soon" style="margin-bottom: 1rem;">Coming Soon</span>
+                        <h1 class="page-title">TeamRelay</h1>
+                        <p class="page-subtitle">Speak one language, reach every player</p>
+                    </div>
+
+                    <!-- Hero Image -->
+                    <div class="content-section">
+                        <img src="teamrelay-featured.png" alt="TeamRelay - Multi-lingual Comms for Teams" style="width: 100%; height: auto; border-radius: 12px; box-shadow: var(--shadow-md);">
+                    </div>
+
+                    <!-- About Section -->
+                    <div class="content-section">
+                        <h2>Break Down Language Barriers in Real Time</h2>
+                        <p>Language barriers don't belong in the locker room -- or the boardroom. TeamRelay is an iOS app that lets a coach or presenter speak naturally into their iPhone while every participant in the room instantly receives a translated transcription, displayed on screen and read aloud through their device or AirPods, in their own language.</p>
+                        <p>The entire system operates over local Bluetooth or WiFi. No internet connection is needed during use. No data leaves the room. No cloud subscription is required. No accounts to create. Just speak and be understood.</p>
+                    </div>
+
+                    <!-- How It Works Section -->
+                    <div class="content-section">
+                        <h2>How It Works</h2>
+                        <h3>For the Coach / Presenter</h3>
+                        <ul>
+                            <li>Create a session on your iPhone</li>
+                            <li>Participants connect automatically via Bluetooth, or share a join code for WiFi</li>
+                            <li>Press the microphone button and speak</li>
+                        </ul>
+                        <h3>For the Player / Attendee</h3>
+                        <ul>
+                            <li>Join the nearby session from your iPhone</li>
+                            <li>Select your preferred language</li>
+                            <li>Receive translated text and audio automatically</li>
+                        </ul>
+                    </div>
+
+                    <!-- Features Section -->
+                    <div class="content-section">
+                        <h2>Key Features</h2>
+                        <ul>
+                            <li>Real-time speech translation into 14 languages</li>
+                            <li>Fully offline -- all processing happens on-device using Apple's neural translation models</li>
+                            <li>Works over Bluetooth or WiFi with no internet required</li>
+                            <li>Breakout rooms with floor control for focused group discussions</li>
+                            <li>Raise hand system for true two-way multilingual communication</li>
+                            <li>Multi-coach/presenter collaboration in a single session</li>
+                            <li>Custom branding -- upload your club or company logo and colors sync to all devices</li>
+                            <li>Dual context design -- Sport mode and Business mode with adapted terminology</li>
+                            <li>Zero accounts, zero setup friction -- participants tap to join</li>
+                        </ul>
+                    </div>
+
+                    <!-- Who It's For Section -->
+                    <div class="content-section">
+                        <h2>Who It's For</h2>
+                        <h3>Sports Teams</h3>
+                        <p>Professional and semi-professional clubs with international rosters, youth academies, national team camps, and tournaments. Deliver coaching sessions, tactical briefings, and team meetings where every player understands every word.</p>
+                        <h3>Businesses</h3>
+                        <p>Multinational companies, international conferences, corporate training, and field team briefings. One presenter, many languages, zero friction.</p>
+                    </div>
+
+                    <!-- Waitlist Form Section -->
+                    <div class="content-section" id="waitlist">
+                        <h2>Be the First to Know</h2>
+                        <p>TeamRelay is coming soon. Fill in your details below and we'll let you know as soon as it's available on the App Store.</p>
+
+                        <form id="waitlistForm" class="waitlist-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="name">Name <span class="required">*</span></label>
+                                    <input type="text" id="name" name="name" required placeholder="Your name">
+                                </div>
+                                <div class="form-group">
+                                    <label for="email">Email <span class="required">*</span></label>
+                                    <input type="email" id="email" name="email" required placeholder="you@example.com">
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="organisation">Organisation</label>
+                                    <input type="text" id="organisation" name="organisation" placeholder="Club, company, or school">
+                                </div>
+                                <div class="form-group">
+                                    <label for="role">Role</label>
+                                    <input type="text" id="role" name="role" placeholder="e.g. Head Coach, Team Manager">
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="context">Context</label>
+                                    <select id="context" name="context">
+                                        <option value="" disabled selected>Select one</option>
+                                        <option value="Sport">Sport</option>
+                                        <option value="Business">Business</option>
+                                        <option value="Education">Education</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="sport-industry">Sport / Industry</label>
+                                    <input type="text" id="sport-industry" name="sport-industry" placeholder="e.g. Football, Manufacturing">
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="users">Estimated Number of Users</label>
+                                    <select id="users" name="users">
+                                        <option value="" disabled selected>Select range</option>
+                                        <option value="1-10">1 - 10</option>
+                                        <option value="11-25">11 - 25</option>
+                                        <option value="26-50">26 - 50</option>
+                                        <option value="50+">50+</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="country">Country</label>
+                                    <input type="text" id="country" name="country" placeholder="Your country">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="languages">Languages Needed</label>
+                                <input type="text" id="languages" name="languages" placeholder="e.g. English, Spanish, Japanese">
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-large" style="width: 100%; margin-top: 0.5rem;">Join the Waitlist</button>
+                        </form>
+
+                        <div id="formSuccess" class="form-success" style="display: none;">
+                            <h3>Thanks for your interest!</h3>
+                            <p>Your email client will open with your details ready to send. Just hit send and we'll be in touch when TeamRelay launches.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p>&copy; 2025 Digital Nomad Studio. All rights reserved.</p>
+                <div class="footer-links">
+                    <a href="index.html">Home</a>
+                    <a href="products.html">Products</a>
+                    <a href="about.html">About</a>
+                    <a href="privacy.html">Privacy Policy</a>
+                    <a href="support.html">Support</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const navMenu = document.getElementById('navMenu');
+        const menuBackdrop = document.getElementById('menuBackdrop');
+
+        mobileMenuToggle.addEventListener('click', () => {
+            mobileMenuToggle.classList.toggle('active');
+            navMenu.classList.toggle('active');
+            menuBackdrop.classList.toggle('active');
+            document.body.style.overflow = navMenu.classList.contains('active') ? 'hidden' : '';
+        });
+
+        // Close menu when clicking backdrop
+        menuBackdrop.addEventListener('click', () => {
+            mobileMenuToggle.classList.remove('active');
+            navMenu.classList.remove('active');
+            menuBackdrop.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.nav')) {
+                mobileMenuToggle.classList.remove('active');
+                navMenu.classList.remove('active');
+                menuBackdrop.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
+
+        // Close menu when clicking a link
+        navMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenuToggle.classList.remove('active');
+                navMenu.classList.remove('active');
+                menuBackdrop.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+        });
+
+        // Waitlist form submission
+        document.getElementById('waitlistForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const organisation = document.getElementById('organisation').value;
+            const role = document.getElementById('role').value;
+            const context = document.getElementById('context').value;
+            const sportIndustry = document.getElementById('sport-industry').value;
+            const users = document.getElementById('users').value;
+            const country = document.getElementById('country').value;
+            const languages = document.getElementById('languages').value;
+
+            const body = [
+                'Hi,',
+                '',
+                "I'm interested in TeamRelay. Please let me know when it's available.",
+                '',
+                'Name: ' + name,
+                'Email: ' + email,
+                'Organisation: ' + (organisation || 'N/A'),
+                'Role: ' + (role || 'N/A'),
+                'Context: ' + (context || 'N/A'),
+                'Sport / Industry: ' + (sportIndustry || 'N/A'),
+                'Estimated Users: ' + (users || 'N/A'),
+                'Languages Needed: ' + (languages || 'N/A'),
+                'Country: ' + (country || 'N/A')
+            ].join('\n');
+
+            const subject = 'TeamRelay - Expression of Interest - ' + name;
+            const mailtoUrl = 'mailto:team@digitalnomadstudio.io?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+
+            window.location.href = mailtoUrl;
+
+            document.getElementById('waitlistForm').style.display = 'none';
+            document.getElementById('formSuccess').style.display = 'block';
+        });
+    </script>
+</body>
+</html>
