@@ -108,8 +108,8 @@
 
                     <!-- Waitlist Form Section -->
                     <div class="content-section" id="waitlist">
-                        <h2>Be the First to Know</h2>
-                        <p>TeamRelay is coming soon. Fill in your details below and we'll let you know as soon as it's available on the App Store.</p>
+                        <h2>Get Early Access</h2>
+                        <p>TeamRelay is currently in development and we're looking for a small number of sports clubs and businesses to participate in our early access programme. If you'd like to be notified when TeamRelay launches, or are interested in being considered as an early access partner, register your interest below.</p>
 
                         <form id="waitlistForm" class="waitlist-form">
                             <div class="form-row">
@@ -173,12 +173,19 @@
                                 <input type="text" id="languages" name="languages" placeholder="e.g. English, Spanish, Japanese">
                             </div>
 
-                            <button type="submit" class="btn btn-primary btn-large" style="width: 100%; margin-top: 0.5rem;">Join the Waitlist</button>
+                            <div class="form-group" style="margin-top: 0.5rem;">
+                                <label class="checkbox-label" style="display: flex; align-items: flex-start; gap: 0.75rem; cursor: pointer;">
+                                    <input type="checkbox" id="earlyAccess" name="earlyAccess" style="margin-top: 0.25rem; width: 18px; height: 18px; accent-color: var(--primary);">
+                                    <span>I'm interested in being considered as an early access partner. I understand this may involve providing feedback during the trial period to help shape the product.</span>
+                                </label>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-large" style="width: 100%; margin-top: 0.5rem;">Register Interest</button>
                         </form>
 
                         <div id="formSuccess" class="form-success" style="display: none;">
                             <h3>Thanks for your interest!</h3>
-                            <p>Your email client will open with your details ready to send. Just hit send and we'll be in touch when TeamRelay launches.</p>
+                            <p>Your email client will open with your details ready to send. Just hit send and we'll be in touch.</p>
                         </div>
                     </div>
                 </div>
@@ -255,11 +262,12 @@
             const users = document.getElementById('users').value;
             const country = document.getElementById('country').value;
             const languages = document.getElementById('languages').value;
+            const earlyAccess = document.getElementById('earlyAccess').checked;
 
             const body = [
                 'Hi,',
                 '',
-                "I'm interested in TeamRelay. Please let me know when it's available.",
+                "I'm interested in TeamRelay and would like to register my interest.",
                 '',
                 'Name: ' + name,
                 'Email: ' + email,
@@ -269,10 +277,12 @@
                 'Sport / Industry: ' + (sportIndustry || 'N/A'),
                 'Estimated Users: ' + (users || 'N/A'),
                 'Languages Needed: ' + (languages || 'N/A'),
-                'Country: ' + (country || 'N/A')
+                'Country: ' + (country || 'N/A'),
+                '',
+                'Early Access Partner: ' + (earlyAccess ? 'Yes - interested in participating in the early access programme' : 'No - notify me at launch')
             ].join('\n');
 
-            const subject = 'TeamRelay - Expression of Interest - ' + name;
+            const subject = 'TeamRelay - Expression of Interest' + (earlyAccess ? ' (Early Access)' : '') + ' - ' + name;
             const mailtoUrl = 'mailto:team@digitalnomadstudio.io?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
 
             window.location.href = mailtoUrl;
