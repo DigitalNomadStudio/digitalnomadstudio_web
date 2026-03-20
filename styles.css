@@ -778,6 +778,21 @@ body {
     gap: 2.5rem;
 }
 
+.products-grid-uniform {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+}
+
+.product-category-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
 .product-card {
     background: white;
     padding: 2.5rem;
