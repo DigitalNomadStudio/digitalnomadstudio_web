@@ -31,6 +31,89 @@
     <link rel="manifest" href="site.webmanifest?v=2">
 
     <link rel="stylesheet" href="styles.css">
+    <style>
+        .slideshow {
+            width: 100%;
+            max-width: 100%;
+        }
+        .slideshow-container {
+            position: relative;
+            width: 100%;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            background: #2c3e6b;
+            aspect-ratio: 16 / 9;
+        }
+        .slideshow-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        .slideshow-slide.active {
+            opacity: 1;
+        }
+        .slideshow-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.4);
+            color: #fff;
+            border: none;
+            padding: 12px 16px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background 0.2s;
+            z-index: 2;
+        }
+        .slideshow-btn:hover {
+            background: rgba(0, 0, 0, 0.7);
+        }
+        .slideshow-prev { left: 8px; }
+        .slideshow-next { right: 8px; }
+        .slideshow-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+        .slideshow-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--border-color);
+            border: none;
+            cursor: pointer;
+            transition: background 0.2s;
+            padding: 0;
+        }
+        .slideshow-dot.active {
+            background: var(--primary-color);
+        }
+        .slideshow-counter {
+            text-align: center;
+            margin-top: 8px;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+        @media (max-width: 600px) {
+            .slideshow-btn {
+                padding: 8px 12px;
+                font-size: 1rem;
+            }
+            .slideshow-dot {
+                width: 8px;
+                height: 8px;
+            }
+        }
+    </style>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -69,9 +152,26 @@
                         <p class="page-subtitle">Speak one language, reach every player</p>
                     </div>
 
-                    <!-- Hero Image -->
+                    <!-- Presentation Slideshow -->
                     <div class="content-section">
-                        <img src="teamrelay-learnmore.png" alt="TeamRelay - Multi-lingual Comms for Teams" style="width: 100%; height: auto; border-radius: 12px; box-shadow: var(--shadow-md);">
+                        <div class="slideshow" id="slideshow">
+                            <div class="slideshow-container">
+                                <img class="slideshow-slide active" src="slide-01.png" alt="TeamRelay Beta Partnership - Slide 1" loading="eager">
+                                <img class="slideshow-slide" src="slide-02.png" alt="TeamRelay Beta Partnership - Slide 2" loading="lazy">
+                                <img class="slideshow-slide" src="slide-03.png" alt="TeamRelay Beta Partnership - Slide 3" loading="lazy">
+                                <img class="slideshow-slide" src="slide-04.png" alt="TeamRelay Beta Partnership - Slide 4" loading="lazy">
+                                <img class="slideshow-slide" src="slide-05.png" alt="TeamRelay Beta Partnership - Slide 5" loading="lazy">
+                                <img class="slideshow-slide" src="slide-06.png" alt="TeamRelay Beta Partnership - Slide 6" loading="lazy">
+                                <img class="slideshow-slide" src="slide-07.png" alt="TeamRelay Beta Partnership - Slide 7" loading="lazy">
+                                <img class="slideshow-slide" src="slide-08.png" alt="TeamRelay Beta Partnership - Slide 8" loading="lazy">
+                                <img class="slideshow-slide" src="slide-09.png" alt="TeamRelay Beta Partnership - Slide 9" loading="lazy">
+                                <img class="slideshow-slide" src="slide-10.png" alt="TeamRelay Beta Partnership - Slide 10" loading="lazy">
+                                <button class="slideshow-btn slideshow-prev" aria-label="Previous slide">&#10094;</button>
+                                <button class="slideshow-btn slideshow-next" aria-label="Next slide">&#10095;</button>
+                            </div>
+                            <div class="slideshow-dots" id="slideshowDots"></div>
+                            <p class="slideshow-counter" id="slideshowCounter">1 / 10</p>
+                        </div>
                     </div>
 
                     <!-- About Section -->
@@ -265,6 +365,52 @@
                 document.body.style.overflow = '';
             });
         });
+
+        // Slideshow
+        (function() {
+            const slides = document.querySelectorAll('.slideshow-slide');
+            const dotsContainer = document.getElementById('slideshowDots');
+            const counter = document.getElementById('slideshowCounter');
+            const total = slides.length;
+            let current = 0;
+
+            // Create dots
+            for (let i = 0; i < total; i++) {
+                const dot = document.createElement('button');
+                dot.className = 'slideshow-dot' + (i === 0 ? ' active' : '');
+                dot.setAttribute('aria-label', 'Go to slide ' + (i + 1));
+                dot.addEventListener('click', () => goTo(i));
+                dotsContainer.appendChild(dot);
+            }
+            const dots = dotsContainer.querySelectorAll('.slideshow-dot');
+
+            function goTo(n) {
+                slides[current].classList.remove('active');
+                dots[current].classList.remove('active');
+                current = (n + total) % total;
+                slides[current].classList.add('active');
+                dots[current].classList.add('active');
+                counter.textContent = (current + 1) + ' / ' + total;
+            }
+
+            document.querySelector('.slideshow-prev').addEventListener('click', () => goTo(current - 1));
+            document.querySelector('.slideshow-next').addEventListener('click', () => goTo(current + 1));
+
+            // Keyboard navigation
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowLeft') goTo(current - 1);
+                if (e.key === 'ArrowRight') goTo(current + 1);
+            });
+
+            // Touch swipe support
+            let touchStartX = 0;
+            const container = document.querySelector('.slideshow-container');
+            container.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; }, { passive: true });
+            container.addEventListener('touchend', (e) => {
+                const diff = touchStartX - e.changedTouches[0].clientX;
+                if (Math.abs(diff) > 50) goTo(current + (diff > 0 ? 1 : -1));
+            }, { passive: true });
+        })();
 
         // Waitlist form submission
         document.getElementById('waitlistForm').addEventListener('submit', function(e) {
