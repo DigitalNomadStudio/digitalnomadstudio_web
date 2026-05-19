@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Got an app idea? Tell us about it. Digital Nomad Studio will review your brief and get back to you within two business days.">
+    <meta name="theme-color" content="#1a365d">
+    <title>Submit Your App Idea - Digital Nomad Studio</title>
+
+    <!-- Canonical -->
+    <link rel="canonical" href="https://www.digitalnomadstudio.io/submit-idea.html">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Submit Your App Idea - Digital Nomad Studio">
+    <meta property="og:description" content="Got an app idea? Tell us about it. We'll review your brief and get back to you within two business days.">
+    <meta property="og:url" content="https://www.digitalnomadstudio.io/submit-idea.html">
+    <meta property="og:image" content="https://www.digitalnomadstudio.io/Logo.png">
+    <meta property="og:site_name" content="Digital Nomad Studio">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Submit Your App Idea - Digital Nomad Studio">
+    <meta name="twitter:description" content="Got an app idea? Tell us about it. We'll review your brief and get back to you within two business days.">
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png?v=2">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png?v=2">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=2">
+    <link rel="manifest" href="site.webmanifest?v=2">
+
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="logo-container">
+                <a href="./">
+                    <img src="Logo.png" alt="Digital Nomad Studio Logo" class="logo">
+                </a>
+            </div>
+            <nav class="nav">
+                <ul class="nav-menu" id="navMenu">
+                    <li><a href="./">Home</a></li>
+                    <li><a href="products.html">Products</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="./#contact">Contact</a></li>
+                </ul>
+                <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu">
+                    <span class="hamburger"></span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <div class="menu-backdrop" id="menuBackdrop"></div>
+
+    <main>
+        <section class="page-content">
+            <div class="container">
+                <div class="content-wrapper">
+                    <div class="page-header">
+                        <h1 class="page-title">Submit Your App Idea</h1>
+                        <p class="page-subtitle">Got an idea for an app? Tell us about it below. We'll review your brief and reach out within two business days to schedule a discovery call. No commitment required - just a conversation.</p>
+                    </div>
+
+                    <form id="appIdeaForm" class="idea-form">
+
+                        <div class="content-section">
+                            <h2>01 About You</h2>
+                            <p>Tell us who you are and how to reach you.</p>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="fullName">Full Name <span class="required">*</span></label>
+                                    <input type="text" id="fullName" name="fullName" required placeholder="Your full name">
+                                </div>
+                                <div class="form-group">
+                                    <label for="businessName">Business / Company Name</label>
+                                    <input type="text" id="businessName" name="businessName" placeholder="Your business or company">
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="contactEmail">Contact Email <span class="required">*</span></label>
+                                    <input type="email" id="contactEmail" name="contactEmail" required placeholder="you@example.com">
+                                </div>
+                                <div class="form-group">
+                                    <label for="phone">Phone Number</label>
+                                    <input type="tel" id="phone" name="phone" placeholder="Your phone number">
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="website">Website (if any)</label>
+                                    <input type="url" id="website" name="website" placeholder="https://yourwebsite.com">
+                                </div>
+                                <div class="form-group">
+                                    <label for="location">Location / State</label>
+                                    <input type="text" id="location" name="location" placeholder="e.g. Sydney, NSW">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="content-section">
+                            <h2>02 Your App Idea</h2>
+
+                            <div class="form-group">
+                                <label for="appName">What is the name of your app (or working title)? <span class="required">*</span></label>
+                                <input type="text" id="appName" name="appName" required placeholder="e.g. AutoPlan, JobTracker, MyServiceApp">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="appDescription">In one or two sentences, what does your app do? <span class="required">*</span></label>
+                                <textarea id="appDescription" name="appDescription" required rows="3" placeholder="e.g. A tool that automatically generates traffic management site plans from an address and a set of job parameters"></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="problemSolved">What problem does it solve? Who has this problem?</label>
+                                <textarea id="problemSolved" name="problemSolved" rows="3" placeholder="Describe the pain point and the people experiencing it"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="content-section">
+                            <h2>03 Target Users</h2>
+
+                            <div class="form-group">
+                                <label for="targetUsers">Who will use this app?</label>
+                                <textarea id="targetUsers" name="targetUsers" rows="2" placeholder="e.g. Traffic management planners, small business owners, sports coaches, field technicians"></textarea>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="estimatedUsers">Estimated number of users at launch</label>
+                                    <input type="text" id="estimatedUsers" name="estimatedUsers" placeholder="e.g. 50, 500, 5000">
+                                </div>
+                                <div class="form-group">
+                                    <label for="platform">Platform preference</label>
+                                    <select id="platform" name="platform">
+                                        <option value="" disabled selected>Select one</option>
+                                        <option value="Web browser (desktop / laptop)">Web browser (desktop / laptop)</option>
+                                        <option value="Mobile app - iOS">Mobile app - iOS</option>
+                                        <option value="Mobile app - Android">Mobile app - Android</option>
+                                        <option value="Both web and mobile">Both web and mobile</option>
+                                        <option value="Not sure - open to recommendation">Not sure - open to recommendation</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="content-section">
+                            <h2>04 Core Features</h2>
+
+                            <div class="form-group">
+                                <label for="coreFeatures">List the key things your app must do. Focus on what's essential.</label>
+                                <textarea id="coreFeatures" name="coreFeatures" rows="4" placeholder="1. User login and account management&#10;2. ...&#10;3. ...&#10;4. ...&#10;5. ..."></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="integrations">Are there any must-have integrations or data sources?</label>
+                                <textarea id="integrations" name="integrations" rows="2" placeholder="e.g. Google Maps, Xero, Stripe payments, an existing database, a government API"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="content-section">
+                            <h2>05 Existing Systems & Constraints</h2>
+
+                            <div class="form-group">
+                                <label for="existingSystems">Do you currently use any software this app needs to work with?</label>
+                                <textarea id="existingSystems" name="existingSystems" rows="2" placeholder="e.g. MYOB, Salesforce, a custom spreadsheet, a legacy database"></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="compliance">Are there any industry standards or compliance requirements we should know about?</label>
+                                <textarea id="compliance" name="compliance" rows="2" placeholder="e.g. Privacy law, healthcare regulations, financial licensing, industry standards"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="content-section">
+                            <h2>06 Timeline & Budget</h2>
+                            <p>We work in stages - prototype first, then full build. This helps you see progress quickly and make decisions with confidence.</p>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="goLiveDate">Do you have a specific go-live date?</label>
+                                    <input type="text" id="goLiveDate" name="goLiveDate" placeholder="e.g. March 2027, Q2 next year">
+                                </div>
+                                <div class="form-group">
+                                    <label for="dateFlexibility">How flexible is that date?</label>
+                                    <select id="dateFlexibility" name="dateFlexibility">
+                                        <option value="" disabled selected>Select one</option>
+                                        <option value="Fixed">Fixed</option>
+                                        <option value="Preferred">Preferred</option>
+                                        <option value="Flexible">Flexible</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="budget">Have you set a budget range?</label>
+                                    <input type="text" id="budget" name="budget" placeholder="e.g. $10k-$20k, open to discussion">
+                                </div>
+                                <div class="form-group">
+                                    <label for="stagedInvestment">Are you open to a staged investment model?</label>
+                                    <select id="stagedInvestment" name="stagedInvestment">
+                                        <option value="" disabled selected>Select one</option>
+                                        <option value="Yes">Yes</option>
+                                        <option value="No">No</option>
+                                        <option value="Tell me more">Tell me more</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="content-section">
+                            <h2>07 Inspiration & Style</h2>
+
+                            <div class="form-group">
+                                <label for="inspiration">Are there any apps or websites you admire? What do you like about them?</label>
+                                <textarea id="inspiration" name="inspiration" rows="3" placeholder="e.g. The simplicity of Xero, the map interface in Google Maps, the onboarding flow in Notion"></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="branding">Do you have existing branding (logo, colours, style guide)?</label>
+                                <select id="branding" name="branding">
+                                    <option value="" disabled selected>Select one</option>
+                                    <option value="Yes - I'll share files with you">Yes - I'll share files with you</option>
+                                    <option value="Partial - some elements exist">Partial - some elements exist</option>
+                                    <option value="No - I need branding created as part of this project">No - I need branding created as part of this project</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="content-section">
+                            <h2>08 What Does Success Look Like?</h2>
+
+                            <div class="form-group">
+                                <label for="successMetrics">How will you know this app has worked? What changes in your business or for your users?</label>
+                                <textarea id="successMetrics" name="successMetrics" rows="3" placeholder="e.g. Planners spend 80% less time on paperwork. Clients self-serve without calling the office. Revenue from a new subscription tier."></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="anythingElse">Is there anything else you'd like us to know before our first conversation?</label>
+                                <textarea id="anythingElse" name="anythingElse" rows="3" placeholder="Any context, concerns, previous attempts, team members involved"></textarea>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-large" style="width: 100%;">Submit Your Idea</button>
+                    </form>
+
+                    <div id="formSuccess" class="form-success" style="display: none;">
+                        <h3>Thanks for sharing your idea!</h3>
+                        <p>Your email client will open with your brief ready to send. Just hit send and Les and Mike will review it and reach out within two business days.</p>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p>&copy; 2025 Digital Nomad Studio. All rights reserved.</p>
+                <div class="footer-links">
+                    <a href="./">Home</a>
+                    <a href="products.html">Products</a>
+                    <a href="about.html">About</a>
+                    <a href="privacy.html">Privacy Policy</a>
+                    <a href="support.html">Support</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const navMenu = document.getElementById('navMenu');
+        const menuBackdrop = document.getElementById('menuBackdrop');
+
+        mobileMenuToggle.addEventListener('click', () => {
+            mobileMenuToggle.classList.toggle('active');
+            navMenu.classList.toggle('active');
+            menuBackdrop.classList.toggle('active');
+            document.body.style.overflow = navMenu.classList.contains('active') ? 'hidden' : '';
+        });
+
+        menuBackdrop.addEventListener('click', () => {
+            mobileMenuToggle.classList.remove('active');
+            navMenu.classList.remove('active');
+            menuBackdrop.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.nav')) {
+                mobileMenuToggle.classList.remove('active');
+                navMenu.classList.remove('active');
+                menuBackdrop.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
+
+        navMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenuToggle.classList.remove('active');
+                navMenu.classList.remove('active');
+                menuBackdrop.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+        });
+
+        // Form submission
+        document.getElementById('appIdeaForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const val = (id) => document.getElementById(id).value || 'N/A';
+
+            const lines = [
+                'Hi,',
+                '',
+                'I would like to submit an app idea for your review.',
+                '',
+                '--- 01 ABOUT ME ---',
+                'Full Name: ' + val('fullName'),
+                'Business / Company: ' + val('businessName'),
+                'Email: ' + val('contactEmail'),
+                'Phone: ' + val('phone'),
+                'Website: ' + val('website'),
+                'Location: ' + val('location'),
+                '',
+                '--- 02 APP IDEA ---',
+                'App Name: ' + val('appName'),
+                'Description: ' + val('appDescription'),
+                'Problem it Solves: ' + val('problemSolved'),
+                '',
+                '--- 03 TARGET USERS ---',
+                'Who Will Use It: ' + val('targetUsers'),
+                'Estimated Users at Launch: ' + val('estimatedUsers'),
+                'Platform Preference: ' + val('platform'),
+                '',
+                '--- 04 CORE FEATURES ---',
+                'Key Features: ' + val('coreFeatures'),
+                'Integrations / Data Sources: ' + val('integrations'),
+                '',
+                '--- 05 EXISTING SYSTEMS & CONSTRAINTS ---',
+                'Current Software: ' + val('existingSystems'),
+                'Compliance / Standards: ' + val('compliance'),
+                '',
+                '--- 06 TIMELINE & BUDGET ---',
+                'Go-Live Date: ' + val('goLiveDate'),
+                'Date Flexibility: ' + val('dateFlexibility'),
+                'Budget Range: ' + val('budget'),
+                'Staged Investment: ' + val('stagedInvestment'),
+                '',
+                '--- 07 INSPIRATION & STYLE ---',
+                'Apps / Sites I Admire: ' + val('inspiration'),
+                'Existing Branding: ' + val('branding'),
+                '',
+                '--- 08 SUCCESS ---',
+                'Success Metrics: ' + val('successMetrics'),
+                'Anything Else: ' + val('anythingElse'),
+            ];
+
+            const body = lines.join('\n');
+            const subject = 'App Idea Submission - ' + val('appName') + ' - ' + val('fullName');
+            const mailtoUrl = 'mailto:team@digitalnomadstudio.io?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+
+            window.location.href = mailtoUrl;
+
+            document.getElementById('appIdeaForm').style.display = 'none';
+            document.getElementById('formSuccess').style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>
