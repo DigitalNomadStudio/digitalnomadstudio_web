@@ -67,7 +67,11 @@
                         <p class="page-subtitle">Got an idea for an app? Tell us about it below. We'll review your brief and reach out within two business days to schedule a discovery call. No commitment required - just a conversation.</p>
                     </div>
 
-                    <form id="appIdeaForm" class="idea-form">
+                    <form id="appIdeaForm" class="idea-form" action="https://api.web3forms.com/submit" method="POST">
+                        <input type="hidden" name="access_key" value="fd336c42-816b-4a5b-a2fc-e6e970494682">
+                        <input type="hidden" name="subject" value="New App Idea Submission">
+                        <input type="hidden" name="from_name" value="Digital Nomad Studio Website">
+                        <input type="checkbox" name="botcheck" class="hidden" style="display:none;">
 
                         <div class="content-section">
                             <h2>01 About You</h2>
@@ -256,7 +260,12 @@
 
                     <div id="formSuccess" class="form-success" style="display: none;">
                         <h3>Thanks for sharing your idea!</h3>
-                        <p>Your email client will open with your brief ready to send. Just hit send and Les and Mike will review it and reach out within two business days.</p>
+                        <p>Your submission has been received. Les and Mike will review it and reach out within two business days to schedule a discovery call.</p>
+                    </div>
+
+                    <div id="formError" class="form-success" style="display: none;">
+                        <h3>Something went wrong</h3>
+                        <p>We couldn't send your submission. Please try again or email us directly at <a href="mailto:team@digitalnomadstudio.io">team@digitalnomadstudio.io</a>.</p>
                     </div>
 
                 </div>
@@ -317,67 +326,40 @@
             });
         });
 
-        // Form submission
-        document.getElementById('appIdeaForm').addEventListener('submit', function(e) {
+        // Form submission via Web3Forms
+        document.getElementById('appIdeaForm').addEventListener('submit', async function(e) {
             e.preventDefault();
 
-            const val = (id) => document.getElementById(id).value || 'N/A';
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'Submitting...';
+            submitBtn.disabled = true;
 
-            const lines = [
-                'Hi,',
-                '',
-                'I would like to submit an app idea for your review.',
-                '',
-                '--- 01 ABOUT ME ---',
-                'Full Name: ' + val('fullName'),
-                'Business / Company: ' + val('businessName'),
-                'Email: ' + val('contactEmail'),
-                'Phone: ' + val('phone'),
-                'Website: ' + val('website'),
-                'Location: ' + val('location'),
-                '',
-                '--- 02 APP IDEA ---',
-                'App Name: ' + val('appName'),
-                'Description: ' + val('appDescription'),
-                'Problem it Solves: ' + val('problemSolved'),
-                '',
-                '--- 03 TARGET USERS ---',
-                'Who Will Use It: ' + val('targetUsers'),
-                'Estimated Users at Launch: ' + val('estimatedUsers'),
-                'Platform Preference: ' + val('platform'),
-                '',
-                '--- 04 CORE FEATURES ---',
-                'Key Features: ' + val('coreFeatures'),
-                'Integrations / Data Sources: ' + val('integrations'),
-                '',
-                '--- 05 EXISTING SYSTEMS & CONSTRAINTS ---',
-                'Current Software: ' + val('existingSystems'),
-                'Compliance / Standards: ' + val('compliance'),
-                '',
-                '--- 06 TIMELINE & BUDGET ---',
-                'Go-Live Date: ' + val('goLiveDate'),
-                'Date Flexibility: ' + val('dateFlexibility'),
-                'Budget Range: ' + val('budget'),
-                'Staged Investment: ' + val('stagedInvestment'),
-                '',
-                '--- 07 INSPIRATION & STYLE ---',
-                'Apps / Sites I Admire: ' + val('inspiration'),
-                'Existing Branding: ' + val('branding'),
-                '',
-                '--- 08 SUCCESS ---',
-                'Success Metrics: ' + val('successMetrics'),
-                'Anything Else: ' + val('anythingElse'),
-            ];
+            try {
+                const formData = new FormData(this);
+                const response = await fetch('https://api.web3forms.com/submit', {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.json();
 
-            const body = lines.join('\n');
-            const subject = 'App Idea Submission - ' + val('appName') + ' - ' + val('fullName');
-            const mailtoUrl = 'mailto:team@digitalnomadstudio.io?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+                if (result.success) {
+                    document.getElementById('appIdeaForm').style.display = 'none';
+                    document.getElementById('formSuccess').style.display = 'block';
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                } else {
+                    document.getElementById('appIdeaForm').style.display = 'none';
+                    document.getElementById('formError').style.display = 'block';
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            } catch (err) {
+                document.getElementById('appIdeaForm').style.display = 'none';
+                document.getElementById('formError').style.display = 'block';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
 
-            window.location.href = mailtoUrl;
-
-            document.getElementById('appIdeaForm').style.display = 'none';
-            document.getElementById('formSuccess').style.display = 'block';
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
         });
     </script>
 </body>
