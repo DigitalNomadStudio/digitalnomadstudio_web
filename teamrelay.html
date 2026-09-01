@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="TeamRelay - Real-time offline speech translation for sports teams and businesses. Speak one language, reach every player. Register for early access.">
+    <meta name="description" content="TeamRelay - Real-time offline speech translation for sports teams and businesses. Speak one language, reach every player. Available now on the App Store for iPhone.">
     <meta name="theme-color" content="#1a365d">
     <title>TeamRelay - Multi-lingual Comms for Teams - Digital Nomad Studio</title>
 
@@ -31,89 +31,6 @@
     <link rel="manifest" href="site.webmanifest?v=2">
 
     <link rel="stylesheet" href="styles.css">
-    <style>
-        .slideshow {
-            width: 100%;
-            max-width: 100%;
-        }
-        .slideshow-container {
-            position: relative;
-            width: 100%;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: var(--shadow-md);
-            background: #2c3e6b;
-            aspect-ratio: 16 / 9;
-        }
-        .slideshow-slide {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            opacity: 0;
-            transition: opacity 0.4s ease;
-        }
-        .slideshow-slide.active {
-            opacity: 1;
-        }
-        .slideshow-btn {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(0, 0, 0, 0.4);
-            color: #fff;
-            border: none;
-            padding: 12px 16px;
-            font-size: 1.2rem;
-            cursor: pointer;
-            border-radius: 4px;
-            transition: background 0.2s;
-            z-index: 2;
-        }
-        .slideshow-btn:hover {
-            background: rgba(0, 0, 0, 0.7);
-        }
-        .slideshow-prev { left: 8px; }
-        .slideshow-next { right: 8px; }
-        .slideshow-dots {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            margin-top: 12px;
-            flex-wrap: wrap;
-        }
-        .slideshow-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: var(--border-color);
-            border: none;
-            cursor: pointer;
-            transition: background 0.2s;
-            padding: 0;
-        }
-        .slideshow-dot.active {
-            background: var(--primary-color);
-        }
-        .slideshow-counter {
-            text-align: center;
-            margin-top: 8px;
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-        }
-        @media (max-width: 600px) {
-            .slideshow-btn {
-                padding: 8px 12px;
-                font-size: 1rem;
-            }
-            .slideshow-dot {
-                width: 8px;
-                height: 8px;
-            }
-        }
-    </style>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -130,6 +47,7 @@
                 <ul class="nav-menu" id="navMenu">
                     <li><a href="./">Home</a></li>
                     <li><a href="products.html">Products</a></li>
+                    <li><a href="ai-services.html">AI Services</a></li>
                     <li><a href="about.html">About</a></li>
                     <li><a href="./#contact">Contact</a></li>
                 </ul>
@@ -147,38 +65,20 @@
             <div class="container">
                 <div class="content-wrapper">
                     <div class="page-header">
-                        <span class="product-badge product-badge-coming-soon" style="margin-bottom: 1rem;">Coming Soon</span>
+                        <span class="product-badge" style="margin-bottom: 1rem;">iOS App</span>
                         <h1 class="page-title">TeamRelay</h1>
                         <p class="page-subtitle">Speak one language, reach every player</p>
                     </div>
 
-                    <!-- Presentation Slideshow -->
+                    <!-- Hero Image -->
                     <div class="content-section">
-                        <h2 style="text-align: left; font-size: 2rem; font-weight: 700; color: #1a2b4a; margin-bottom: 1.5rem;">Pitch Deck</h2>
-                        <div class="slideshow" id="slideshow">
-                            <div class="slideshow-container">
-                                <img class="slideshow-slide active" src="slide-01.png" alt="TeamRelay Beta Partnership - Slide 1" loading="eager">
-                                <img class="slideshow-slide" src="slide-02.png" alt="TeamRelay Beta Partnership - Slide 2" loading="lazy">
-                                <img class="slideshow-slide" src="slide-03.png" alt="TeamRelay Beta Partnership - Slide 3" loading="lazy">
-                                <img class="slideshow-slide" src="slide-04.png" alt="TeamRelay Beta Partnership - Slide 4" loading="lazy">
-                                <img class="slideshow-slide" src="slide-05.png" alt="TeamRelay Beta Partnership - Slide 5" loading="lazy">
-                                <img class="slideshow-slide" src="slide-06.png" alt="TeamRelay Beta Partnership - Slide 6" loading="lazy">
-                                <img class="slideshow-slide" src="slide-07.png" alt="TeamRelay Beta Partnership - Slide 7" loading="lazy">
-                                <img class="slideshow-slide" src="slide-08.png" alt="TeamRelay Beta Partnership - Slide 8" loading="lazy">
-                                <img class="slideshow-slide" src="slide-09.png" alt="TeamRelay Beta Partnership - Slide 9" loading="lazy">
-                                <img class="slideshow-slide" src="slide-10.png" alt="TeamRelay Beta Partnership - Slide 10" loading="lazy">
-                                <button class="slideshow-btn slideshow-prev" aria-label="Previous slide">&#10094;</button>
-                                <button class="slideshow-btn slideshow-next" aria-label="Next slide">&#10095;</button>
-                            </div>
-                            <div class="slideshow-dots" id="slideshowDots"></div>
-                            <p class="slideshow-counter" id="slideshowCounter">1 / 10</p>
-                        </div>
+                        <img src="teamrelay-learnmore.png" alt="TeamRelay - One Voice. Every Language. A coach speaks English on one iPhone and a player reads it in German on another" style="width: 100%; height: auto; border-radius: 12px; box-shadow: var(--shadow-md);">
                     </div>
 
                     <!-- About Section -->
                     <div class="content-section">
                         <h2>Break Down Language Barriers in Real Time</h2>
-                        <p>Language barriers don't belong in the locker room -- or the boardroom. TeamRelay is an iOS app that lets a coach or presenter speak naturally into their iPhone while every participant in the room instantly receives a translated transcription, displayed on screen and read aloud through their device or AirPods, in their own language.</p>
+                        <p>Language barriers don't belong in the locker room - or the boardroom. TeamRelay is an iOS app that lets a coach or presenter speak naturally into their iPhone while every participant in the room instantly receives a translated transcription, displayed on screen and read aloud through their device or AirPods, in their own language.</p>
                         <p>The entire system operates over local Bluetooth or WiFi. No internet connection is needed during use. No data leaves the room. No cloud subscription is required. No accounts to create. Just speak and be understood.</p>
                     </div>
 
@@ -204,14 +104,14 @@
                         <h2>Key Features</h2>
                         <ul>
                             <li>Real-time speech translation into 14 languages</li>
-                            <li>Fully offline -- all processing happens on-device using Apple's neural translation models</li>
+                            <li>Fully offline - all processing happens on-device using Apple's neural translation models</li>
                             <li>Works over Bluetooth or WiFi with no internet required</li>
                             <li>Breakout rooms with floor control for focused group discussions</li>
                             <li>Raise hand system for true two-way multilingual communication</li>
                             <li>Multi-coach/presenter collaboration in a single session</li>
-                            <li>Custom branding -- upload your club or company logo and colors sync to all devices</li>
-                            <li>Dual context design -- Sport mode and Business mode with adapted terminology</li>
-                            <li>Zero accounts, zero setup friction -- participants tap to join</li>
+                            <li>Custom branding - upload your club or company logo and colors sync to all devices</li>
+                            <li>Dual context design - Sport mode and Business mode with adapted terminology</li>
+                            <li>Zero accounts, zero setup friction - participants tap to join</li>
                         </ul>
                     </div>
 
@@ -224,86 +124,13 @@
                         <p>Multinational companies, international conferences, corporate training, and field team briefings. One presenter, many languages, zero friction.</p>
                     </div>
 
-                    <!-- Waitlist Form Section -->
-                    <div class="content-section" id="waitlist">
-                        <h2>Get Early Access</h2>
-                        <p>TeamRelay is currently in development and we're looking for a small number of sports clubs and businesses to participate in our early access programme. If you'd like to be notified when TeamRelay launches, or are interested in being considered as an early access partner, register your interest below.</p>
-
-                        <form id="waitlistForm" class="waitlist-form">
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="name">Name <span class="required">*</span></label>
-                                    <input type="text" id="name" name="name" required placeholder="Your name">
-                                </div>
-                                <div class="form-group">
-                                    <label for="email">Email <span class="required">*</span></label>
-                                    <input type="email" id="email" name="email" required placeholder="you@example.com">
-                                </div>
-                            </div>
-
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="organisation">Organisation</label>
-                                    <input type="text" id="organisation" name="organisation" placeholder="Club, company, or school">
-                                </div>
-                                <div class="form-group">
-                                    <label for="role">Role</label>
-                                    <input type="text" id="role" name="role" placeholder="e.g. Head Coach, Team Manager">
-                                </div>
-                            </div>
-
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="context">Context</label>
-                                    <select id="context" name="context">
-                                        <option value="" disabled selected>Select one</option>
-                                        <option value="Sport">Sport</option>
-                                        <option value="Business">Business</option>
-                                        <option value="Education">Education</option>
-                                        <option value="Other">Other</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="sport-industry">Sport / Industry</label>
-                                    <input type="text" id="sport-industry" name="sport-industry" placeholder="e.g. Football, Manufacturing">
-                                </div>
-                            </div>
-
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="users">Estimated Number of Users</label>
-                                    <select id="users" name="users">
-                                        <option value="" disabled selected>Select range</option>
-                                        <option value="1-10">1 - 10</option>
-                                        <option value="11-25">11 - 25</option>
-                                        <option value="26-50">26 - 50</option>
-                                        <option value="50+">50+</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="country">Country</label>
-                                    <input type="text" id="country" name="country" placeholder="Your country">
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="languages">Languages Needed</label>
-                                <input type="text" id="languages" name="languages" placeholder="e.g. English, Spanish, Japanese">
-                            </div>
-
-                            <div class="form-group" style="margin-top: 0.5rem;">
-                                <label class="checkbox-label" style="display: flex; align-items: flex-start; gap: 0.75rem; cursor: pointer;">
-                                    <input type="checkbox" id="earlyAccess" name="earlyAccess" style="margin-top: 0.25rem; width: 18px; height: 18px; accent-color: var(--primary);">
-                                    <span>I'm interested in being considered as an early access partner. I understand this may involve providing feedback during the trial period to help shape the product.</span>
-                                </label>
-                            </div>
-
-                            <button type="submit" class="btn btn-primary btn-large" style="width: 100%; margin-top: 0.5rem;">Register Interest</button>
-                        </form>
-
-                        <div id="formSuccess" class="form-success" style="display: none;">
-                            <h3>Thanks for your interest!</h3>
-                            <p>Your email client will open with your details ready to send. Just hit send and we'll be in touch.</p>
+                    <!-- CTA Section -->
+                    <div class="contact-box">
+                        <h2>Bring TeamRelay to Your Next Session</h2>
+                        <p>TeamRelay is available now on the App Store for iPhone. Download it, start a session, and let everyone in the room follow along in their own language.</p>
+                        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                            <a href="mailto:team@digitalnomadstudio.io?subject=TeamRelay" class="btn btn-secondary btn-large">Get in Touch</a>
+                            <a href="https://apps.apple.com/au/app/team-relay/id6757318200" class="btn btn-primary btn-large" target="_blank" rel="noopener">Download on App Store</a>
                         </div>
                     </div>
                 </div>
@@ -318,6 +145,7 @@
                 <div class="footer-links">
                     <a href="./">Home</a>
                     <a href="products.html">Products</a>
+                    <a href="ai-services.html">AI Services</a>
                     <a href="about.html">About</a>
                     <a href="privacy.html">Privacy Policy</a>
                     <a href="support.html">Support</a>
@@ -365,94 +193,6 @@
                 menuBackdrop.classList.remove('active');
                 document.body.style.overflow = '';
             });
-        });
-
-        // Slideshow
-        (function() {
-            const slides = document.querySelectorAll('.slideshow-slide');
-            const dotsContainer = document.getElementById('slideshowDots');
-            const counter = document.getElementById('slideshowCounter');
-            const total = slides.length;
-            let current = 0;
-
-            // Create dots
-            for (let i = 0; i < total; i++) {
-                const dot = document.createElement('button');
-                dot.className = 'slideshow-dot' + (i === 0 ? ' active' : '');
-                dot.setAttribute('aria-label', 'Go to slide ' + (i + 1));
-                dot.addEventListener('click', () => goTo(i));
-                dotsContainer.appendChild(dot);
-            }
-            const dots = dotsContainer.querySelectorAll('.slideshow-dot');
-
-            function goTo(n) {
-                slides[current].classList.remove('active');
-                dots[current].classList.remove('active');
-                current = (n + total) % total;
-                slides[current].classList.add('active');
-                dots[current].classList.add('active');
-                counter.textContent = (current + 1) + ' / ' + total;
-            }
-
-            document.querySelector('.slideshow-prev').addEventListener('click', () => goTo(current - 1));
-            document.querySelector('.slideshow-next').addEventListener('click', () => goTo(current + 1));
-
-            // Keyboard navigation
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'ArrowLeft') goTo(current - 1);
-                if (e.key === 'ArrowRight') goTo(current + 1);
-            });
-
-            // Touch swipe support
-            let touchStartX = 0;
-            const container = document.querySelector('.slideshow-container');
-            container.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; }, { passive: true });
-            container.addEventListener('touchend', (e) => {
-                const diff = touchStartX - e.changedTouches[0].clientX;
-                if (Math.abs(diff) > 50) goTo(current + (diff > 0 ? 1 : -1));
-            }, { passive: true });
-        })();
-
-        // Waitlist form submission
-        document.getElementById('waitlistForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const organisation = document.getElementById('organisation').value;
-            const role = document.getElementById('role').value;
-            const context = document.getElementById('context').value;
-            const sportIndustry = document.getElementById('sport-industry').value;
-            const users = document.getElementById('users').value;
-            const country = document.getElementById('country').value;
-            const languages = document.getElementById('languages').value;
-            const earlyAccess = document.getElementById('earlyAccess').checked;
-
-            const body = [
-                'Hi,',
-                '',
-                "I'm interested in TeamRelay and would like to register my interest.",
-                '',
-                'Name: ' + name,
-                'Email: ' + email,
-                'Organisation: ' + (organisation || 'N/A'),
-                'Role: ' + (role || 'N/A'),
-                'Context: ' + (context || 'N/A'),
-                'Sport / Industry: ' + (sportIndustry || 'N/A'),
-                'Estimated Users: ' + (users || 'N/A'),
-                'Languages Needed: ' + (languages || 'N/A'),
-                'Country: ' + (country || 'N/A'),
-                '',
-                'Early Access Partner: ' + (earlyAccess ? 'Yes - interested in participating in the early access programme' : 'No - notify me at launch')
-            ].join('\n');
-
-            const subject = 'TeamRelay - Expression of Interest' + (earlyAccess ? ' (Early Access)' : '') + ' - ' + name;
-            const mailtoUrl = 'mailto:team@digitalnomadstudio.io?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
-
-            window.location.href = mailtoUrl;
-
-            document.getElementById('waitlistForm').style.display = 'none';
-            document.getElementById('formSuccess').style.display = 'block';
         });
     </script>
 </body>

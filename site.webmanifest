@@ -1,7 +1,7 @@
 {
     "name": "Digital Nomad Studio",
     "short_name": "DNS",
-    "description": "We design and build our own iOS, Android, and web apps",
+    "description": "We design and build iOS, Android, and web apps, and deliver custom AI solutions for businesses",
     "start_url": "/",
     "display": "standalone",
     "background_color": "#ffffff",

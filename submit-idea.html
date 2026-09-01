@@ -3,25 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Got an app idea? Tell us about it. Digital Nomad Studio will review your brief and get back to you within two business days.">
+    <meta name="description" content="Got an app or AI project in mind? Tell us about it. Digital Nomad Studio will review your brief and get back to you within two business days.">
     <meta name="theme-color" content="#1a365d">
-    <title>Submit Your App Idea - Digital Nomad Studio</title>
+    <title>Submit Your Idea - Digital Nomad Studio</title>
 
     <!-- Canonical -->
     <link rel="canonical" href="https://www.digitalnomadstudio.io/submit-idea.html">
 
     <!-- Open Graph -->
     <meta property="og:type" content="website">
-    <meta property="og:title" content="Submit Your App Idea - Digital Nomad Studio">
-    <meta property="og:description" content="Got an app idea? Tell us about it. We'll review your brief and get back to you within two business days.">
+    <meta property="og:title" content="Submit Your Idea - Digital Nomad Studio">
+    <meta property="og:description" content="Got an app or AI project in mind? Tell us about it. We'll review your brief and get back to you within two business days.">
     <meta property="og:url" content="https://www.digitalnomadstudio.io/submit-idea.html">
     <meta property="og:image" content="https://www.digitalnomadstudio.io/Logo.png">
     <meta property="og:site_name" content="Digital Nomad Studio">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="Submit Your App Idea - Digital Nomad Studio">
-    <meta name="twitter:description" content="Got an app idea? Tell us about it. We'll review your brief and get back to you within two business days.">
+    <meta name="twitter:title" content="Submit Your Idea - Digital Nomad Studio">
+    <meta name="twitter:description" content="Got an app or AI project in mind? Tell us about it. We'll review your brief and get back to you within two business days.">
 
     <!-- Favicons -->
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png?v=2">
@@ -46,6 +46,7 @@
                 <ul class="nav-menu" id="navMenu">
                     <li><a href="./">Home</a></li>
                     <li><a href="products.html">Products</a></li>
+                    <li><a href="ai-services.html">AI Services</a></li>
                     <li><a href="about.html">About</a></li>
                     <li><a href="./#contact">Contact</a></li>
                 </ul>
@@ -63,13 +64,13 @@
             <div class="container">
                 <div class="content-wrapper">
                     <div class="page-header">
-                        <h1 class="page-title">Submit Your App Idea</h1>
-                        <p class="page-subtitle">Got an idea for an app? Tell us about it below. We'll review your brief and reach out within two business days to schedule a discovery call. No commitment required - just a conversation.</p>
+                        <h1 class="page-title">Submit Your Idea</h1>
+                        <p class="page-subtitle">Got an idea for an app, an AI agent, or a smarter way to run part of your business? Tell us about it below. We'll review your brief and reach out within two business days to schedule a discovery call. No commitment required - just a conversation.</p>
                     </div>
 
                     <form id="appIdeaForm" class="idea-form" action="https://api.web3forms.com/submit" method="POST">
                         <input type="hidden" name="access_key" value="fd336c42-816b-4a5b-a2fc-e6e970494682">
-                        <input type="hidden" name="subject" value="New App Idea Submission">
+                        <input type="hidden" name="subject" value="New Project Idea Submission">
                         <input type="hidden" name="from_name" value="Digital Nomad Studio Website">
                         <input type="checkbox" name="botcheck" class="hidden" style="display:none;">
 
@@ -112,15 +113,27 @@
                         </div>
 
                         <div class="content-section">
-                            <h2>02 Your App Idea</h2>
+                            <h2>02 Your Idea</h2>
 
                             <div class="form-group">
-                                <label for="appName">What is the name of your app (or working title)? <span class="required">*</span></label>
-                                <input type="text" id="appName" name="appName" required placeholder="e.g. AutoPlan, JobTracker, MyServiceApp">
+                                <label for="projectType">What kind of project is it? <span class="required">*</span></label>
+                                <select id="projectType" name="projectType" required>
+                                    <option value="" disabled selected>Select one</option>
+                                    <option value="A new app (web or mobile)">A new app (web or mobile)</option>
+                                    <option value="An AI agent or automation">An AI agent or automation</option>
+                                    <option value="AI features for an existing product">AI features for an existing product</option>
+                                    <option value="An AI MVP or prototype">An AI MVP or prototype</option>
+                                    <option value="Not sure yet">Not sure yet</option>
+                                </select>
                             </div>
 
                             <div class="form-group">
-                                <label for="appDescription">In one or two sentences, what does your app do? <span class="required">*</span></label>
+                                <label for="appName">What is the name of your project (or working title)? <span class="required">*</span></label>
+                                <input type="text" id="appName" name="appName" required placeholder="e.g. AutoPlan, JobTracker, Invoice Assistant">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="appDescription">In one or two sentences, what should it do? <span class="required">*</span></label>
                                 <textarea id="appDescription" name="appDescription" required rows="3" placeholder="e.g. A tool that automatically generates traffic management site plans from an address and a set of job parameters"></textarea>
                             </div>
 
@@ -134,7 +147,7 @@
                             <h2>03 Target Users</h2>
 
                             <div class="form-group">
-                                <label for="targetUsers">Who will use this app?</label>
+                                <label for="targetUsers">Who will use it?</label>
                                 <textarea id="targetUsers" name="targetUsers" rows="2" placeholder="e.g. Traffic management planners, small business owners, sports coaches, field technicians"></textarea>
                             </div>
 
@@ -161,7 +174,7 @@
                             <h2>04 Core Features</h2>
 
                             <div class="form-group">
-                                <label for="coreFeatures">List the key things your app must do. Focus on what's essential.</label>
+                                <label for="coreFeatures">List the key things it must do. Focus on what's essential.</label>
                                 <textarea id="coreFeatures" name="coreFeatures" rows="4" placeholder="1. User login and account management&#10;2. ...&#10;3. ...&#10;4. ...&#10;5. ..."></textarea>
                             </div>
 
@@ -175,7 +188,7 @@
                             <h2>05 Existing Systems & Constraints</h2>
 
                             <div class="form-group">
-                                <label for="existingSystems">Do you currently use any software this app needs to work with?</label>
+                                <label for="existingSystems">Do you currently use any software this project needs to work with?</label>
                                 <textarea id="existingSystems" name="existingSystems" rows="2" placeholder="e.g. MYOB, Salesforce, a custom spreadsheet, a legacy database"></textarea>
                             </div>
 
@@ -245,7 +258,7 @@
                             <h2>08 What Does Success Look Like?</h2>
 
                             <div class="form-group">
-                                <label for="successMetrics">How will you know this app has worked? What changes in your business or for your users?</label>
+                                <label for="successMetrics">How will you know this project has worked? What changes in your business or for your users?</label>
                                 <textarea id="successMetrics" name="successMetrics" rows="3" placeholder="e.g. Planners spend 80% less time on paperwork. Clients self-serve without calling the office. Revenue from a new subscription tier."></textarea>
                             </div>
 
@@ -280,6 +293,7 @@
                 <div class="footer-links">
                     <a href="./">Home</a>
                     <a href="products.html">Products</a>
+                    <a href="ai-services.html">AI Services</a>
                     <a href="about.html">About</a>
                     <a href="privacy.html">Privacy Policy</a>
                     <a href="support.html">Support</a>

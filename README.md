@@ -1,13 +1,13 @@
 # Digital Nomad Studio Website
 
-A beautiful, light, and clean website for Digital Nomad Studio - an app development company specializing in iOS, Android, and web applications.
+A beautiful, light, and clean website for Digital Nomad Studio - an app studio and AI agency that designs and builds iOS, Android, and web apps and delivers custom AI agents, automation, and AI-powered prototypes.
 
 ## Features
 
 - **Clean, Modern Design**: Light and minimalist aesthetic with smooth animations
 - **Responsive Layout**: Fully responsive design that works on all devices
 - **Prominent Logo**: Large logo displayed in the top left corner
-- **Service Showcase**: Highlights iOS, Android, and web development services
+- **Service Showcase**: Highlights iOS, Android, and web app development alongside AI services (agents and automation, AI features for existing products, AI-powered MVPs)
 - **Smooth Scrolling**: Elegant navigation with smooth scroll behavior
 
 ## Files
