@@ -1376,3 +1376,15 @@ html {
     background: rgba(255, 255, 255, 0.3);
 }
 
+
+/* Card title links */
+.featured-title a,
+.product-title a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.featured-title a:hover,
+.product-title a:hover {
+    color: var(--secondary-color);
+}
