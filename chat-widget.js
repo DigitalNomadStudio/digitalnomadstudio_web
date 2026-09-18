@@ -141,7 +141,7 @@
         '.dns-chat-msg.user{align-self:flex-end;background:#1a365d;color:#fff;border-bottom-right-radius:4px}',
         '.dns-chat-msg ul{margin:.3rem 0 .3rem 1.15rem;padding:0;white-space:normal}',
         '.dns-chat-msg li{margin:.15rem 0}',
-        '.dns-chat-backdrop{display:none;position:fixed;inset:0;background:#f7fafc}',
+        '.dns-chat-backdrop{display:none;position:fixed;inset:0;background:#fff}',
         '.dns-chat-typing{display:inline-flex;gap:4px;align-items:center;height:1.2em}',
         '.dns-chat-typing i{width:6px;height:6px;border-radius:50%;background:#2d5a87;display:block;animation:dnsChatBlink 1.2s infinite}',
         '.dns-chat-typing i:nth-child(2){animation-delay:.2s}.dns-chat-typing i:nth-child(3){animation-delay:.4s}',
@@ -181,7 +181,8 @@
         '  .dns-chat-chips{gap:.5rem}',
         '  .dns-chat-chip{min-height:44px;display:inline-flex;align-items:center;padding:.5rem 1rem;font-size:15px}',
         '  .dns-chat-note{padding-bottom:calc(.6rem + env(safe-area-inset-bottom, 0px))}',
-        '  html.dns-chat-lock,html.dns-chat-lock body{overflow:hidden}',
+        '  html.dns-chat-lock,html.dns-chat-lock body{overflow:hidden;background:#fff}',
+        '  html.dns-chat-lock body > :not(.dns-chat){visibility:hidden}',
         '  .dns-chat.open .dns-chat-backdrop{display:block}',
         '}',
         '@media (prefers-reduced-motion:reduce){.dns-chat-launcher,.dns-chat-typing i{transition:none;animation:none}}'
