@@ -1,6 +1,6 @@
 # Digital Nomad Studio chat assistant - Cloudflare Worker
 
-This small Worker powers the "Chat with our AI assistant" widget on
+This small Worker powers Marco, the "Chat with Marco" assistant widget on
 [digitalnomadstudio.io](https://www.digitalnomadstudio.io). The widget itself is `chat-widget.js`
 in the website repo and needs no build step. The Worker is the only part that talks to Claude, so the
 API key never reaches the browser.

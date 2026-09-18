@@ -25,9 +25,9 @@
     var WEB3FORMS_URL = 'https://api.web3forms.com/submit';
     var TURNSTILE_SRC = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
 
-    var GREETING = "Hi! I'm the Digital Nomad Studio assistant. I can help you describe a software or AI project for your business and pass it to the team. I can't help with anything else. What are you looking to build or automate?";
+    var GREETING = "Hi, I'm Marco, Digital Nomad Studio's AI assistant. I can help you describe a software or AI project for your business and pass it to the team. I can't help with anything else. What are you looking to build or automate?";
     var AI_STARTERS = ['Automate my admin', 'Prototype an AI idea', 'Build an app or SaaS product', 'Not sure yet'];
-    var FALLBACK_NOTICE = "Our live assistant isn't available right now, so I'll guide you through a few quick questions instead.";
+    var FALLBACK_NOTICE = "I'm in guided mode right now, so I'll ask a few quick questions and pass everything to the team.";
     var LIMIT_TEXT = "That's as far as I can take it here. Leave your details and the team will pick it up from here.";
     var LIMIT_NOTICE = 'Let me take your details so the team can follow up properly.';
     var LIMIT_NOTICE_OFF_TOPIC = "If you do have a project in mind, I can take your details for the team. Otherwise, that's all from me.";
@@ -130,6 +130,8 @@
         '.dns-chat-avatar{width:40px;height:40px;border-radius:50%;background:#fff;padding:3px;object-fit:contain;flex:none;display:block}',
         '.dns-chat-heading{flex:1;display:flex;flex-direction:column;line-height:1.25;min-width:0}',
         '.dns-chat-heading strong{font-size:.95rem}',
+        '.dns-chat-brand{font-size:.8rem;opacity:.85;font-weight:400}',
+        '.dns-chat-heading .dns-chat-title{display:flex;align-items:baseline;gap:.4rem;flex-wrap:wrap}',
         '.dns-chat-status{font-size:.74rem;opacity:.85}',
         '.dns-chat-iconbtn{background:transparent;border:0;color:#fff;font-size:1.35rem;line-height:1;cursor:pointer;min-width:40px;min-height:40px;display:inline-flex;align-items:center;justify-content:center;border-radius:8px;font-family:inherit}',
         '.dns-chat-iconbtn:hover{background:rgba(255,255,255,.15)}',
@@ -192,14 +194,14 @@
 
     var root = el('div', 'dns-chat');
     root.innerHTML =
-        '<button type="button" class="dns-chat-launcher" id="dnsChatLauncher" aria-label="Chat with our AI assistant" aria-expanded="false" aria-controls="dnsChatPanel">' +
-            CHAT_ICON + '<span class="dns-chat-launcher-label">Chat with us</span>' +
+        '<button type="button" class="dns-chat-launcher" id="dnsChatLauncher" aria-label="Chat with Marco, our AI assistant" aria-expanded="false" aria-controls="dnsChatPanel">' +
+            CHAT_ICON + '<span class="dns-chat-launcher-label">Chat with Marco</span>' +
         '</button>' +
         '<div class="dns-chat-backdrop" aria-hidden="true"></div>' +
-        '<section class="dns-chat-panel" id="dnsChatPanel" role="dialog" aria-label="Digital Nomad Studio AI assistant" hidden>' +
+        '<section class="dns-chat-panel" id="dnsChatPanel" role="dialog" aria-label="Marco, Digital Nomad Studio AI assistant" hidden>' +
             '<header class="dns-chat-header">' +
                 '<img class="dns-chat-avatar" src="logo.png" alt="" width="40" height="40">' +
-                '<div class="dns-chat-heading"><strong>Digital Nomad Studio</strong><span class="dns-chat-status" id="dnsChatStatus"></span></div>' +
+                '<div class="dns-chat-heading"><span class="dns-chat-title"><strong>Marco</strong><span class="dns-chat-brand">Digital Nomad Studio</span></span><span class="dns-chat-status" id="dnsChatStatus"></span></div>' +
                 '<button type="button" class="dns-chat-iconbtn" id="dnsChatReset" aria-label="Start again" title="Start again">&#8635;</button>' +
                 '<button type="button" class="dns-chat-iconbtn" id="dnsChatClose" aria-label="Close chat" title="Close">&times;</button>' +
             '</header>' +
@@ -208,7 +210,7 @@
             '<div class="dns-chat-turnstile" id="dnsChatTurnstile"></div>' +
             '<form class="dns-chat-form" id="dnsChatForm" autocomplete="off">' +
                 '<label class="dns-chat-sr" for="dnsChatInput">Your message</label>' +
-                '<textarea id="dnsChatInput" class="dns-chat-input" rows="1" maxlength="' + MAX_LEN + '" placeholder="Type your message..." autocapitalize="sentences" autocomplete="off" enterkeyhint="send"></textarea>' +
+                '<textarea id="dnsChatInput" class="dns-chat-input" rows="1" maxlength="' + MAX_LEN + '" placeholder="Message Marco..." autocapitalize="sentences" autocomplete="off" enterkeyhint="send"></textarea>' +
                 '<button type="submit" class="dns-chat-send" id="dnsChatSend" aria-label="Send message">' + SEND_ICON + '</button>' +
             '</form>' +
             '<p class="dns-chat-note">For project enquiries only. We reply within two business days. Please don\'t share sensitive personal information.</p>' +
@@ -351,7 +353,7 @@
             if (!step) { return state.sent ? 'Anything else? Email us at ' + cfg.email : 'Press "Send to the team" above'; }
             return step.placeholder || 'Type your answer...';
         }
-        return 'Type your message...';
+        return 'Message Marco...';
     }
     function renderChips() {
         chipsEl.innerHTML = '';
@@ -396,6 +398,12 @@
     }
     function handleGuidedInput(text) {
         var step = FLOW[state.step];
+        if (/^marco[!.?]*$/i.test(text.trim())) {
+            addMessage('user', text, { local: true });
+            addMessage('assistant', 'Polo! Now, back to your project.', { local: true });
+            if (step) { addMessage('assistant', step.prompt(state.answers), { local: true }); }
+            return;
+        }
         if (!step) {
             addMessage('user', text, { local: true });
             addMessage('assistant', state.sent
