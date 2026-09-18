@@ -1,10 +1,10 @@
 # Deploys the chat assistant Worker (chat-worker/) to Cloudflare.
 #
 # Runs on demand from the Actions tab, and automatically whenever chat-worker/ changes on main.
-# Needs three repository secrets (Settings > Secrets and variables > Actions):
+# Needs two repository secrets (Settings > Secrets and variables > Actions):
 #   CLOUDFLARE_API_TOKEN   - Cloudflare API token created from the "Edit Cloudflare Workers" template
-#   CLOUDFLARE_ACCOUNT_ID  - shown on the Workers & Pages overview page of the Cloudflare dashboard
 #   ANTHROPIC_API_KEY      - the dedicated Anthropic key for the website chat
+# The Cloudflare account ID is not secret and lives in chat-worker/wrangler.toml.
 name: Deploy chat Worker
 
 on:
@@ -27,18 +27,16 @@ jobs:
       - name: Check the repository secrets are configured
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
           missing=""
           if [ -z "$CLOUDFLARE_API_TOKEN" ]; then missing="$missing CLOUDFLARE_API_TOKEN"; fi
-          if [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then missing="$missing CLOUDFLARE_ACCOUNT_ID"; fi
           if [ -z "$ANTHROPIC_API_KEY" ]; then missing="$missing ANTHROPIC_API_KEY"; fi
           if [ -n "$missing" ]; then
             echo "::error::Missing repository secrets:$missing. Add them under Settings > Secrets and variables > Actions, then re-run."
             exit 1
           fi
-          echo "All three secrets are present."
+          echo "Both secrets are present."
 
       - uses: actions/checkout@v4
 
@@ -61,7 +59,6 @@ jobs:
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           workingDirectory: chat-worker
           secrets: |
             ANTHROPIC_API_KEY

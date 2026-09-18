@@ -1,5 +1,6 @@
 name = "dns-chat"
 main = "src/index.js"
+account_id = "35c2b1b20f957692f63b7c0c66ac8f4e"
 compatibility_date = "2025-06-01"
 compatibility_flags = ["nodejs_compat"]
 
