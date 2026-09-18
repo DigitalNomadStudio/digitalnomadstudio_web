@@ -5,6 +5,10 @@
  *   googleAdsId   Google Ads > Goals > Conversions > tag setup, looks like "AW-1234567890"
  *   ga4Id         Google Analytics > Admin > Data streams > Web, looks like "G-XXXXXXXXXX"
  *   conversions   one label per conversion action, looks like "AW-1234567890/AbCdEfGhIjKlMnOp"
+ *                 (conversion actions created with "Create manually using code")
+ *   events        one event name per conversion action created "from website events", looks like
+ *                 "ads_conversion_Submit_lead_form_1"; fired without send_to so it reaches the Ads
+ *                 tag and Analytics alike
  *
  * The site calls window.dnsTrack("form") when the project form is delivered and
  * window.dnsTrack("chat") when Marco delivers an enquiry. Clicks on email and App Store links
@@ -21,6 +25,12 @@
             chat: '',       // Marco chat enquiry
             email: '',      // Email link click
             appstore: ''    // App Store click
+        },
+        events: {
+            form: '',       // e.g. 'ads_conversion_Submit_lead_form_1'
+            chat: '',       // may be the same event as form, or its own
+            email: '',
+            appstore: ''
         }
     };
     var GA4_EVENTS = { form: 'generate_lead', chat: 'generate_lead', email: 'contact_click', appstore: 'app_store_click' };
@@ -47,6 +57,11 @@
         var label = CONFIG.conversions[name];
         if (CONFIG.googleAdsId && label) {
             gtag('event', 'conversion', Object.assign({ send_to: label, transport_type: 'beacon' }, params || {}));
+            fired = true;
+        }
+        var eventName = CONFIG.events[name];
+        if (eventName) {
+            gtag('event', eventName, Object.assign({ transport_type: 'beacon', lead_source: name }, params || {}));
             fired = true;
         }
         if (CONFIG.ga4Id && GA4_EVENTS[name]) {
