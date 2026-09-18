@@ -94,8 +94,11 @@ jobs:
         env:
           URL: ${{ steps.deploy.outputs.deployment-url }}
         run: |
-          body='{"messages":[{"role":"user","content":"Hello, this is an automated deployment check. Reply with one short sentence."}],"page":"/deploy-check"}'
+          # An on-topic enquiry (must reach the main model) and an off-topic one (must get the canned line).
+          body='{"messages":[{"role":"user","content":"Hi, I run a small plumbing business in Sydney and typing up quotes takes me every evening. Can you help?"}],"page":"/deploy-check"}'
           trivia='{"messages":[{"role":"user","content":"whats the capital of france"}],"page":"/deploy-check"}'
+          canned='I can only help with enquiries about software and AI projects for your business.'
+          join_deltas() { python3 -c 'import sys, json; print("".join(json.loads(l[5:])["delta"] for l in sys.stdin if l.startswith("data:") and "\"delta\"" in l))'; }
           echo "Preflight from the website origin:"
           curl -sS -o /dev/null -w "  HTTP %{http_code}\n" -X OPTIONS "$URL" -H "Origin: https://www.digitalnomadstudio.io" --max-time 30
           echo "Request from an unknown origin (expect 403):"
@@ -111,24 +114,28 @@ jobs:
             echo "Skipping the live chat probe: it cannot pass the bot check from CI. Test the chat in a browser."
             exit 0
           fi
-          echo "Chat request from the website origin:"
+          echo "On-topic enquiry from the website origin:"
           response=$(curl -sS -N --max-time 120 "$URL" -H "Origin: https://www.digitalnomadstudio.io" -H "Content-Type: application/json" -d "$body")
-          printf '%s\n' "$response" | head -c 3000
-          echo
-          if printf '%s' "$response" | grep -q '"type":"text"'; then
-            echo "The Worker streamed a reply from Claude."
-          else
+          joined=$(printf '%s\n' "$response" | join_deltas)
+          echo "  Reply: $joined"
+          if ! printf '%s' "$response" | grep -q '"type":"text"'; then
             echo "::error::The Worker did not return a text reply. Check the ANTHROPIC_API_KEY secret and the response above."
+            printf '%s\n' "$response" | head -c 3000; echo
             exit 1
           fi
-          echo "Off-topic probe (the assistant should refuse without answering):"
+          if printf '%s' "$joined" | grep -qF "$canned"; then
+            echo "::error::A genuine enquiry was treated as off-topic. Review GATE_PROMPT in chat-worker/src/index.js."
+            exit 1
+          fi
+          echo "The main model answered a genuine enquiry."
+          echo "Off-topic probe (expect the canned refusal, no answer):"
           reply=$(curl -sS -N --max-time 120 "$URL" -H "Origin: https://www.digitalnomadstudio.io" -H "Content-Type: application/json" -d "$trivia")
-          printf '%s\n' "$reply" | head -c 3000
-          echo
-          joined=$(printf '%s\n' "$reply" | python3 -c 'import sys, json; print("".join(json.loads(l[5:])["delta"] for l in sys.stdin if l.startswith("data:") and "\"delta\"" in l))')
-          echo "Reply as one line: $joined"
+          joined=$(printf '%s\n' "$reply" | join_deltas)
+          echo "  Reply: $joined"
           if printf '%s' "$joined" | grep -qi 'paris'; then
-            echo "::warning::The assistant answered an off-topic trivia question. Review the gate (GATE_PROMPT) and the Scope rules in chat-worker/src/index.js."
+            echo "::warning::The assistant answered an off-topic trivia question. Review GATE_PROMPT and the Scope rules in chat-worker/src/index.js."
+          elif printf '%s' "$joined" | grep -qF "$canned"; then
+            echo "Off-topic question got the canned refusal."
           else
-            echo "Off-topic question was refused."
+            echo "::warning::Off-topic probe got an unexpected reply (not the canned line). Review the gate."
           fi
