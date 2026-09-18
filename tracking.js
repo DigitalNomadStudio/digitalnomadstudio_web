@@ -14,7 +14,7 @@
 (function () {
     'use strict';
     var CONFIG = {
-        googleAdsId: '',
+        googleAdsId: 'AW-18458647532',
         ga4Id: '',
         conversions: {
             form: '',       // Project form enquiry
