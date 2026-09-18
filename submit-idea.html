@@ -58,6 +58,7 @@
     ]
 }
     </script>
+    <script src="tracking.js" defer></script>
 </head>
 <body>
     <header class="header">
@@ -386,6 +387,7 @@
                 const result = await response.json();
 
                 if (result.success) {
+                    if (window.dnsTrack) { window.dnsTrack('form'); }
                     document.getElementById('appIdeaForm').style.display = 'none';
                     document.getElementById('formSuccess').style.display = 'block';
                     window.scrollTo({ top: 0, behavior: 'smooth' });

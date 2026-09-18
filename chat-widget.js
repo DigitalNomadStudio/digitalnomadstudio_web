@@ -100,7 +100,15 @@
         return node;
     }
     function fresh() {
-        return { mode: cfg.endpoint ? 'ai' : 'guided', messages: [], step: 0, answers: {}, sent: false, open: false, capped: false, lastActivity: Date.now(), welcomedAt: 0, welcomePending: false, nudged: false };
+        return { mode: cfg.endpoint ? 'ai' : 'guided', messages: [], step: 0, answers: {}, sent: false, open: false, capped: false, lastActivity: Date.now(), welcomedAt: 0, welcomePending: false, nudged: false, tracked: false };
+    }
+    // Report a delivered enquiry to the site's conversion tracking (tracking.js), once per conversation.
+    function trackEnquiry() {
+        if (state.tracked) { return; }
+        state.tracked = true;
+        if (typeof window.dnsTrack === 'function') {
+            try { window.dnsTrack('chat', { chat_mode: state.mode }); } catch (e) { /* tracking must never break the chat */ }
+        }
     }
     function touch() {
         state.lastActivity = Date.now();
@@ -465,6 +473,7 @@
             })
             .then(function () {
                 state.sent = true;
+                trackEnquiry();
                 button.textContent = 'Sent';
                 addMessage('assistant', 'Thanks ' + firstName(a.name) + "! Your enquiry is on its way and we'll reply within two business days. If anything else comes to mind, email us at " + cfg.email + '.', { local: true, card: 'sent' });
             })
@@ -628,6 +637,7 @@
             flushBubble();
             if (leadSent) {
                 state.sent = true;
+                trackEnquiry();
                 addMessage('assistant', "Your details are with the team now. We'll reply within two business days.", { local: true, card: 'sent' });
                 renderAll();
             }
