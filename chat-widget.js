@@ -137,6 +137,9 @@
         '.dns-chat-msg{max-width:86%;padding:.65rem .9rem;border-radius:14px;font-size:.95rem;white-space:pre-wrap;overflow-wrap:anywhere}',
         '.dns-chat-msg.assistant{align-self:flex-start;background:#fff;color:#1a202c;border:1px solid #e2e8f0;border-bottom-left-radius:4px}',
         '.dns-chat-msg.user{align-self:flex-end;background:#1a365d;color:#fff;border-bottom-right-radius:4px}',
+        '.dns-chat-msg ul{margin:.3rem 0 .3rem 1.15rem;padding:0;white-space:normal}',
+        '.dns-chat-msg li{margin:.15rem 0}',
+        '.dns-chat-backdrop{display:none;position:fixed;inset:0;background:#f7fafc}',
         '.dns-chat-typing{display:inline-flex;gap:4px;align-items:center;height:1.2em}',
         '.dns-chat-typing i{width:6px;height:6px;border-radius:50%;background:#2d5a87;display:block;animation:dnsChatBlink 1.2s infinite}',
         '.dns-chat-typing i:nth-child(2){animation-delay:.2s}.dns-chat-typing i:nth-child(3){animation-delay:.4s}',
@@ -177,6 +180,7 @@
         '  .dns-chat-chip{min-height:44px;display:inline-flex;align-items:center;padding:.5rem 1rem;font-size:15px}',
         '  .dns-chat-note{padding-bottom:calc(.6rem + env(safe-area-inset-bottom, 0px))}',
         '  html.dns-chat-lock,html.dns-chat-lock body{overflow:hidden}',
+        '  .dns-chat.open .dns-chat-backdrop{display:block}',
         '}',
         '@media (prefers-reduced-motion:reduce){.dns-chat-launcher,.dns-chat-typing i{transition:none;animation:none}}'
     ].join('\n');
@@ -191,6 +195,7 @@
         '<button type="button" class="dns-chat-launcher" id="dnsChatLauncher" aria-label="Chat with our AI assistant" aria-expanded="false" aria-controls="dnsChatPanel">' +
             CHAT_ICON + '<span class="dns-chat-launcher-label">Chat with us</span>' +
         '</button>' +
+        '<div class="dns-chat-backdrop" aria-hidden="true"></div>' +
         '<section class="dns-chat-panel" id="dnsChatPanel" role="dialog" aria-label="Digital Nomad Studio AI assistant" hidden>' +
             '<header class="dns-chat-header">' +
                 '<img class="dns-chat-avatar" src="logo.png" alt="" width="40" height="40">' +
@@ -225,10 +230,40 @@
     var busy = false;
 
     /* -------------------------------------------------------------- rendering */
+    function appendInline(parent, text) {
+        String(text).split(/(\*\*[^*\n]+\*\*)/g).forEach(function (part) {
+            if (/^\*\*[^*\n]+\*\*$/.test(part)) {
+                parent.appendChild(el('strong', null, part.slice(2, -2)));
+            } else if (part) {
+                parent.appendChild(document.createTextNode(part));
+            }
+        });
+    }
+    // Assistant text may use **bold** and lines starting with "- ". Everything else is literal text.
+    function renderRichText(node, text) {
+        node.textContent = '';
+        var list = null;
+        String(text || '').split('\n').forEach(function (line, i) {
+            var item = /^\s*[-*]\s+(.*)$/.exec(line);
+            if (item) {
+                if (!list) { list = el('ul'); node.appendChild(list); }
+                var li = el('li');
+                appendInline(li, item[1]);
+                list.appendChild(li);
+                return;
+            }
+            list = null;
+            if (i > 0 && node.lastChild && node.lastChild.nodeName !== 'UL') { node.appendChild(document.createTextNode('\n')); }
+            appendInline(node, line);
+        });
+    }
     function renderMessage(m) {
         var node;
         if (m.card) {
             node = renderCard(m);
+        } else if (m.role === 'assistant') {
+            node = el('div', 'dns-chat-msg assistant');
+            renderRichText(node, m.text);
         } else {
             node = el('div', 'dns-chat-msg ' + m.role, m.text);
         }
@@ -257,6 +292,28 @@
             actions.appendChild(send);
             actions.appendChild(again);
             card.appendChild(actions);
+        } else if (m.card === 'ai-summary') {
+            var d = m.data || {};
+            card.appendChild(el('h4', null, 'Your enquiry'));
+            var dl2 = el('dl');
+            [['Looking for', d.service_type], ['Business', d.business], ['Industry', d.industry], ['Problem', d.problem], ['Timeline', d.timeline], ['Budget', d.budget], ['Name', d.name], ['Email', d.email], ['Phone', d.phone]].forEach(function (row) {
+                var optional = ['Industry', 'Timeline', 'Budget', 'Phone'].indexOf(row[0]) >= 0;
+                if (!row[1] || (optional && /^not (provided|sure|given)/i.test(row[1]))) { return; }
+                dl2.appendChild(el('dt', null, row[0]));
+                dl2.appendChild(el('dd', null, row[1]));
+            });
+            card.appendChild(dl2);
+            var actions3 = el('div', 'dns-chat-card-actions');
+            var sendNow = el('button', 'dns-chat-btn primary', state.sent ? 'Sent' : 'Send to the team');
+            sendNow.type = 'button';
+            sendNow.disabled = !!state.sent;
+            sendNow.addEventListener('click', function () { if (!state.sent && !busy) { handleInput('Yes, please send it to the team.'); } });
+            var change = el('button', 'dns-chat-btn secondary', 'Change something');
+            change.type = 'button';
+            change.addEventListener('click', function () { input.placeholder = 'Tell me what to change...'; input.focus(); });
+            actions3.appendChild(sendNow);
+            actions3.appendChild(change);
+            card.appendChild(actions3);
         } else if (m.card === 'sent') {
             card.appendChild(el('h4', null, 'Sent to the team'));
             card.appendChild(el('p', null, m.text));
@@ -467,21 +524,34 @@
             return;
         }
         setBusy(true);
-        var bubble = el('div', 'dns-chat-msg assistant');
-        bubble.innerHTML = '<span class="dns-chat-typing" aria-label="Assistant is typing"><i></i><i></i><i></i></span>';
-        messagesEl.appendChild(bubble);
-        scrollToEnd();
+        var bubble = null;
+        function newBubble() {
+            bubble = el('div', 'dns-chat-msg assistant');
+            bubble.innerHTML = '<span class="dns-chat-typing" aria-label="Assistant is typing"><i></i><i></i><i></i></span>';
+            messagesEl.appendChild(bubble);
+            scrollToEnd();
+        }
+        newBubble();
         var got = '';
         var leadSent = false;
         var capped = false;
+        var sawSummary = false;
         var limitReason = '';
+        function flushBubble() {
+            bubble.remove();
+            if (got) { addMessage('assistant', got); got = ''; }
+        }
 
         function handleEvent(evt) {
             if (evt.type === 'text' && typeof evt.delta === 'string') {
-                if (!got) { bubble.textContent = ''; }
                 got += evt.delta;
-                bubble.textContent = got;
+                renderRichText(bubble, got);
                 scrollToEnd();
+            } else if (evt.type === 'summary' && evt.data && typeof evt.data === 'object') {
+                sawSummary = true;
+                flushBubble();
+                addMessage('assistant', '', { local: true, card: 'ai-summary', data: evt.data });
+                newBubble();
             } else if (evt.type === 'lead') {
                 leadSent = true;
             } else if (evt.type === 'limit') {
@@ -535,21 +605,21 @@
             }
             return pump();
         }).then(function () {
-            if (!got) { throw new Error('empty reply'); }
-            bubble.remove();
-            addMessage('assistant', got);
+            if (!got && !sawSummary) { throw new Error('empty reply'); }
+            flushBubble();
             if (leadSent) {
                 state.sent = true;
                 addMessage('assistant', "Your details are with the team now. We'll reply within two business days.", { local: true, card: 'sent' });
+                renderAll();
             }
             if (capped && !leadSent) {
                 state.capped = true;
                 startGuidedCapture(limitReason === 'off_topic' ? LIMIT_NOTICE_OFF_TOPIC : LIMIT_NOTICE);
             }
         }).catch(function () {
-            bubble.remove();
-            if (got) {
-                addMessage('assistant', got);
+            var hadText = !!got || sawSummary;
+            flushBubble();
+            if (hadText) {
                 addMessage('assistant', 'Sorry, the connection dropped part-way through. Please send that again.', { local: true });
             } else {
                 startGuidedCapture(FALLBACK_NOTICE);

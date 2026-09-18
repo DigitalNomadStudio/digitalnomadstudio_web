@@ -17,6 +17,7 @@
  *
  * Events streamed to the browser (one JSON object per "data:" line):
  *   { type: "text", delta }    - a piece of the assistant's reply
+ *   { type: "summary", data }  - show the visitor a summary card of the enquiry to confirm before sending
  *   { type: "lead" }           - the enquiry has been delivered to the team
  *   { type: "limit" }          - the conversation has reached its turn cap; the widget takes over
  *   { type: "done", lead }     - the turn is finished
@@ -86,20 +87,16 @@ How to run the conversation
 1. The widget has already shown a greeting, so do not introduce yourself again. Start by understanding what the visitor is looking for.
 2. Ask one question at a time. Over the conversation, gather in a natural order: the service they are after (or the problem, if they are unsure); their business and industry; the problem they want solved and how it is handled today; their timeline; a budget range (optional, never pressure them); then their name and email address (phone number optional).
 3. Along the way, suggest which service fits and why, in one or two sentences. If AI is not the right answer for them, say so honestly and suggest what might be.
-4. Once you have the service, business, problem, name and email, summarise the enquiry in two or three short lines and ask whether you should send it to the team. Only after the visitor agrees, call the capture_enquiry tool exactly once. Then confirm it has been sent and that the team will reply within two business days.
+4. Once you have the service, business, problem, name and email (industry, timeline, budget and phone may be "Not provided"), call show_summary so the visitor sees a summary card with a Send to the team button. Do not repeat the details in text; just ask in one short line whether it is right or whether they would like to change anything. When they confirm - by tapping Send (which arrives as "Yes, please send it to the team.") or by saying yes - call capture_enquiry exactly once with the same details, then confirm it has been sent and that the team will reply within two business days. If they ask for changes, call show_summary again with the corrected details.
 5. If the tool reports a delivery failure, apologise and give the visitor the email address team@digitalnomadstudio.io.
 
 Style
-- Australian English, friendly and plain, no jargon. Keep replies short: one to three sentences plus at most one question. Plain text only: no markdown, no bullet symbols, no headings, no emojis, and use ordinary hyphens rather than em dashes.
+- Australian English, friendly and plain, no jargon. Keep replies short: one to three sentences plus at most one question. Light formatting only: you may use **bold** for a label or key phrase, and a short list of two to four lines starting with "- " when it genuinely helps. No headings, links, tables or emojis, and use ordinary hyphens rather than em dashes.
 - Never quote prices, discounts, delivery dates or guarantees. If asked about cost, explain that it depends on scope, that a rapid prototype with a defined scope is the usual starting point, and that the team gives a clear quote after a short discovery conversation.
 - Never invent facts about Digital Nomad Studio, its clients, staff, prices or products beyond what is written here. If you do not know, say the team can answer that.
 - Do not ask for sensitive personal information (health, financial account details, government identifiers, passwords). If a visitor shares some anyway, do not repeat it and leave it out of the enquiry.`;
 
-export const CAPTURE_ENQUIRY_TOOL = {
-    name: "capture_enquiry",
-    description: "Send the visitor's enquiry to the Digital Nomad Studio team. Call it exactly once, only after the visitor has given a name and email address and has agreed to send the enquiry. Use \"Not provided\" for any detail the visitor did not give.",
-    strict: true,
-    input_schema: {
+const ENQUIRY_SCHEMA = {
         type: "object",
         properties: {
             service_type: {
@@ -119,7 +116,20 @@ export const CAPTURE_ENQUIRY_TOOL = {
         },
         required: ["service_type", "business", "industry", "problem", "timeline", "budget", "name", "email", "phone", "summary"],
         additionalProperties: false
-    }
+};
+
+export const SHOW_SUMMARY_TOOL = {
+    name: "show_summary",
+    description: "Show the visitor a neatly formatted summary card of their enquiry, with a Send to the team button, so they can check it before anything is sent. Call it once you have the service, business, problem, name and email; use \"Not provided\" for details the visitor did not give. Call it again with updated details if they ask for changes. This does not send anything.",
+    strict: true,
+    input_schema: ENQUIRY_SCHEMA
+};
+
+export const CAPTURE_ENQUIRY_TOOL = {
+    name: "capture_enquiry",
+    description: "Send the visitor's enquiry to the Digital Nomad Studio team. Call it exactly once, only after show_summary has been shown and the visitor has confirmed (for example by tapping Send, which arrives as the message \"Yes, please send it to the team.\", or by saying yes). Use \"Not provided\" for any detail the visitor did not give.",
+    strict: true,
+    input_schema: ENQUIRY_SCHEMA
 };
 
 /* ------------------------------------------------------------------ helpers */
@@ -245,9 +255,9 @@ async function verifyTurnstile({ env, fetchImpl, token, ip }) {
     }
 }
 
-async function deliverLead({ env, fetchImpl, input, page }) {
-    if (!env.WEB3FORMS_KEY) { return { ok: false, error: "WEB3FORMS_KEY is not configured" }; }
-    const lead = {
+export function cleanLead(input) {
+    input = input || {};
+    return {
         service_type: cleanField(input.service_type, 100) || "Not sure yet",
         business: cleanField(input.business),
         industry: cleanField(input.industry, 200),
@@ -259,6 +269,11 @@ async function deliverLead({ env, fetchImpl, input, page }) {
         phone: cleanField(input.phone, 100),
         summary: cleanField(input.summary, 2000)
     };
+}
+
+async function deliverLead({ env, fetchImpl, input, page }) {
+    if (!env.WEB3FORMS_KEY) { return { ok: false, error: "WEB3FORMS_KEY is not configured" }; }
+    const lead = cleanLead(input);
     if (!isEmail(lead.email)) { return { ok: false, error: "missing or invalid email address" }; }
     const payload = {
         access_key: env.WEB3FORMS_KEY,
@@ -334,7 +349,7 @@ async function runConversation({ client, env, fetchImpl, messages, page, send })
             fallbacks: "default",
             output_config: { effort: "low" },
             system: [{ type: "text", text: SYSTEM_PROMPT, cache_control: { type: "ephemeral" } }],
-            tools: [CAPTURE_ENQUIRY_TOOL],
+            tools: [SHOW_SUMMARY_TOOL, CAPTURE_ENQUIRY_TOOL],
             messages: history
         });
         stream.on("text", (delta) => { send({ type: "text", delta }); });
@@ -349,6 +364,11 @@ async function runConversation({ client, env, fetchImpl, messages, page, send })
         const toolUses = message.content.filter((block) => block.type === "tool_use");
         const results = [];
         for (const toolUse of toolUses) {
+            if (toolUse.name === "show_summary") {
+                await send({ type: "summary", data: cleanLead(toolUse.input) });
+                results.push({ type: "tool_result", tool_use_id: toolUse.id, content: "The visitor can now see the summary card with a Send to the team button. In one short line, ask them to check it and confirm, or to tell you what to change. Do not call capture_enquiry until they confirm." });
+                continue;
+            }
             if (toolUse.name !== "capture_enquiry") {
                 results.push({ type: "tool_result", tool_use_id: toolUse.id, content: `Unknown tool ${toolUse.name}`, is_error: true });
                 continue;

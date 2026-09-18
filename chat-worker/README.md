@@ -75,6 +75,16 @@ Commit and merge. Once GitHub Pages redeploys, the widget switches from the guid
 AI assistant automatically. Open the site, click "Chat with us" and say hello. `npx wrangler tail`
 shows live logs from the Worker while you test.
 
+## How an enquiry is captured
+
+When the assistant has the service, business, problem, name and email, it calls the `show_summary`
+tool. The widget renders that as a labelled summary card with **Send to the team** and **Change
+something** buttons, so the visitor checks the details in a tidy format rather than a paragraph.
+Tapping Send posts "Yes, please send it to the team." back to the assistant, which then calls
+`capture_enquiry`; the Worker delivers the details through Web3Forms and the widget shows a
+"Sent to the team" card. Replies may use light formatting (bold labels and short "- " lists), which
+the widget renders safely as text nodes, never as raw HTML.
+
 ## Limits and abuse protection
 
 The assistant is for project enquiries only. Every message first passes a small classifier call

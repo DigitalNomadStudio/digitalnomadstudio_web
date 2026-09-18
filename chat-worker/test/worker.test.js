@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
-    createHandler, normaliseMessages, isAllowedOrigin, CAPTURE_ENQUIRY_TOOL, MODEL,
+    createHandler, normaliseMessages, isAllowedOrigin, CAPTURE_ENQUIRY_TOOL, SHOW_SUMMARY_TOOL, MODEL,
     MAX_TOKENS, MAX_MESSAGES, HARD_MAX_MESSAGES, MAX_MESSAGE_CHARS, LIMIT_MESSAGE,
     GATE_MODEL, GATE_PROMPT, MAX_OFF_TOPIC, REFUSAL_FIRST, REFUSAL_FINAL
 } from "../src/index.js";
@@ -118,10 +118,12 @@ test("streams a plain text reply with the documented request shape", async () =>
     assert.equal(params.system[0].type, "text");
     assert.deepEqual(params.system[0].cache_control, { type: "ephemeral" });
     assert.match(params.system[0].text, /Never answer general knowledge, trivia/);
-    assert.equal(params.tools[0], CAPTURE_ENQUIRY_TOOL);
-    assert.equal(params.tools[0].strict, true);
-    assert.equal(params.tools[0].input_schema.additionalProperties, false);
-    assert.deepEqual(params.tools[0].input_schema.required, Object.keys(params.tools[0].input_schema.properties));
+    assert.deepEqual(params.tools, [SHOW_SUMMARY_TOOL, CAPTURE_ENQUIRY_TOOL]);
+    for (const tool of params.tools) {
+        assert.equal(tool.strict, true);
+        assert.equal(tool.input_schema.additionalProperties, false);
+        assert.deepEqual(tool.input_schema.required, Object.keys(tool.input_schema.properties));
+    }
     assert.deepEqual(params.messages, [{ role: "user", content: "Hi" }]);
 
     // The gate ran first, on the small model, with the transcript.
@@ -172,6 +174,25 @@ test("a failing gate lets the message through to the main model", async () => {
     const events = await readEvents(res);
     assert.equal(events[0].type, "text");
     assert.equal(calls.length, 1);
+});
+
+test("show_summary sends a summary card to the browser without delivering anything", async () => {
+    const calls = [];
+    const client = fakeClient([
+        { text: ["Let me put that together."], final: { stop_reason: "tool_use", content: [{ type: "text", text: "Let me put that together." }, { type: "tool_use", id: "toolu_s1", name: "show_summary", input: { ...LEAD, business: "  Plumbing   business, 8 staff " } }] } },
+        { text: ["Does that look right?"], final: { stop_reason: "end_turn", content: [{ type: "text", text: "Does that look right?" }] } }
+    ], calls);
+    const handler = createHandler({ createClient: () => client, fetch: async () => { throw new Error("Web3Forms should not be called"); } });
+    const res = await handler(request({ messages: [{ role: "user", content: "sam@example.com" }] }), env, makeCtx());
+    const events = await readEvents(res);
+    assert.deepEqual(events.map((e) => e.type), ["text", "summary", "text", "done"]);
+    assert.equal(events[1].data.business, "Plumbing business, 8 staff");
+    assert.equal(events[1].data.email, "sam@example.com");
+    assert.equal(events[3].lead, false);
+    const result = calls[1].messages[2].content[0];
+    assert.equal(result.tool_use_id, "toolu_s1");
+    assert.match(result.content, /Send to the team button/);
+    assert.equal(result.is_error, undefined);
 });
 
 test("delivers the enquiry through the tool loop and tells the browser", async () => {
