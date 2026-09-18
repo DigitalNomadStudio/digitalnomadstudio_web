@@ -97,6 +97,7 @@ jobs:
           # An on-topic enquiry (must reach the main model) and an off-topic one (must get the canned line).
           body='{"messages":[{"role":"user","content":"Hi, I run a small plumbing business in Sydney and typing up quotes takes me every evening. Can you help?"}],"page":"/deploy-check"}'
           trivia='{"messages":[{"role":"user","content":"whats the capital of france"}],"page":"/deploy-check"}'
+          competitor='{"messages":[{"role":"user","content":"I want to build a web app for site plans for traffic management"},{"role":"assistant","content":"Got it - site plans. What does your business do, and roughly how many people would use it?"},{"role":"user","content":"this will be a competitor to RapidPLan. Do you know them?"}],"page":"/deploy-check"}'
           canned='I can only help with enquiries about software and AI projects for your business.'
           join_deltas() { python3 -c 'import sys, json; print("".join(json.loads(l[5:])["delta"] for l in sys.stdin if l.startswith("data:") and "\"delta\"" in l))'; }
           echo "Preflight from the website origin:"
@@ -128,6 +129,15 @@ jobs:
             exit 1
           fi
           echo "The main model answered a genuine enquiry."
+          echo "Follow-up that mentions a competitor (must stay in the conversation):"
+          reply=$(curl -sS -N --max-time 120 "$URL" -H "Origin: https://www.digitalnomadstudio.io" -H "Content-Type: application/json" -d "$competitor")
+          joined=$(printf '%s\n' "$reply" | join_deltas)
+          echo "  Reply: $joined"
+          if printf '%s' "$joined" | grep -qF "$canned"; then
+            echo "::error::A follow-up about the visitor's own project (mentioning a competitor) was treated as off-topic. Review GATE_PROMPT in chat-worker/src/index.js."
+            exit 1
+          fi
+          echo "Competitor mention was handled as part of the project."
           echo "Off-topic probe (expect the canned refusal, no answer):"
           reply=$(curl -sS -N --max-time 120 "$URL" -H "Origin: https://www.digitalnomadstudio.io" -H "Content-Type: application/json" -d "$trivia")
           joined=$(printf '%s\n' "$reply" | join_deltas)
