@@ -5,41 +5,47 @@
  *  - AI mode: talks to the Cloudflare Worker in chat-worker/ (window.DNS_CHAT.endpoint), which
  *    streams replies from Claude and delivers captured enquiries to the team.
  *  - Guided mode: a scripted set of questions that runs entirely in the browser and sends the
- *    enquiry through Web3Forms. Used when no endpoint is configured or the Worker cannot be reached.
+ *    enquiry through Web3Forms. Used when no endpoint is configured, when the Worker cannot be
+ *    reached, or once a conversation reaches its turn cap.
  *
  * No dependencies. Styles are injected by this file so one script tag works on every page.
  * Any element with a data-open-chat attribute opens the assistant when clicked.
+ * Optional: set window.DNS_CHAT.turnstileSiteKey to attach a Cloudflare Turnstile bot-check token
+ * to every AI request (the Worker verifies it when its TURNSTILE_SECRET_KEY secret is set).
  */
 (function () {
     'use strict';
     if (window.__dnsChatLoaded) { return; }
     window.__dnsChatLoaded = true;
 
-    var cfg = Object.assign({ endpoint: '', web3formsKey: '', email: 'team@digitalnomadstudio.io' }, window.DNS_CHAT || {});
-    var STORAGE_KEY = 'dnsChat.v1';
-    var MAX_HISTORY = 40;
-    var MAX_LEN = 2000;
+    var cfg = Object.assign({ endpoint: '', web3formsKey: '', email: 'team@digitalnomadstudio.io', turnstileSiteKey: '' }, window.DNS_CHAT || {});
+    var STORAGE_KEY = 'dnsChat.v2';
+    var MAX_HISTORY = 24;      // 12 visitor turns, matching the Worker's cap
+    var MAX_LEN = 1200;
     var WEB3FORMS_URL = 'https://api.web3forms.com/submit';
+    var TURNSTILE_SRC = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
 
-    var GREETING = "Hi! I'm the Digital Nomad Studio assistant. Tell me a bit about your business and the problem you'd like solved, and I'll help you work out where to start - then pass the details to the team.";
+    var GREETING = "Hi! I'm the Digital Nomad Studio assistant. I can help you describe a software or AI project for your business and pass it to the team. I can't help with anything else. What are you looking to build or automate?";
     var AI_STARTERS = ['Automate my admin', 'Prototype an AI idea', 'Build an app or SaaS product', 'Not sure yet'];
     var FALLBACK_NOTICE = "Our live assistant isn't available right now, so I'll guide you through a few quick questions instead.";
+    var LIMIT_TEXT = "That's as far as I can take it here. Leave your details and the team will pick it up from here.";
+    var LIMIT_NOTICE = 'Let me take your details so the team can follow up properly.';
 
     var FLOW = [
         {
             key: 'service',
             chips: ['AI automation', 'AI rapid prototype', 'Custom AI agent or assistant', 'AI features for my product', 'iOS app', 'SaaS or web product', 'Not sure yet'],
-            placeholder: 'Or describe it in your own words',
+            placeholder: 'Or type your own answer',
             prompt: function () { return "I'll ask a few quick questions so the team knows exactly how to help. First - what are you looking for?"; }
         },
         {
             key: 'business',
-            placeholder: 'e.g. Plumbing business, 8 staff, western Sydney',
+            placeholder: 'e.g. Plumbing business, 8 staff',
             prompt: function () { return 'Great. Tell me a little about your business - what do you do, and roughly how big is the team?'; }
         },
         {
             key: 'problem',
-            placeholder: 'What happens today, and what would you like to change?',
+            placeholder: 'What happens today?',
             prompt: function (a) {
                 return a.service === 'Not sure yet'
                     ? "No problem. What's the biggest time sink or headache in the business right now?"
@@ -89,7 +95,7 @@
         return node;
     }
     function fresh() {
-        return { mode: cfg.endpoint ? 'ai' : 'guided', messages: [], step: 0, answers: {}, sent: false, open: false };
+        return { mode: cfg.endpoint ? 'ai' : 'guided', messages: [], step: 0, answers: {}, sent: false, open: false, capped: false };
     }
     function load() {
         try {
@@ -108,24 +114,25 @@
     /* ----------------------------------------------------------------- styles */
     var style = document.createElement('style');
     style.textContent = [
-        '.dns-chat{position:fixed;right:20px;bottom:20px;z-index:1500;font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;line-height:1.5}',
+        '.dns-chat{position:fixed;right:20px;bottom:calc(20px + env(safe-area-inset-bottom, 0px));z-index:1500;font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;line-height:1.5;-webkit-tap-highlight-color:transparent}',
         '.dns-chat *{box-sizing:border-box}',
+        '.dns-chat button{touch-action:manipulation}',
         '.dns-chat-launcher{display:flex;align-items:center;gap:.55rem;background:#1a365d;color:#fff;border:0;border-radius:999px;padding:.9rem 1.3rem;font-family:inherit;font-size:1rem;font-weight:600;box-shadow:0 10px 25px rgba(26,54,93,.35);cursor:pointer;transition:transform .2s ease,background .2s ease}',
         '.dns-chat-launcher:hover{background:#2d5a87;transform:translateY(-2px)}',
         '.dns-chat-launcher:focus-visible,.dns-chat button:focus-visible{outline:3px solid #ff6b35;outline-offset:2px}',
         '.dns-chat-launcher svg{width:22px;height:22px;flex:none}',
         '.dns-chat.open .dns-chat-launcher{display:none}',
         'body:has(.nav-menu.active) .dns-chat-launcher{display:none}',
-        '.dns-chat-panel{position:fixed;right:20px;bottom:20px;width:380px;max-width:calc(100vw - 40px);height:600px;max-height:calc(100vh - 40px);background:#fff;border-radius:16px;box-shadow:0 20px 50px rgba(0,0,0,.25);display:flex;flex-direction:column;overflow:hidden;border:1px solid #e2e8f0}',
+        '.dns-chat-panel{position:fixed;right:20px;bottom:calc(20px + env(safe-area-inset-bottom, 0px));width:380px;max-width:calc(100vw - 40px);height:600px;max-height:calc(100vh - 40px);background:#fff;border-radius:16px;box-shadow:0 20px 50px rgba(0,0,0,.25);display:flex;flex-direction:column;overflow:hidden;border:1px solid #e2e8f0}',
         '.dns-chat-panel[hidden]{display:none}',
-        '.dns-chat-header{display:flex;align-items:center;gap:.75rem;padding:.85rem 1rem;background:linear-gradient(135deg,#1a365d,#2d5a87);color:#fff}',
-        '.dns-chat-avatar{width:36px;height:36px;border-radius:50%;background:#ff6b35;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;flex:none}',
+        '.dns-chat-header{display:flex;align-items:center;gap:.75rem;padding:.75rem .75rem .75rem 1rem;background:linear-gradient(135deg,#1a365d,#2d5a87);color:#fff}',
+        '.dns-chat-avatar{width:40px;height:40px;border-radius:50%;background:#fff;padding:3px;object-fit:contain;flex:none;display:block}',
         '.dns-chat-heading{flex:1;display:flex;flex-direction:column;line-height:1.25;min-width:0}',
         '.dns-chat-heading strong{font-size:.95rem}',
         '.dns-chat-status{font-size:.74rem;opacity:.85}',
-        '.dns-chat-iconbtn{background:transparent;border:0;color:#fff;font-size:1.35rem;line-height:1;cursor:pointer;padding:.3rem .45rem;border-radius:6px;font-family:inherit}',
+        '.dns-chat-iconbtn{background:transparent;border:0;color:#fff;font-size:1.35rem;line-height:1;cursor:pointer;min-width:40px;min-height:40px;display:inline-flex;align-items:center;justify-content:center;border-radius:8px;font-family:inherit}',
         '.dns-chat-iconbtn:hover{background:rgba(255,255,255,.15)}',
-        '.dns-chat-messages{flex:1;overflow-y:auto;padding:1rem;display:flex;flex-direction:column;gap:.6rem;background:#f7fafc}',
+        '.dns-chat-messages{flex:1;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:1rem;display:flex;flex-direction:column;gap:.6rem;background:#f7fafc}',
         '.dns-chat-msg{max-width:86%;padding:.65rem .9rem;border-radius:14px;font-size:.95rem;white-space:pre-wrap;overflow-wrap:anywhere}',
         '.dns-chat-msg.assistant{align-self:flex-start;background:#fff;color:#1a202c;border:1px solid #e2e8f0;border-bottom-left-radius:4px}',
         '.dns-chat-msg.user{align-self:flex-end;background:#1a365d;color:#fff;border-bottom-right-radius:4px}',
@@ -139,7 +146,7 @@
         '.dns-chat-card dt{color:#4a5568;font-weight:600}',
         '.dns-chat-card dd{margin:0;overflow-wrap:anywhere}',
         '.dns-chat-card-actions{display:flex;gap:.5rem;margin-top:.8rem;flex-wrap:wrap}',
-        '.dns-chat-btn{border:0;border-radius:8px;padding:.55rem 1rem;font-weight:600;font-size:.9rem;cursor:pointer;font-family:inherit;text-decoration:none;display:inline-block}',
+        '.dns-chat-btn{border:0;border-radius:8px;padding:.6rem 1rem;min-height:40px;font-weight:600;font-size:.9rem;cursor:pointer;font-family:inherit;text-decoration:none;display:inline-flex;align-items:center;touch-action:manipulation}',
         '.dns-chat-btn.primary{background:#1a365d;color:#fff}.dns-chat-btn.primary:hover{background:#2d5a87}',
         '.dns-chat-btn.secondary{background:#fff;color:#1a365d;border:2px solid #1a365d}.dns-chat-btn.secondary:hover{background:#1a365d;color:#fff}',
         '.dns-chat-btn:disabled{opacity:.5;cursor:default}',
@@ -147,6 +154,8 @@
         '.dns-chat-chips:empty{display:none}',
         '.dns-chat-chip{background:#fff;border:1px solid #2d5a87;color:#1a365d;border-radius:999px;padding:.4rem .85rem;font-size:.85rem;cursor:pointer;font-family:inherit}',
         '.dns-chat-chip:hover{background:#1a365d;color:#fff}',
+        '.dns-chat-turnstile{display:flex;justify-content:center;padding:0 1rem .5rem;background:#f7fafc}',
+        '.dns-chat-turnstile:empty{display:none}',
         '.dns-chat-form{display:flex;align-items:flex-end;gap:.5rem;padding:.6rem .75rem;border-top:1px solid #e2e8f0;background:#fff}',
         '.dns-chat-input{flex:1;resize:none;border:1px solid #e2e8f0;border-radius:10px;padding:.6rem .75rem;font-family:inherit;font-size:.95rem;line-height:1.4;max-height:120px;color:#1a202c;background:#fff}',
         '.dns-chat-input:focus{outline:2px solid #2d5a87;border-color:transparent}',
@@ -155,7 +164,19 @@
         '.dns-chat-send:disabled{opacity:.5;cursor:default}',
         '.dns-chat-note{margin:0;padding:.35rem .9rem .6rem;font-size:.72rem;color:#4a5568;background:#fff;text-align:center}',
         '.dns-chat-sr{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}',
-        '@media (max-width:600px){.dns-chat-panel{right:0;bottom:0;width:100%;max-width:100%;height:100%;max-height:100%;border-radius:0}.dns-chat-launcher-label{display:none}.dns-chat-launcher{padding:.95rem}}',
+        '@media (max-width:600px){',
+        '  .dns-chat-panel{top:0;left:0;right:0;bottom:auto;width:100%;max-width:100%;height:100vh;height:100dvh;max-height:none;border-radius:0;border:0}',
+        '  .dns-chat-launcher-label{display:none}',
+        '  .dns-chat-launcher{padding:.95rem}',
+        '  .dns-chat-header{padding-top:calc(.75rem + env(safe-area-inset-top, 0px))}',
+        '  .dns-chat-msg,.dns-chat-input{font-size:16px}',
+        '  .dns-chat-iconbtn{min-width:44px;min-height:44px}',
+        '  .dns-chat-send{width:44px;height:44px}',
+        '  .dns-chat-chips{gap:.5rem}',
+        '  .dns-chat-chip{min-height:44px;display:inline-flex;align-items:center;padding:.5rem 1rem;font-size:15px}',
+        '  .dns-chat-note{padding-bottom:calc(.6rem + env(safe-area-inset-bottom, 0px))}',
+        '  html.dns-chat-lock,html.dns-chat-lock body{overflow:hidden}',
+        '}',
         '@media (prefers-reduced-motion:reduce){.dns-chat-launcher,.dns-chat-typing i{transition:none;animation:none}}'
     ].join('\n');
     document.head.appendChild(style);
@@ -171,19 +192,20 @@
         '</button>' +
         '<section class="dns-chat-panel" id="dnsChatPanel" role="dialog" aria-label="Digital Nomad Studio AI assistant" hidden>' +
             '<header class="dns-chat-header">' +
-                '<div class="dns-chat-avatar" aria-hidden="true">DNS</div>' +
+                '<img class="dns-chat-avatar" src="logo.png" alt="" width="40" height="40">' +
                 '<div class="dns-chat-heading"><strong>Digital Nomad Studio</strong><span class="dns-chat-status" id="dnsChatStatus"></span></div>' +
                 '<button type="button" class="dns-chat-iconbtn" id="dnsChatReset" aria-label="Start again" title="Start again">&#8635;</button>' +
                 '<button type="button" class="dns-chat-iconbtn" id="dnsChatClose" aria-label="Close chat" title="Close">&times;</button>' +
             '</header>' +
             '<div class="dns-chat-messages" id="dnsChatMessages" aria-live="polite"></div>' +
             '<div class="dns-chat-chips" id="dnsChatChips"></div>' +
+            '<div class="dns-chat-turnstile" id="dnsChatTurnstile"></div>' +
             '<form class="dns-chat-form" id="dnsChatForm" autocomplete="off">' +
                 '<label class="dns-chat-sr" for="dnsChatInput">Your message</label>' +
-                '<textarea id="dnsChatInput" class="dns-chat-input" rows="1" maxlength="' + MAX_LEN + '" placeholder="Type your message..."></textarea>' +
+                '<textarea id="dnsChatInput" class="dns-chat-input" rows="1" maxlength="' + MAX_LEN + '" placeholder="Type your message..." autocapitalize="sentences" autocomplete="off" enterkeyhint="send"></textarea>' +
                 '<button type="submit" class="dns-chat-send" id="dnsChatSend" aria-label="Send message">' + SEND_ICON + '</button>' +
             '</form>' +
-            '<p class="dns-chat-note">We reply within two business days. Please don\'t share sensitive personal information.</p>' +
+            '<p class="dns-chat-note">For project enquiries only. We reply within two business days. Please don\'t share sensitive personal information.</p>' +
         '</section>';
     document.body.appendChild(root);
 
@@ -192,9 +214,11 @@
     var statusEl = root.querySelector('#dnsChatStatus');
     var messagesEl = root.querySelector('#dnsChatMessages');
     var chipsEl = root.querySelector('#dnsChatChips');
+    var turnstileEl = root.querySelector('#dnsChatTurnstile');
     var form = root.querySelector('#dnsChatForm');
     var input = root.querySelector('#dnsChatInput');
     var sendBtn = root.querySelector('#dnsChatSend');
+    var mobileQuery = window.matchMedia('(max-width: 600px)');
 
     var state = load() || fresh();
     var busy = false;
@@ -304,6 +328,14 @@
         }
         addMessage('assistant', step.prompt(state.answers), { local: true });
     }
+    function startGuidedCapture(notice) {
+        state.mode = 'guided';
+        state.step = 0;
+        state.answers = {};
+        statusEl.textContent = 'Guided enquiry';
+        addMessage('assistant', notice, { local: true });
+        askStep();
+    }
     function handleGuidedInput(text) {
         var step = FLOW[state.step];
         if (!step) {
@@ -367,6 +399,56 @@
             .then(function () { setBusy(false); save(); });
     }
 
+    /* ------------------------------------------------------------ bot check */
+    var ts = { loading: null, widgetId: null, onToken: null };
+    function loadTurnstile() {
+        if (ts.loading) { return ts.loading; }
+        ts.loading = new Promise(function (resolve, reject) {
+            if (window.turnstile) { resolve(window.turnstile); return; }
+            var script = document.createElement('script');
+            script.src = TURNSTILE_SRC;
+            script.async = true;
+            script.defer = true;
+            var timer = setTimeout(function () { reject(new Error('turnstile timeout')); }, 15000);
+            script.onload = function () { clearTimeout(timer); resolve(window.turnstile); };
+            script.onerror = function () { clearTimeout(timer); reject(new Error('turnstile failed to load')); };
+            document.head.appendChild(script);
+        });
+        ts.loading.catch(function () { ts.loading = null; });
+        return ts.loading;
+    }
+    function getTurnstileToken() {
+        if (!cfg.turnstileSiteKey) { return Promise.resolve(''); }
+        return loadTurnstile().then(function (turnstile) {
+            if (!turnstile) { throw new Error('turnstile unavailable'); }
+            return new Promise(function (resolve, reject) {
+                var finished = false;
+                var timer = setTimeout(function () { finish(new Error('turnstile timeout')); }, 20000);
+                function finish(err, token) {
+                    if (finished) { return; }
+                    finished = true;
+                    clearTimeout(timer);
+                    ts.onToken = null;
+                    if (err) { reject(err); } else { resolve(token); }
+                }
+                ts.onToken = finish;
+                if (ts.widgetId === null) {
+                    ts.widgetId = turnstile.render(turnstileEl, {
+                        sitekey: cfg.turnstileSiteKey,
+                        execution: 'execute',
+                        appearance: 'interaction-only',
+                        callback: function (token) { if (ts.onToken) { ts.onToken(null, token); } },
+                        'error-callback': function (code) { if (ts.onToken) { ts.onToken(new Error('turnstile error ' + code)); } return true; },
+                        'expired-callback': function () { if (ts.onToken) { ts.onToken(new Error('turnstile expired')); } }
+                    });
+                } else {
+                    turnstile.reset(ts.widgetId);
+                }
+                turnstile.execute(ts.widgetId);
+            });
+        });
+    }
+
     /* ----------------------------------------------------------------- AI mode */
     function historyForAI() {
         return state.messages
@@ -376,6 +458,13 @@
     }
     function handleAIInput(text) {
         addMessage('user', text);
+        var history = historyForAI();
+        if (history.length >= MAX_HISTORY) {
+            state.capped = true;
+            addMessage('assistant', LIMIT_TEXT, { local: true });
+            startGuidedCapture(LIMIT_NOTICE);
+            return;
+        }
         setBusy(true);
         var bubble = el('div', 'dns-chat-msg assistant');
         bubble.innerHTML = '<span class="dns-chat-typing" aria-label="Assistant is typing"><i></i><i></i><i></i></span>';
@@ -383,6 +472,7 @@
         scrollToEnd();
         var got = '';
         var leadSent = false;
+        var capped = false;
 
         function handleEvent(evt) {
             if (evt.type === 'text' && typeof evt.delta === 'string') {
@@ -392,6 +482,8 @@
                 scrollToEnd();
             } else if (evt.type === 'lead') {
                 leadSent = true;
+            } else if (evt.type === 'limit') {
+                capped = true;
             } else if (evt.type === 'error') {
                 throw new Error(evt.message || 'assistant error');
             }
@@ -409,11 +501,15 @@
         var controller = typeof AbortController === 'function' ? new AbortController() : null;
         var timer = controller ? setTimeout(function () { controller.abort(); }, 60000) : null;
 
-        fetch(cfg.endpoint, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ messages: historyForAI(), page: window.location.pathname }),
-            signal: controller ? controller.signal : undefined
+        getTurnstileToken().then(function (token) {
+            var payload = { messages: history, page: window.location.pathname };
+            if (token) { payload.turnstileToken = token; }
+            return fetch(cfg.endpoint, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+                signal: controller ? controller.signal : undefined
+            });
         }).then(function (res) {
             if (!res.ok || !res.body) { throw new Error('HTTP ' + res.status); }
             var reader = res.body.getReader();
@@ -443,13 +539,17 @@
                 state.sent = true;
                 addMessage('assistant', "Your details are with the team now. We'll reply within two business days.", { local: true, card: 'sent' });
             }
+            if (capped && !leadSent) {
+                state.capped = true;
+                startGuidedCapture(LIMIT_NOTICE);
+            }
         }).catch(function () {
             bubble.remove();
             if (got) {
                 addMessage('assistant', got);
                 addMessage('assistant', 'Sorry, the connection dropped part-way through. Please send that again.', { local: true });
             } else {
-                fallbackToGuided();
+                startGuidedCapture(FALLBACK_NOTICE);
             }
         }).then(function () {
             if (timer) { clearTimeout(timer); }
@@ -457,14 +557,29 @@
             save();
         });
     }
-    function fallbackToGuided() {
-        state.mode = 'guided';
-        state.step = 0;
-        state.answers = {};
-        statusEl.textContent = 'Guided enquiry';
-        addMessage('assistant', FALLBACK_NOTICE, { local: true });
-        askStep();
+
+    /* --------------------------------------------------------------- phones */
+    // The site's own nav script resets body.style.overflow on every click, so the lock is a class
+    // on <html> (styled under the phone media query) rather than an inline style.
+    function lockScroll() { document.documentElement.classList.add('dns-chat-lock'); }
+    function unlockScroll() { document.documentElement.classList.remove('dns-chat-lock'); }
+    // Keep the panel aligned with the visible part of the screen while the on-screen keyboard is up.
+    function fitToViewport() {
+        if (panel.hidden || !mobileQuery.matches || !window.visualViewport) {
+            panel.style.height = '';
+            panel.style.top = '';
+            return;
+        }
+        var vv = window.visualViewport;
+        panel.style.top = Math.max(0, Math.round(vv.offsetTop)) + 'px';
+        panel.style.height = Math.round(vv.height) + 'px';
+        scrollToEnd();
     }
+    if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', fitToViewport);
+        window.visualViewport.addEventListener('scroll', fitToViewport);
+    }
+    window.addEventListener('resize', fitToViewport);
 
     /* ---------------------------------------------------------------- control */
     function handleInput(text) {
@@ -488,15 +603,19 @@
         panel.hidden = false;
         launcher.setAttribute('aria-expanded', 'true');
         state.open = true;
+        lockScroll();
+        fitToViewport();
         renderAll();
         start();
-        if (focus !== false) { input.focus(); }
+        if (focus !== false && !mobileQuery.matches) { input.focus(); }
     }
     function close() {
         root.classList.remove('open');
         panel.hidden = true;
         launcher.setAttribute('aria-expanded', 'false');
         state.open = false;
+        unlockScroll();
+        fitToViewport();
         save();
         launcher.focus();
     }
@@ -506,7 +625,7 @@
         save();
         renderAll();
         start();
-        input.focus();
+        if (!mobileQuery.matches) { input.focus(); }
     }
     function autosize() {
         input.style.height = 'auto';
@@ -521,6 +640,7 @@
         if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleInput(input.value); }
     });
     input.addEventListener('input', autosize);
+    input.addEventListener('focus', function () { setTimeout(fitToViewport, 300); });
     document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape' && !panel.hidden && panel.contains(document.activeElement)) { close(); }
     });

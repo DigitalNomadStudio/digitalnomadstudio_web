@@ -1,6 +1,9 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { createHandler, normaliseMessages, isAllowedOrigin, CAPTURE_ENQUIRY_TOOL, MODEL } from "../src/index.js";
+import {
+    createHandler, normaliseMessages, isAllowedOrigin, CAPTURE_ENQUIRY_TOOL, MODEL,
+    MAX_TOKENS, MAX_MESSAGES, HARD_MAX_MESSAGES, MAX_MESSAGE_CHARS, LIMIT_MESSAGE
+} from "../src/index.js";
 
 const ORIGIN = "https://www.digitalnomadstudio.io";
 const env = {
@@ -19,6 +22,7 @@ function request(body, opts = {}) {
     const method = opts.method || "POST";
     const headers = { "Content-Type": "application/json" };
     if (opts.origin !== null) { headers.Origin = opts.origin === undefined ? ORIGIN : opts.origin; }
+    if (opts.ip) { headers["CF-Connecting-IP"] = opts.ip; }
     const init = { method, headers };
     if (method === "POST") { init.body = typeof body === "string" ? body : JSON.stringify(body); }
     return new Request("https://dns-chat.example.workers.dev/", init);
@@ -42,12 +46,23 @@ function fakeClient(scripts, calls) {
     return { beta: { messages: { stream(params) { calls.push(params); return fakeStream(scripts.shift()); } } } };
 }
 
+function neverClient() {
+    return { beta: { messages: { stream() { throw new Error("Claude should not be called"); } } } };
+}
+
+const PLAIN_REPLY = { text: ["Hello", " there"], final: { stop_reason: "end_turn", content: [{ type: "text", text: "Hello there" }] } };
+
 async function readEvents(res) {
     const text = await res.text();
     return text.split("\n\n").filter(Boolean).map((chunk) => {
         assert.ok(chunk.startsWith("data: "), `unexpected SSE chunk: ${chunk}`);
         return JSON.parse(chunk.slice(6));
     });
+}
+
+function conversation(count) {
+    // Alternating messages that end with the visitor: user, assistant, user, ...
+    return Array.from({ length: count }, (_, i) => ({ role: i % 2 ? "assistant" : "user", content: `m${i}` }));
 }
 
 const LEAD = {
@@ -65,7 +80,7 @@ const LEAD = {
 
 test("streams a plain text reply with the documented request shape", async () => {
     const calls = [];
-    const client = fakeClient([{ text: ["Hello", " there"], final: { stop_reason: "end_turn", content: [{ type: "text", text: "Hello there" }] } }], calls);
+    const client = fakeClient([PLAIN_REPLY], calls);
     const handler = createHandler({ createClient: () => client, fetch: async () => { throw new Error("Web3Forms should not be called"); } });
     const ctx = makeCtx();
     const res = await handler(request({ messages: [{ role: "user", content: "Hi" }], page: "/" }), env, ctx);
@@ -80,11 +95,14 @@ test("streams a plain text reply with the documented request shape", async () =>
     assert.equal(calls.length, 1);
     const params = calls[0];
     assert.equal(params.model, MODEL);
+    assert.equal(params.max_tokens, MAX_TOKENS);
+    assert.equal(MAX_TOKENS, 1024);
     assert.deepEqual(params.betas, ["server-side-fallback-2026-07-01"]);
     assert.equal(params.fallbacks, "default");
     assert.deepEqual(params.output_config, { effort: "low" });
     assert.equal(params.system[0].type, "text");
     assert.deepEqual(params.system[0].cache_control, { type: "ephemeral" });
+    assert.match(params.system[0].text, /Never answer general knowledge, trivia/);
     assert.equal(params.tools[0], CAPTURE_ENQUIRY_TOOL);
     assert.equal(params.tools[0].strict, true);
     assert.equal(params.tools[0].input_schema.additionalProperties, false);
@@ -187,8 +205,100 @@ test("turns API errors into an error event", async () => {
     assert.match(events[0].message, /busy/);
 });
 
+test("ends the AI conversation at the turn cap without calling Claude", async () => {
+    const handler = createHandler({ createClient: neverClient });
+    assert.equal(MAX_MESSAGES, 24);
+    const res = await handler(request({ messages: conversation(MAX_MESSAGES + 1) }), env, makeCtx());
+    assert.equal(res.status, 200);
+    assert.match(res.headers.get("Content-Type"), /text\/event-stream/);
+    const events = await readEvents(res);
+    assert.deepEqual(events, [{ type: "text", delta: LIMIT_MESSAGE }, { type: "limit" }, { type: "done", lead: false }]);
+
+    // One below the cap still reaches Claude.
+    const calls = [];
+    const okHandler = createHandler({ createClient: () => fakeClient([PLAIN_REPLY], calls) });
+    const okRes = await okHandler(request({ messages: conversation(MAX_MESSAGES - 1) }), env, makeCtx());
+    await readEvents(okRes);
+    assert.equal(calls.length, 1);
+    assert.equal(calls[0].messages.length, MAX_MESSAGES - 1);
+});
+
+test("applies the per-visitor and global rate limits before calling Claude", async () => {
+    const handler = createHandler({ createClient: neverClient });
+    const body = { messages: [{ role: "user", content: "Hi" }] };
+
+    const seenKeys = [];
+    const tripped = { limit: async ({ key }) => { seenKeys.push(key); return { success: false }; } };
+    const perIp = await handler(request(body, { ip: "203.0.113.9" }), { ...env, RATE_LIMITER: tripped }, makeCtx());
+    assert.equal(perIp.status, 429);
+    assert.deepEqual(seenKeys, ["203.0.113.9"]);
+
+    const open = { limit: async () => ({ success: true }) };
+    const global = await handler(request(body), { ...env, RATE_LIMITER: open, GLOBAL_LIMITER: tripped }, makeCtx());
+    assert.equal(global.status, 429);
+    assert.equal(seenKeys[seenKeys.length - 1], "global");
+
+    const calls = [];
+    const okHandler = createHandler({ createClient: () => fakeClient([PLAIN_REPLY], calls) });
+    const ok = await okHandler(request(body), { ...env, RATE_LIMITER: open, GLOBAL_LIMITER: open }, makeCtx());
+    assert.equal(ok.status, 200);
+    await readEvents(ok);
+    assert.equal(calls.length, 1);
+
+    // A broken limiter never blocks a visitor.
+    const broken = { limit: async () => { throw new Error("limiter down"); } };
+    const calls2 = [];
+    const brokenHandler = createHandler({ createClient: () => fakeClient([PLAIN_REPLY], calls2) });
+    const stillOk = await brokenHandler(request(body), { ...env, RATE_LIMITER: broken }, makeCtx());
+    assert.equal(stillOk.status, 200);
+    await readEvents(stillOk);
+    assert.equal(calls2.length, 1);
+});
+
+test("verifies Turnstile tokens when the secret is configured", async () => {
+    const verifyCalls = [];
+    const fetchStub = async (url, init) => {
+        if (String(url).startsWith("https://challenges.cloudflare.com/")) {
+            const params = new URLSearchParams(init.body);
+            verifyCalls.push(Object.fromEntries(params));
+            const success = params.get("response") === "good-token";
+            return new Response(JSON.stringify(success ? { success: true } : { success: false, "error-codes": ["invalid-input-response"] }), { status: 200 });
+        }
+        throw new Error(`unexpected fetch ${url}`);
+    };
+    const tsEnv = { ...env, TURNSTILE_SECRET_KEY: "ts-secret" };
+    const body = (token) => ({ messages: [{ role: "user", content: "Hi" }], ...(token ? { turnstileToken: token } : {}) });
+
+    const blocked = createHandler({ createClient: neverClient, fetch: fetchStub });
+    const missing = await blocked(request(body()), tsEnv, makeCtx());
+    assert.equal(missing.status, 403);
+    const bad = await blocked(request(body("bad-token"), { ip: "198.51.100.7" }), tsEnv, makeCtx());
+    assert.equal(bad.status, 403);
+    assert.equal(verifyCalls.length, 1);
+    assert.equal(verifyCalls[0].secret, "ts-secret");
+    assert.equal(verifyCalls[0].response, "bad-token");
+    assert.equal(verifyCalls[0].remoteip, "198.51.100.7");
+
+    const calls = [];
+    const allowed = createHandler({ createClient: () => fakeClient([PLAIN_REPLY], calls), fetch: fetchStub });
+    const good = await allowed(request(body("good-token")), tsEnv, makeCtx());
+    assert.equal(good.status, 200);
+    await readEvents(good);
+    assert.equal(calls.length, 1);
+
+    // Without the secret the token is ignored and nothing is verified.
+    const before = verifyCalls.length;
+    const calls2 = [];
+    const noCheck = createHandler({ createClient: () => fakeClient([PLAIN_REPLY], calls2), fetch: fetchStub });
+    const res = await noCheck(request(body()), env, makeCtx());
+    assert.equal(res.status, 200);
+    await readEvents(res);
+    assert.equal(calls2.length, 1);
+    assert.equal(verifyCalls.length, before);
+});
+
 test("CORS preflight and origin checks", async () => {
-    const handler = createHandler({ createClient: () => { throw new Error("no client expected"); } });
+    const handler = createHandler({ createClient: neverClient });
     const ok = await handler(request(null, { method: "OPTIONS" }), env, makeCtx());
     assert.equal(ok.status, 204);
     assert.equal(ok.headers.get("Access-Control-Allow-Origin"), ORIGIN);
@@ -211,25 +321,33 @@ test("CORS preflight and origin checks", async () => {
 });
 
 test("configuration and body validation", async () => {
-    const handler = createHandler({ createClient: () => { throw new Error("no client expected"); } });
+    const handler = createHandler({ createClient: neverClient });
     const noKey = await handler(request({ messages: [{ role: "user", content: "Hi" }] }), { ...env, ANTHROPIC_API_KEY: "" }, makeCtx());
     assert.equal(noKey.status, 503);
 
     const badJson = await handler(request("{not json"), env, makeCtx());
     assert.equal(badJson.status, 400);
 
-    const tooMany = Array.from({ length: 41 }, (_, i) => ({ role: i % 2 ? "assistant" : "user", content: "x" }));
-    const many = await handler(request({ messages: tooMany }), env, makeCtx());
+    assert.equal(HARD_MAX_MESSAGES, 60);
+    const many = await handler(request({ messages: conversation(HARD_MAX_MESSAGES + 1) }), env, makeCtx());
     assert.equal(many.status, 400);
 
     const badRole = await handler(request({ messages: [{ role: "system", content: "Hi" }] }), env, makeCtx());
     assert.equal(badRole.status, 400);
 
-    const long = await handler(request({ messages: [{ role: "user", content: "x".repeat(2001) }] }), env, makeCtx());
+    assert.equal(MAX_MESSAGE_CHARS, 1200);
+    const long = await handler(request({ messages: [{ role: "user", content: "x".repeat(MAX_MESSAGE_CHARS + 1) }] }), env, makeCtx());
     assert.equal(long.status, 400);
 
     const endsWithAssistant = await handler(request({ messages: [{ role: "user", content: "Hi" }, { role: "assistant", content: "Hello" }] }), env, makeCtx());
     assert.equal(endsWithAssistant.status, 400);
+
+    const calls = [];
+    const okHandler = createHandler({ createClient: () => fakeClient([PLAIN_REPLY], calls) });
+    const exact = await okHandler(request({ messages: [{ role: "user", content: "x".repeat(MAX_MESSAGE_CHARS) }] }), env, makeCtx());
+    assert.equal(exact.status, 200);
+    await readEvents(exact);
+    assert.equal(calls.length, 1);
 });
 
 test("normaliseMessages merges same-role runs and drops a leading assistant message", () => {

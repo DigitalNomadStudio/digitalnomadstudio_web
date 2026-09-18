@@ -75,6 +75,45 @@ Commit and merge. Once GitHub Pages redeploys, the widget switches from the guid
 AI assistant automatically. Open the site, click "Chat with us" and say hello. `npx wrangler tail`
 shows live logs from the Worker while you test.
 
+## Limits and abuse protection
+
+The assistant is for project enquiries only. Its system prompt refuses anything else (trivia, coding,
+homework, other companies) without answering, and after a second unrelated request it only repeats a
+one-line pointer to the project form. Behind the prompt sit hard limits that do not depend on the
+model behaving:
+
+| Limit | Default | Where |
+|---|---|---|
+| Visitor turns per conversation | 12 (the widget then switches to its guided questions) | `MAX_MESSAGES` in `src/index.js`, `MAX_HISTORY` in `chat-widget.js` |
+| Characters per message | 1200 | `MAX_MESSAGE_CHARS` in `src/index.js`, `MAX_LEN` in `chat-widget.js` |
+| Tokens per reply | 1024 | `MAX_TOKENS` in `src/index.js` |
+| Messages per visitor IP | 8 a minute | `RATE_LIMITER` binding in `wrangler.toml` |
+| Messages across all visitors | 30 a minute | `GLOBAL_LIMITER` binding in `wrangler.toml` |
+| Monthly spend | the Anthropic workspace limit | Anthropic Console (add a usage alert at half the limit) |
+
+Change a value, commit to `main`, and the Worker redeploys itself.
+
+### Optional: Cloudflare Turnstile bot check
+
+The rate limits stop a single connection hammering the chat. Turnstile stops scripts calling the Worker
+directly with a faked website origin, by requiring a token that only a real browser on the site can
+obtain. Visitors normally never see it.
+
+1. Cloudflare dashboard > **Turnstile** > **Add widget**. Hostnames: `digitalnomadstudio.io` and
+   `www.digitalnomadstudio.io`. Widget mode: **Invisible**. Create it and copy both keys.
+2. Add the **Secret Key** as the GitHub repository secret `TURNSTILE_SECRET_KEY` and re-run the
+   **Deploy chat Worker** workflow (it uploads the secret to the Worker automatically).
+3. Put the **Site Key** into `turnstileSiteKey` in `chat-config.js` in the website repo and merge.
+
+With both in place the Worker refuses any request without a valid token (HTTP 403). Remove the secret
+(`npx wrangler secret delete TURNSTILE_SECRET_KEY`) and clear the site key to switch it off again.
+
+### Enquiry spam
+
+Enquiries reach the inbox through Web3Forms, both from the AI assistant and from the guided questions
+and the project form. If junk enquiries appear, switch on hCaptcha or the spam filter in the Web3Forms
+dashboard for that access key.
+
 ## Everyday operations
 
 - **Rotate the key**: create a new key in the Console, run `npx wrangler secret put ANTHROPIC_API_KEY`

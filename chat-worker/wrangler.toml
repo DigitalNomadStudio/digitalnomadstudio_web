@@ -5,16 +5,24 @@ compatibility_date = "2025-06-01"
 compatibility_flags = ["nodejs_compat"]
 
 # Plain configuration. Anything secret goes in a Worker secret, never in this file:
-#   npx wrangler secret put ANTHROPIC_API_KEY
+#   ANTHROPIC_API_KEY     - required (set by the deploy workflow from the GitHub secret)
+#   TURNSTILE_SECRET_KEY  - optional; enables the Cloudflare Turnstile bot check
 [vars]
 ALLOWED_ORIGINS = "https://www.digitalnomadstudio.io,https://digitalnomadstudio.io"
 WEB3FORMS_KEY = "fd336c42-816b-4a5b-a2fc-e6e970494682"
 NOTIFY_EMAIL = "team@digitalnomadstudio.io"
 
-# Optional: per-IP rate limit (30 requests per minute). Uncomment to enable.
-# The Worker works with or without this binding.
-# [[unsafe.bindings]]
-# name = "RATE_LIMITER"
-# type = "ratelimit"
-# namespace_id = "1001"
-# simple = { limit = 30, period = 60 }
+# Rate limits (Cloudflare Workers rate limiting binding). Periods can be 10 or 60 seconds.
+# Per visitor IP: 8 messages a minute. A real conversation is two or three a minute.
+[[unsafe.bindings]]
+name = "RATE_LIMITER"
+type = "ratelimit"
+namespace_id = "1001"
+simple = { limit = 8, period = 60 }
+
+# Across all visitors: 30 messages a minute. Caps total spend even from many addresses.
+[[unsafe.bindings]]
+name = "GLOBAL_LIMITER"
+type = "ratelimit"
+namespace_id = "1002"
+simple = { limit = 30, period = 60 }

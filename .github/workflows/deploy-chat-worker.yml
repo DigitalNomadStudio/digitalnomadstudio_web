@@ -4,6 +4,8 @@
 # Needs two repository secrets (Settings > Secrets and variables > Actions):
 #   CLOUDFLARE_API_TOKEN   - Cloudflare API token created from the "Edit Cloudflare Workers" template
 #   ANTHROPIC_API_KEY      - the dedicated Anthropic key for the website chat
+# Optional third secret:
+#   TURNSTILE_SECRET_KEY   - Cloudflare Turnstile secret; enables the bot check on the Worker
 # The Cloudflare account ID is not secret and lives in chat-worker/wrangler.toml.
 name: Deploy chat Worker
 
@@ -23,6 +25,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    env:
+      HAS_TURNSTILE: ${{ secrets.TURNSTILE_SECRET_KEY != '' }}
     steps:
       - name: Check the repository secrets are configured
         env:
@@ -65,6 +69,14 @@ jobs:
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
 
+      - name: Set the TURNSTILE_SECRET_KEY secret (only when configured)
+        if: env.HAS_TURNSTILE == 'true'
+        working-directory: chat-worker
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          TURNSTILE_SECRET_KEY: ${{ secrets.TURNSTILE_SECRET_KEY }}
+        run: printf '%s' "$TURNSTILE_SECRET_KEY" | npx wrangler secret put TURNSTILE_SECRET_KEY
+
       - name: Show the Worker URL
         env:
           URL: ${{ steps.deploy.outputs.deployment-url }}
@@ -83,10 +95,22 @@ jobs:
           URL: ${{ steps.deploy.outputs.deployment-url }}
         run: |
           body='{"messages":[{"role":"user","content":"Hello, this is an automated deployment check. Reply with one short sentence."}],"page":"/deploy-check"}'
+          trivia='{"messages":[{"role":"user","content":"whats the capital of france"}],"page":"/deploy-check"}'
           echo "Preflight from the website origin:"
           curl -sS -o /dev/null -w "  HTTP %{http_code}\n" -X OPTIONS "$URL" -H "Origin: https://www.digitalnomadstudio.io" --max-time 30
           echo "Request from an unknown origin (expect 403):"
           curl -sS -o /dev/null -w "  HTTP %{http_code}\n" "$URL" -H "Origin: https://example.org" -H "Content-Type: application/json" -d "$body" --max-time 30
+          if [ "$HAS_TURNSTILE" = "true" ]; then
+            echo "Turnstile is enabled: a request without a bot-check token must be refused (expect 403):"
+            code=$(curl -sS -o /dev/null -w "%{http_code}" "$URL" -H "Origin: https://www.digitalnomadstudio.io" -H "Content-Type: application/json" -d "$body" --max-time 30)
+            echo "  HTTP $code"
+            if [ "$code" != "403" ]; then
+              echo "::error::Expected 403 without a Turnstile token, got $code."
+              exit 1
+            fi
+            echo "Skipping the live chat probe: it cannot pass the bot check from CI. Test the chat in a browser."
+            exit 0
+          fi
           echo "Chat request from the website origin:"
           response=$(curl -sS -N --max-time 120 "$URL" -H "Origin: https://www.digitalnomadstudio.io" -H "Content-Type: application/json" -d "$body")
           printf '%s\n' "$response" | head -c 3000
@@ -96,4 +120,13 @@ jobs:
           else
             echo "::error::The Worker did not return a text reply. Check the ANTHROPIC_API_KEY secret and the response above."
             exit 1
+          fi
+          echo "Off-topic probe (the assistant should refuse without answering):"
+          reply=$(curl -sS -N --max-time 120 "$URL" -H "Origin: https://www.digitalnomadstudio.io" -H "Content-Type: application/json" -d "$trivia")
+          printf '%s\n' "$reply" | head -c 3000
+          echo
+          if printf '%s' "$reply" | grep -qi 'paris'; then
+            echo "::warning::The assistant answered an off-topic trivia question. Review the Scope rules in SYSTEM_PROMPT (chat-worker/src/index.js)."
+          else
+            echo "Off-topic question was refused."
           fi
