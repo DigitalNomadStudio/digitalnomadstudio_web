@@ -19,7 +19,7 @@
     'use strict';
     var CONFIG = {
         googleAdsId: 'AW-18458647532',
-        ga4Id: '',
+        ga4Id: 'G-M7QPHS152N',
         conversions: {
             form: '',       // Project form enquiry
             chat: '',       // Marco chat enquiry
