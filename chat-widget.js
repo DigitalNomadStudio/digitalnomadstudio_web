@@ -18,9 +18,13 @@
     if (window.__dnsChatLoaded) { return; }
     window.__dnsChatLoaded = true;
 
-    var cfg = Object.assign({ endpoint: '', web3formsKey: '', email: 'team@digitalnomadstudio.io', turnstileSiteKey: '' }, window.DNS_CHAT || {});
+    var cfg = Object.assign({ endpoint: '', web3formsKey: '', email: 'team@digitalnomadstudio.io', turnstileSiteKey: '', nudgeAfterMs: 180000 }, window.DNS_CHAT || {});
     var STORAGE_KEY = 'dnsChat.v2';
-    var MAX_HISTORY = 24;      // 12 visitor turns, matching the Worker's cap
+    var MAX_HISTORY = 28;      // 14 visitor turns, matching the Worker's cap
+    var WELCOME_BACK_AFTER_MS = 30 * 60 * 1000;
+    var NUDGE_AFTER_MS = Number(cfg.nudgeAfterMs) > 0 ? Number(cfg.nudgeAfterMs) : 180000;
+    var WELCOME_BACK = 'Welcome back. Shall we carry on where we left off, or start again?';
+    var NUDGE_TEXT = "No rush - I'm here when you're ready. If it's easier, leave your name and email and the team will follow up.";
     var MAX_LEN = 1200;
     var WEB3FORMS_URL = 'https://api.web3forms.com/submit';
     var TURNSTILE_SRC = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
@@ -96,7 +100,12 @@
         return node;
     }
     function fresh() {
-        return { mode: cfg.endpoint ? 'ai' : 'guided', messages: [], step: 0, answers: {}, sent: false, open: false, capped: false };
+        return { mode: cfg.endpoint ? 'ai' : 'guided', messages: [], step: 0, answers: {}, sent: false, open: false, capped: false, lastActivity: Date.now(), welcomedAt: 0, welcomePending: false, nudged: false };
+    }
+    function touch() {
+        state.lastActivity = Date.now();
+        state.welcomePending = false;
+        scheduleNudge();
     }
     function load() {
         try {
@@ -341,6 +350,7 @@
     }
     function currentChips() {
         if (busy) { return []; }
+        if (state.welcomePending) { return ['Carry on', 'Start again']; }
         if (state.mode === 'guided') {
             var step = FLOW[state.step];
             return step && step.chips ? step.chips : [];
@@ -636,6 +646,8 @@
         }).then(function () {
             if (timer) { clearTimeout(timer); }
             setBusy(false);
+            state.lastActivity = Date.now();
+            scheduleNudge();
             save();
         });
     }
@@ -663,12 +675,61 @@
     }
     window.addEventListener('resize', fitToViewport);
 
+    /* ------------------------------------------------------------ idle chats */
+    // No hard timeout: a conversation stays in the tab until it is closed or restarted. After a long
+    // gap we ask whether to carry on; once per conversation we add a gentle nudge if it stalls.
+    var nudgeTimer = null;
+    function userMessageCount() {
+        return state.messages.filter(function (m) { return m.role === 'user'; }).length;
+    }
+    function maybeWelcomeBack() {
+        if (state.mode !== 'ai' || state.sent || state.welcomePending || !userMessageCount()) { return; }
+        var idle = Date.now() - (state.lastActivity || 0);
+        if (idle < WELCOME_BACK_AFTER_MS || state.welcomedAt === state.lastActivity) { return; }
+        state.welcomedAt = state.lastActivity;
+        state.welcomePending = true;
+        addMessage('assistant', WELCOME_BACK, { local: true });
+        save();
+        renderChips();
+    }
+    function scheduleNudge() {
+        if (nudgeTimer) { clearTimeout(nudgeTimer); nudgeTimer = null; }
+        if (panel.hidden || document.visibilityState === 'hidden') { return; }
+        if (state.mode !== 'ai' || state.sent || state.nudged || userMessageCount() < 2) { return; }
+        var due = (state.lastActivity || Date.now()) + NUDGE_AFTER_MS - Date.now();
+        nudgeTimer = setTimeout(fireNudge, Math.max(250, due));
+    }
+    function fireNudge() {
+        nudgeTimer = null;
+        if (panel.hidden || document.visibilityState === 'hidden' || busy) { return; }
+        if (state.mode !== 'ai' || state.sent || state.nudged || userMessageCount() < 2) { return; }
+        if (Date.now() - (state.lastActivity || 0) < NUDGE_AFTER_MS) { scheduleNudge(); return; }
+        state.nudged = true;
+        addMessage('assistant', NUDGE_TEXT, { local: true });
+        save();
+    }
+    document.addEventListener('visibilitychange', function () {
+        if (document.visibilityState === 'visible') {
+            if (!panel.hidden) { maybeWelcomeBack(); }
+            scheduleNudge();
+        } else if (nudgeTimer) {
+            clearTimeout(nudgeTimer);
+            nudgeTimer = null;
+        }
+    });
+
     /* ---------------------------------------------------------------- control */
     function handleInput(text) {
         text = String(text || '').trim().slice(0, MAX_LEN);
         if (!text || busy) { return; }
         input.value = '';
         autosize();
+        if (state.welcomePending) {
+            state.welcomePending = false;
+            if (/^start again$/i.test(text)) { reset(); return; }
+            if (/^carry on$/i.test(text)) { touch(); save(); renderChips(); return; }
+        }
+        touch();
         if (state.mode === 'ai') { handleAIInput(text); } else { handleGuidedInput(text); }
         save();
         renderChips();
@@ -689,6 +750,8 @@
         fitToViewport();
         renderAll();
         start();
+        maybeWelcomeBack();
+        scheduleNudge();
         if (focus !== false && !mobileQuery.matches) { input.focus(); }
     }
     function close() {
@@ -696,6 +759,7 @@
         panel.hidden = true;
         launcher.setAttribute('aria-expanded', 'false');
         state.open = false;
+        if (nudgeTimer) { clearTimeout(nudgeTimer); nudgeTimer = null; }
         unlockScroll();
         fitToViewport();
         save();

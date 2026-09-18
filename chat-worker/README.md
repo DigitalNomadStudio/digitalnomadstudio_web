@@ -98,7 +98,7 @@ model behaving:
 
 | Limit | Default | Where |
 |---|---|---|
-| Visitor turns per conversation | 12 (the widget then switches to its guided questions) | `MAX_MESSAGES` in `src/index.js`, `MAX_HISTORY` in `chat-widget.js` |
+| Visitor turns per conversation | 14 (the widget then switches to its guided questions) | `MAX_MESSAGES` in `src/index.js`, `MAX_HISTORY` in `chat-widget.js` |
 | Characters per message | 1200 | `MAX_MESSAGE_CHARS` in `src/index.js`, `MAX_LEN` in `chat-widget.js` |
 | Tokens per reply | 1024 | `MAX_TOKENS` in `src/index.js` |
 | Messages per visitor IP | 8 a minute | `RATE_LIMITER` binding in `wrangler.toml` |
@@ -127,6 +127,15 @@ With both in place the Worker refuses any request without a valid token (HTTP 40
 Enquiries reach the inbox through Web3Forms, both from the AI assistant and from the guided questions
 and the project form. If junk enquiries appear, switch on hCaptcha or the spam filter in the Web3Forms
 dashboard for that access key.
+
+## Idle chats
+
+There is deliberately no timeout. An idle conversation costs nothing (no model call happens until
+the visitor writes), the transcript lives only in that browser tab and disappears when the tab is
+closed, and the turn cap bounds every conversation. Instead the widget handles gaps gracefully: after
+30 minutes away it asks whether to carry on or start again, and once per conversation, after three
+minutes of silence with an enquiry under way but not sent, it adds a single "no rush" line inviting the
+visitor to leave their name and email. Both lines are shown by the widget itself, not the model.
 
 ## Everyday operations
 

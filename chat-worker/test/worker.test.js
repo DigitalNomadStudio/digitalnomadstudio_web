@@ -118,6 +118,8 @@ test("streams a plain text reply with the documented request shape", async () =>
     assert.equal(params.system[0].type, "text");
     assert.deepEqual(params.system[0].cache_control, { type: "ephemeral" });
     assert.match(params.system[0].text, /Never answer general knowledge, trivia/);
+    assert.match(params.system[0].text, /ask one follow-up on that point, then move on/);
+    assert.match(params.system[0].text, /about eight visitor replies/);
     assert.deepEqual(params.tools, [SHOW_SUMMARY_TOOL, CAPTURE_ENQUIRY_TOOL]);
     for (const tool of params.tools) {
         assert.equal(tool.strict, true);
@@ -292,7 +294,7 @@ test("turns API errors into an error event", async () => {
 
 test("ends the AI conversation at the turn cap without calling Claude", async () => {
     const handler = createHandler({ createClient: neverClient });
-    assert.equal(MAX_MESSAGES, 24);
+    assert.equal(MAX_MESSAGES, 28);
     const res = await handler(request({ messages: conversation(MAX_MESSAGES + 1) }), env, makeCtx());
     assert.equal(res.status, 200);
     assert.match(res.headers.get("Content-Type"), /text\/event-stream/);
