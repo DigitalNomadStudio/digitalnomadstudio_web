@@ -27,8 +27,8 @@
             appstore: ''    // App Store click
         },
         events: {
-            form: '',       // e.g. 'ads_conversion_Submit_lead_form_1'
-            chat: '',       // may be the same event as form, or its own
+            form: 'ads_conversion_Submit_lead_form_1',   // Google Ads conversion (source: Analytics property 554805907)
+            chat: 'ads_conversion_Submit_lead_form_1',   // Marco enquiries count as the same lead-form conversion
             email: '',
             appstore: ''
         }
