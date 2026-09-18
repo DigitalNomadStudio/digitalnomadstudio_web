@@ -1,0 +1,19 @@
+{
+  "name": "dns-chat-worker",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Cloudflare Worker that powers the Digital Nomad Studio website chat assistant with Claude.",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "tail": "wrangler tail",
+    "test": "node --test test/worker.test.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.126.0"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  }
+}

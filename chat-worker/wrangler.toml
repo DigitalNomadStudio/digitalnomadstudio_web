@@ -1,0 +1,19 @@
+name = "dns-chat"
+main = "src/index.js"
+compatibility_date = "2025-06-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Plain configuration. Anything secret goes in a Worker secret, never in this file:
+#   npx wrangler secret put ANTHROPIC_API_KEY
+[vars]
+ALLOWED_ORIGINS = "https://www.digitalnomadstudio.io,https://digitalnomadstudio.io"
+WEB3FORMS_KEY = "fd336c42-816b-4a5b-a2fc-e6e970494682"
+NOTIFY_EMAIL = "team@digitalnomadstudio.io"
+
+# Optional: per-IP rate limit (30 requests per minute). Uncomment to enable.
+# The Worker works with or without this binding.
+# [[unsafe.bindings]]
+# name = "RATE_LIMITER"
+# type = "ratelimit"
+# namespace_id = "1001"
+# simple = { limit = 30, period = 60 }

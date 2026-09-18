@@ -71,7 +71,7 @@
                 <ul class="nav-menu" id="navMenu">
                     <li><a href="./">Home</a></li>
                     <li><a href="products.html">Products</a></li>
-                    <li><a href="ai-services.html">AI Services</a></li>
+                    <li><a href="ai-services.html">AI Solutions</a></li>
                     <li><a href="about.html">About</a></li>
                     <li><a href="./#contact">Contact</a></li>
                 </ul>
@@ -104,6 +104,7 @@
                         <p>We may collect information that you voluntarily provide to us when you:</p>
                         <ul>
                             <li>Contact us through email or our website</li>
+                            <li>Use the AI chat assistant on our website</li>
                             <li>Subscribe to our newsletter or updates</li>
                             <li>Use our applications</li>
                         </ul>
@@ -139,6 +140,18 @@
                             <li>To protect our rights and safety</li>
                             <li>With service providers who assist us in operating our website and applications (under strict confidentiality agreements)</li>
                         </ul>
+                    </div>
+
+                    <div class="content-section">
+                        <h2>AI Chat Assistant</h2>
+                        <p>Our website includes an AI chat assistant that helps you describe the services you are looking for. When you use it:</p>
+                        <ul>
+                            <li>The messages you type are sent to a small service we operate (hosted on Cloudflare), which forwards them to Anthropic's Claude API to generate responses. Anthropic processes this data as our service provider under its commercial terms and does not use it to train its models.</li>
+                            <li>If you choose to send an enquiry, the details you provide (such as your name, email address, business and project information) are delivered to our inbox through Web3Forms, a form-delivery service, so that we can respond to you.</li>
+                            <li>Your conversation is kept only in your browser for the current session so you can continue it between pages. It is cleared when you close the tab, or when you choose "Start again".</li>
+                            <li>If the AI assistant is unavailable, a guided form runs in your browser instead and only sends the details you choose to submit.</li>
+                        </ul>
+                        <p>Please do not share sensitive personal information in the chat, such as health, financial account or government identification details. We use enquiry details only to respond to you and to understand what services people are looking for.</p>
                     </div>
 
                     <div class="content-section">
@@ -196,7 +209,7 @@
                 <div class="footer-links">
                     <a href="./">Home</a>
                     <a href="products.html">Products</a>
-                    <a href="ai-services.html">AI Services</a>
+                    <a href="ai-services.html">AI Solutions</a>
                     <a href="about.html">About</a>
                     <a href="privacy.html">Privacy Policy</a>
                     <a href="terms.html">Terms of Use</a>
@@ -247,6 +260,8 @@
             });
         });
     </script>
+    <script src="chat-config.js" defer></script>
+    <script src="chat-widget.js" defer></script>
 </body>
 </html>
 

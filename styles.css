@@ -1388,3 +1388,8 @@ html {
 .product-title a:hover {
     color: var(--secondary-color);
 }
+
+/* Step cards on a grey section background (homepage How We Work) */
+.services .step-card {
+    background: white;
+}
