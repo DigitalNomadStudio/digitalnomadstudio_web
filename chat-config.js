@@ -7,7 +7,7 @@
 //               This is a public key (the same one used by submit-idea.html).
 // email:        Address shown to visitors as a fallback.
 window.DNS_CHAT = {
-    endpoint: "",
+    endpoint: "https://dns-chat.backwhen.workers.dev",
     web3formsKey: "fd336c42-816b-4a5b-a2fc-e6e970494682",
     email: "team@digitalnomadstudio.io"
 };
