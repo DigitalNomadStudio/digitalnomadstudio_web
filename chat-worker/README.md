@@ -45,6 +45,23 @@ npx wrangler deploy
 
 `wrangler deploy` prints the Worker URL, for example `https://dns-chat.<your-subdomain>.workers.dev`.
 
+## 2b. Or deploy from GitHub instead of your own machine
+
+The repository has a **Deploy chat Worker** workflow (`.github/workflows/deploy-chat-worker.yml`).
+It runs the unit tests, deploys the Worker and sets the `ANTHROPIC_API_KEY` secret, using three
+repository secrets that you add once under **Settings > Secrets and variables > Actions**:
+
+| Secret | Where to get it |
+|---|---|
+| `CLOUDFLARE_API_TOKEN` | Cloudflare dashboard > My Profile > API Tokens > Create Token > use the "Edit Cloudflare Workers" template |
+| `CLOUDFLARE_ACCOUNT_ID` | Cloudflare dashboard > Workers & Pages > Overview, in the right-hand sidebar |
+| `ANTHROPIC_API_KEY` | The dedicated key from step 1 |
+
+Then run the workflow from the Actions tab (it also runs automatically whenever `chat-worker/` changes
+on `main`). The run summary shows the Worker URL. If the first deploy complains that the account has
+no workers.dev subdomain, open Workers & Pages in the Cloudflare dashboard once and choose a subdomain,
+then re-run the workflow.
+
 ## 3. Connect the website
 
 Open `chat-config.js` in the website repo and set the endpoint:
