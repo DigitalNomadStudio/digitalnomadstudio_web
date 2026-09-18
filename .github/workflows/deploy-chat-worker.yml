@@ -77,3 +77,23 @@ jobs:
             echo ""
             echo "Set this as the endpoint in chat-config.js to switch the website chat to AI mode."
           } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Smoke test the deployed Worker
+        env:
+          URL: ${{ steps.deploy.outputs.deployment-url }}
+        run: |
+          body='{"messages":[{"role":"user","content":"Hello, this is an automated deployment check. Reply with one short sentence."}],"page":"/deploy-check"}'
+          echo "Preflight from the website origin:"
+          curl -sS -o /dev/null -w "  HTTP %{http_code}\n" -X OPTIONS "$URL" -H "Origin: https://www.digitalnomadstudio.io" --max-time 30
+          echo "Request from an unknown origin (expect 403):"
+          curl -sS -o /dev/null -w "  HTTP %{http_code}\n" "$URL" -H "Origin: https://example.org" -H "Content-Type: application/json" -d "$body" --max-time 30
+          echo "Chat request from the website origin:"
+          response=$(curl -sS -N --max-time 120 "$URL" -H "Origin: https://www.digitalnomadstudio.io" -H "Content-Type: application/json" -d "$body")
+          printf '%s\n' "$response" | head -c 3000
+          echo
+          if printf '%s' "$response" | grep -q '"type":"text"'; then
+            echo "The Worker streamed a reply from Claude."
+          else
+            echo "::error::The Worker did not return a text reply. Check the ANTHROPIC_API_KEY secret and the response above."
+            exit 1
+          fi
