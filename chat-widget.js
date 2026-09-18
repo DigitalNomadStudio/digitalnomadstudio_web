@@ -30,6 +30,7 @@
     var FALLBACK_NOTICE = "Our live assistant isn't available right now, so I'll guide you through a few quick questions instead.";
     var LIMIT_TEXT = "That's as far as I can take it here. Leave your details and the team will pick it up from here.";
     var LIMIT_NOTICE = 'Let me take your details so the team can follow up properly.';
+    var LIMIT_NOTICE_OFF_TOPIC = "If you do have a project in mind, I can take your details for the team. Otherwise, that's all from me.";
 
     var FLOW = [
         {
@@ -473,6 +474,7 @@
         var got = '';
         var leadSent = false;
         var capped = false;
+        var limitReason = '';
 
         function handleEvent(evt) {
             if (evt.type === 'text' && typeof evt.delta === 'string') {
@@ -484,6 +486,7 @@
                 leadSent = true;
             } else if (evt.type === 'limit') {
                 capped = true;
+                limitReason = typeof evt.reason === 'string' ? evt.reason : '';
             } else if (evt.type === 'error') {
                 throw new Error(evt.message || 'assistant error');
             }
@@ -541,7 +544,7 @@
             }
             if (capped && !leadSent) {
                 state.capped = true;
-                startGuidedCapture(LIMIT_NOTICE);
+                startGuidedCapture(limitReason === 'off_topic' ? LIMIT_NOTICE_OFF_TOPIC : LIMIT_NOTICE);
             }
         }).catch(function () {
             bubble.remove();

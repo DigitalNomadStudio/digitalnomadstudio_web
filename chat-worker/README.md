@@ -77,9 +77,13 @@ shows live logs from the Worker while you test.
 
 ## Limits and abuse protection
 
-The assistant is for project enquiries only. Its system prompt refuses anything else (trivia, coding,
-homework, other companies) without answering, and after a second unrelated request it only repeats a
-one-line pointer to the project form. Behind the prompt sit hard limits that do not depend on the
+The assistant is for project enquiries only. Every message first passes a small classifier call
+(Claude Haiku, `GATE_MODEL` in `src/index.js`) that decides whether it belongs in a project enquiry.
+Unrelated messages (trivia, coding, homework, other companies, "ignore your instructions") get a fixed
+canned line and never reach the main model, so nobody can use the widget as a general chatbot. The
+second unrelated message gets a one-line pointer to the project form, and the third ends the AI part
+of the conversation. If the classifier itself fails, the message goes through to the main model,
+whose own prompt refuses unrelated requests. Behind that sit hard limits that do not depend on any
 model behaving:
 
 | Limit | Default | Where |

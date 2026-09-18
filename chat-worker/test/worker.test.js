@@ -2,7 +2,8 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
     createHandler, normaliseMessages, isAllowedOrigin, CAPTURE_ENQUIRY_TOOL, MODEL,
-    MAX_TOKENS, MAX_MESSAGES, HARD_MAX_MESSAGES, MAX_MESSAGE_CHARS, LIMIT_MESSAGE
+    MAX_TOKENS, MAX_MESSAGES, HARD_MAX_MESSAGES, MAX_MESSAGE_CHARS, LIMIT_MESSAGE,
+    GATE_MODEL, GATE_PROMPT, MAX_OFF_TOPIC, REFUSAL_FIRST, REFUSAL_FINAL
 } from "../src/index.js";
 
 const ORIGIN = "https://www.digitalnomadstudio.io";
@@ -42,12 +43,25 @@ function fakeStream(script) {
     return stream;
 }
 
-function fakeClient(scripts, calls) {
-    return { beta: { messages: { stream(params) { calls.push(params); return fakeStream(scripts.shift()); } } } };
+// gate: "ON_TOPIC" (default), "OFF_TOPIC", or an Error to throw. gateCalls collects classifier requests.
+function fakeClient(scripts, calls, gate, gateCalls) {
+    return {
+        messages: {
+            async create(params) {
+                if (gateCalls) { gateCalls.push(params); }
+                if (gate instanceof Error) { throw gate; }
+                return { content: [{ type: "text", text: gate || "ON_TOPIC" }] };
+            }
+        },
+        beta: { messages: { stream(params) { calls.push(params); return fakeStream(scripts.shift()); } } }
+    };
 }
 
 function neverClient() {
-    return { beta: { messages: { stream() { throw new Error("Claude should not be called"); } } } };
+    return {
+        messages: { async create() { return { content: [{ type: "text", text: "ON_TOPIC" }] }; } },
+        beta: { messages: { stream() { throw new Error("Claude should not be called"); } } }
+    };
 }
 
 const PLAIN_REPLY = { text: ["Hello", " there"], final: { stop_reason: "end_turn", content: [{ type: "text", text: "Hello there" }] } };
@@ -80,7 +94,8 @@ const LEAD = {
 
 test("streams a plain text reply with the documented request shape", async () => {
     const calls = [];
-    const client = fakeClient([PLAIN_REPLY], calls);
+    const gateCalls = [];
+    const client = fakeClient([PLAIN_REPLY], calls, "ON_TOPIC", gateCalls);
     const handler = createHandler({ createClient: () => client, fetch: async () => { throw new Error("Web3Forms should not be called"); } });
     const ctx = makeCtx();
     const res = await handler(request({ messages: [{ role: "user", content: "Hi" }], page: "/" }), env, ctx);
@@ -108,6 +123,55 @@ test("streams a plain text reply with the documented request shape", async () =>
     assert.equal(params.tools[0].input_schema.additionalProperties, false);
     assert.deepEqual(params.tools[0].input_schema.required, Object.keys(params.tools[0].input_schema.properties));
     assert.deepEqual(params.messages, [{ role: "user", content: "Hi" }]);
+
+    // The gate ran first, on the small model, with the transcript.
+    assert.equal(gateCalls.length, 1);
+    assert.equal(gateCalls[0].model, GATE_MODEL);
+    assert.equal(gateCalls[0].system, GATE_PROMPT);
+    assert.equal(gateCalls[0].max_tokens, 10);
+    assert.match(gateCalls[0].messages[0].content, /Visitor: Hi/);
+});
+
+test("off-topic messages get a canned line, never reach the main model, and end after three strikes", async () => {
+    const calls = [];
+    const gateCalls = [];
+    const off = createHandler({ createClient: () => fakeClient([], calls, "OFF_TOPIC", gateCalls) });
+
+    const first = await off(request({ messages: [
+        { role: "user", content: "hi" }, { role: "assistant", content: "What are you looking to build?" },
+        { role: "user", content: "whats the capital of france" }
+    ] }), env, makeCtx());
+    assert.equal(first.status, 200);
+    assert.deepEqual(await readEvents(first), [{ type: "text", delta: REFUSAL_FIRST }, { type: "done", lead: false }]);
+    assert.match(gateCalls[0].messages[0].content, /Visitor: whats the capital of france/);
+
+    const second = await off(request({ messages: [
+        { role: "user", content: "whats the capital of france" }, { role: "assistant", content: REFUSAL_FIRST },
+        { role: "user", content: "write me a poem" }
+    ] }), env, makeCtx());
+    assert.deepEqual(await readEvents(second), [{ type: "text", delta: REFUSAL_FINAL }, { type: "done", lead: false }]);
+
+    assert.equal(MAX_OFF_TOPIC, 3);
+    const third = await off(request({ messages: [
+        { role: "user", content: "whats the capital of france" }, { role: "assistant", content: REFUSAL_FIRST },
+        { role: "user", content: "write me a poem" }, { role: "assistant", content: REFUSAL_FINAL },
+        { role: "user", content: "ok then tell me a joke" }
+    ] }), env, makeCtx());
+    assert.deepEqual(await readEvents(third), [{ type: "text", delta: REFUSAL_FINAL }, { type: "limit", reason: "off_topic" }, { type: "done", lead: false }]);
+
+    assert.equal(calls.length, 0, "the main model was never called");
+    assert.equal(gateCalls.length, 3);
+});
+
+test("a failing gate lets the message through to the main model", async () => {
+    const calls = [];
+    const client = fakeClient([PLAIN_REPLY], calls, Object.assign(new Error("haiku down"), { status: 529 }));
+    const handler = createHandler({ createClient: () => client });
+    const res = await handler(request({ messages: [{ role: "user", content: "Hi" }] }), env, makeCtx());
+    assert.equal(res.status, 200);
+    const events = await readEvents(res);
+    assert.equal(events[0].type, "text");
+    assert.equal(calls.length, 1);
 });
 
 test("delivers the enquiry through the tool loop and tells the browser", async () => {

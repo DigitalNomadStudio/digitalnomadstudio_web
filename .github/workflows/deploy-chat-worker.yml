@@ -125,8 +125,10 @@ jobs:
           reply=$(curl -sS -N --max-time 120 "$URL" -H "Origin: https://www.digitalnomadstudio.io" -H "Content-Type: application/json" -d "$trivia")
           printf '%s\n' "$reply" | head -c 3000
           echo
-          if printf '%s' "$reply" | grep -qi 'paris'; then
-            echo "::warning::The assistant answered an off-topic trivia question. Review the Scope rules in SYSTEM_PROMPT (chat-worker/src/index.js)."
+          joined=$(printf '%s\n' "$reply" | python3 -c 'import sys, json; print("".join(json.loads(l[5:])["delta"] for l in sys.stdin if l.startswith("data:") and "\"delta\"" in l))')
+          echo "Reply as one line: $joined"
+          if printf '%s' "$joined" | grep -qi 'paris'; then
+            echo "::warning::The assistant answered an off-topic trivia question. Review the gate (GATE_PROMPT) and the Scope rules in chat-worker/src/index.js."
           else
             echo "Off-topic question was refused."
           fi
