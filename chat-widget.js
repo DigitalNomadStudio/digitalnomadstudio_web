@@ -135,16 +135,16 @@
         '.dns-chat{position:fixed;right:20px;bottom:calc(20px + env(safe-area-inset-bottom, 0px));z-index:1500;font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;line-height:1.5;-webkit-tap-highlight-color:transparent}',
         '.dns-chat *{box-sizing:border-box}',
         '.dns-chat button{touch-action:manipulation}',
-        '.dns-chat-launcher{display:flex;align-items:center;gap:.55rem;background:#1a365d;color:#fff;border:0;border-radius:999px;padding:.9rem 1.3rem;font-family:inherit;font-size:1rem;font-weight:600;box-shadow:0 10px 25px rgba(26,54,93,.35);cursor:pointer;transition:transform .2s ease,background .2s ease}',
+        '.dns-chat-launcher{display:flex;align-items:center;gap:.65rem;background:#1a365d;color:#fff;border:0;border-radius:999px;padding:.45rem 1.3rem .45rem .45rem;font-family:inherit;font-size:1rem;font-weight:600;box-shadow:0 10px 25px rgba(26,54,93,.35);cursor:pointer;transition:transform .2s ease,background .2s ease}',
         '.dns-chat-launcher:hover{background:#2d5a87;transform:translateY(-2px)}',
         '.dns-chat-launcher:focus-visible,.dns-chat button:focus-visible{outline:3px solid #ff6b35;outline-offset:2px}',
-        '.dns-chat-launcher svg{width:22px;height:22px;flex:none}',
+        '.dns-chat-launcher-avatar{width:40px;height:40px;border-radius:50%;object-fit:cover;background:#fff;flex:none;display:block}',
         '.dns-chat.open .dns-chat-launcher{display:none}',
         'body:has(.nav-menu.active) .dns-chat-launcher{display:none}',
         '.dns-chat-panel{position:fixed;right:20px;bottom:calc(20px + env(safe-area-inset-bottom, 0px));width:380px;max-width:calc(100vw - 40px);height:600px;max-height:calc(100vh - 40px);background:#fff;border-radius:16px;box-shadow:0 20px 50px rgba(0,0,0,.25);display:flex;flex-direction:column;overflow:hidden;border:1px solid #e2e8f0}',
         '.dns-chat-panel[hidden]{display:none}',
         '.dns-chat-header{display:flex;align-items:center;gap:.75rem;padding:.75rem .75rem .75rem 1rem;background:linear-gradient(135deg,#1a365d,#2d5a87);color:#fff}',
-        '.dns-chat-avatar{width:40px;height:40px;border-radius:50%;background:#fff;padding:3px;object-fit:contain;flex:none;display:block}',
+        '.dns-chat-avatar{width:40px;height:40px;border-radius:50%;background:#fff;object-fit:cover;flex:none;display:block}',
         '.dns-chat-heading{flex:1;display:flex;flex-direction:column;line-height:1.25;min-width:0}',
         '.dns-chat-heading strong{font-size:.95rem}',
         '.dns-chat-brand{font-size:.8rem;opacity:.85;font-weight:400}',
@@ -190,7 +190,8 @@
         '@media (max-width:600px){',
         '  .dns-chat-panel{top:0;left:0;right:0;bottom:auto;width:100%;max-width:100%;height:100vh;height:100dvh;max-height:none;border-radius:0;border:0}',
         '  .dns-chat-launcher-label{display:none}',
-        '  .dns-chat-launcher{padding:.95rem}',
+        '  .dns-chat-launcher{padding:.35rem}',
+        '  .dns-chat-launcher-avatar{width:48px;height:48px}',
         '  .dns-chat-header{padding-top:calc(.75rem + env(safe-area-inset-top, 0px))}',
         '  .dns-chat-msg,.dns-chat-input{font-size:16px}',
         '  .dns-chat-iconbtn{min-width:44px;min-height:44px}',
@@ -207,18 +208,18 @@
     document.head.appendChild(style);
 
     /* -------------------------------------------------------------------- DOM */
-    var CHAT_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-8 8H8l-5 3 1.6-4.8A8 8 0 1 1 21 12z"/><path d="M8 12h.01M12 12h.01M16 12h.01"/></svg>';
     var SEND_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/></svg>';
 
     var root = el('div', 'dns-chat');
     root.innerHTML =
         '<button type="button" class="dns-chat-launcher" id="dnsChatLauncher" aria-label="Chat with Marco, our AI assistant" aria-expanded="false" aria-controls="dnsChatPanel">' +
-            CHAT_ICON + '<span class="dns-chat-launcher-label">Chat with Marco</span>' +
+            '<img class="dns-chat-launcher-avatar" src="marco-avatar.jpg" alt="" width="40" height="40" decoding="async">' +
+            '<span class="dns-chat-launcher-label">Chat with Marco</span>' +
         '</button>' +
         '<div class="dns-chat-backdrop" aria-hidden="true"></div>' +
         '<section class="dns-chat-panel" id="dnsChatPanel" role="dialog" aria-label="Marco, Digital Nomad Studio AI assistant" hidden>' +
             '<header class="dns-chat-header">' +
-                '<img class="dns-chat-avatar" src="logo.png" alt="" width="40" height="40">' +
+                '<img class="dns-chat-avatar" src="marco-avatar.jpg" alt="" width="40" height="40">' +
                 '<div class="dns-chat-heading"><span class="dns-chat-title"><strong>Marco</strong><span class="dns-chat-brand">Digital Nomad Studio</span></span><span class="dns-chat-status" id="dnsChatStatus"></span></div>' +
                 '<button type="button" class="dns-chat-iconbtn" id="dnsChatReset" aria-label="Start again" title="Start again">&#8635;</button>' +
                 '<button type="button" class="dns-chat-iconbtn" id="dnsChatClose" aria-label="Close chat" title="Close">&times;</button>' +
