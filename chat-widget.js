@@ -29,7 +29,7 @@
     var WEB3FORMS_URL = 'https://api.web3forms.com/submit';
     var TURNSTILE_SRC = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
 
-    var GREETING = "Hi, I'm Marco, Digital Nomad Studio's AI assistant. I can help you describe a software or AI project for your business and pass it to the team. I can't help with anything else. What are you looking to build or automate?";
+    var GREETING = "Hi, I'm Marco, Digital Nomad Studio's AI assistant. I'm here to understand your project and get the details to the team. What are you looking to build or automate?";
     var AI_STARTERS = ['Automate my admin', 'Prototype an AI idea', 'Build an app or SaaS product', 'Not sure yet'];
     var FALLBACK_NOTICE = "I'm in guided mode right now, so I'll ask a few quick questions and pass everything to the team.";
     var LIMIT_TEXT = "That's as far as I can take it here. Leave your details and the team will pick it up from here.";
