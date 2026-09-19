@@ -645,6 +645,11 @@ body {
     margin: 0;
 }
 
+/* A lone card in the last row of the 3-column grid sits in the middle column */
+.featured-grid-uniform > .featured-card:last-child:nth-child(3n + 1) {
+    grid-column: 2;
+}
+
 
 .featured-card {
     background: white;
@@ -781,6 +786,14 @@ body {
 .products-grid-uniform {
     grid-template-columns: repeat(2, 1fr);
     gap: 2rem;
+}
+
+/* A lone card in the last row of the 2-column products grid is centred */
+.products-grid-uniform > .product-card:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+    width: 100%;
+    max-width: calc(50% - 1rem);
+    margin: 0 auto;
 }
 
 .product-category-label {
@@ -1122,6 +1135,22 @@ html {
     .featured-grid-uniform {
         grid-template-columns: repeat(2, 1fr);
     }
+
+    .featured-grid-uniform > .featured-card:last-child:nth-child(3n + 1) {
+        grid-column: auto;
+    }
+
+    .featured-grid-uniform > .featured-card:last-child:nth-child(odd) {
+        grid-column: 1 / -1;
+        max-width: calc(50% - 1rem);
+        margin: 0 auto;
+    }
+
+    .products-grid-uniform > .product-card:last-child:nth-child(odd) {
+        grid-column: auto;
+        max-width: none;
+        margin: 0;
+    }
     
     .featured-image {
         aspect-ratio: 1 / 1;
@@ -1139,6 +1168,12 @@ html {
 
     .featured-grid-uniform {
         grid-template-columns: 1fr;
+    }
+
+    .featured-grid-uniform > .featured-card:last-child:nth-child(odd) {
+        grid-column: auto;
+        max-width: none;
+        margin: 0;
     }
 
     .footer-links {

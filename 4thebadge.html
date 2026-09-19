@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="4thebadge is the football app that takes on your club's colours. Live scores, fixtures, tables, squads and stats across 15 competitions - no App Store needed.">
+    <meta name="theme-color" content="#00071a">
+    <title>4thebadge - Live Football Scores App for Your Club</title>
+
+    <!-- Canonical -->
+    <link rel="canonical" href="https://www.digitalnomadstudio.io/4thebadge.html">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="4thebadge - For the Fans Who Live for the Badge">
+    <meta property="og:description" content="The football app that takes on your club's colours. Live scores, fixtures, tables, squads and stats across 15 competitions, straight from your home screen.">
+    <meta property="og:url" content="https://www.digitalnomadstudio.io/4thebadge.html">
+    <meta property="og:image" content="https://www.digitalnomadstudio.io/4thebadge-card.jpg">
+    <meta property="og:site_name" content="Digital Nomad Studio">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="4thebadge - For the Fans Who Live for the Badge">
+    <meta name="twitter:description" content="The football app that takes on your club's colours. Live scores, fixtures, tables, squads and stats across 15 competitions, straight from your home screen.">
+    <meta name="twitter:image" content="https://www.digitalnomadstudio.io/4thebadge-card.jpg">
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png?v=2">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png?v=2">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=2">
+    <link rel="manifest" href="site.webmanifest?v=2">
+
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@graph": [
+        {
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                {
+                    "@type": "ListItem",
+                    "position": 1,
+                    "name": "Home",
+                    "item": "https://www.digitalnomadstudio.io/"
+                },
+                {
+                    "@type": "ListItem",
+                    "position": 2,
+                    "name": "Products",
+                    "item": "https://www.digitalnomadstudio.io/products.html"
+                },
+                {
+                    "@type": "ListItem",
+                    "position": 3,
+                    "name": "4thebadge",
+                    "item": "https://www.digitalnomadstudio.io/4thebadge.html"
+                }
+            ]
+        },
+        {
+            "@type": "WebApplication",
+            "name": "4thebadge",
+            "applicationCategory": "SportsApplication",
+            "url": "https://www.digitalnomadstudio.io/4thebadge.html",
+            "description": "4thebadge is the football app that takes on your club's colours. Live scores, fixtures, tables, squads and stats across 15 competitions - no App Store needed.",
+            "author": {
+                "@id": "https://www.digitalnomadstudio.io/#organization"
+            },
+            "publisher": {
+                "@id": "https://www.digitalnomadstudio.io/#organization"
+            },
+            "operatingSystem": "Any",
+            "browserRequirements": "Requires a modern web browser. Installable on iPhone and Android as a progressive web app.",
+            "sameAs": "https://www.4thebadge.com",
+            "image": "https://www.digitalnomadstudio.io/4thebadge-card.jpg",
+            "offers": [
+                {
+                    "@type": "Offer",
+                    "price": "0",
+                    "priceCurrency": "AUD",
+                    "name": "Free",
+                    "description": "One club, next match and last result, league table, season stats and the full squad"
+                },
+                {
+                    "@type": "Offer",
+                    "price": "5",
+                    "priceCurrency": "AUD",
+                    "name": "Pro Monthly",
+                    "description": "Per month"
+                },
+                {
+                    "@type": "Offer",
+                    "price": "50",
+                    "priceCurrency": "AUD",
+                    "name": "Pro Yearly",
+                    "description": "Per year"
+                }
+            ]
+        }
+    ]
+}
+    </script>
+    <script src="tracking.js" defer></script>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="logo-container">
+                <a href="./">
+                    <img src="logo.png" alt="Digital Nomad Studio logo" class="logo" width="260" height="240">
+                </a>
+            </div>
+            <nav class="nav">
+                <ul class="nav-menu" id="navMenu">
+                    <li><a href="./">Home</a></li>
+                    <li><a href="products.html">Products</a></li>
+                    <li><a href="ai-services.html">AI Solutions</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="./#contact">Contact</a></li>
+                </ul>
+                <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu">
+                    <span class="hamburger"></span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <div class="menu-backdrop" id="menuBackdrop"></div>
+
+    <main>
+        <section class="page-content">
+            <div class="container">
+                <div class="content-wrapper">
+                    <div class="page-header">
+                        <span class="product-badge" style="margin-bottom: 1rem;">Web App</span>
+                        <h1 class="page-title">4thebadge</h1>
+                        <p class="page-subtitle">For the fans who live for the badge</p>
+                    </div>
+
+                    <!-- Hero Image -->
+                    <div class="content-section">
+                        <img src="4thebadge-card.jpg" width="1024" height="1024" fetchpriority="high" alt="4thebadge - live scores, fixtures, tables and squads in your club's colours" style="width: 100%; height: auto; border-radius: 12px; box-shadow: var(--shadow-md);">
+                    </div>
+
+                    <!-- About Section -->
+                    <div class="content-section">
+                        <h2>Your club. Always with you.</h2>
+                        <p>4thebadge is a football app that becomes your club's app. Pick your league and your club, and everything - the badge, the colours, the home screen icon - takes on your side's identity. From then on it is your club's live scores, fixtures, results, league table, squad and stats, in one place and a tap away.</p>
+                        <p>It is built for supporters who follow a club rather than a league: the League Two devotee, the A-League regular, the expat keeping up with the Championship from Sydney. Because it runs as a progressive web app there is nothing to download from an App Store. Open it in your browser, add it to your home screen, and it works like a native app on iPhone and Android.</p>
+                    </div>
+
+                    <!-- How It Works -->
+                    <div class="content-section">
+                        <h2>How it works</h2>
+                        <div class="how-it-works-grid">
+                            <div class="step-card">
+                                <span class="step-number">1</span>
+                                <h3>Pick your club</h3>
+                                <p>Choose your league and search for your club - from the Premier League to League Two, the Scottish Premiership, the A-League and Europe's top divisions.</p>
+                            </div>
+                            <div class="step-card">
+                                <span class="step-number">2</span>
+                                <h3>It becomes your club's app</h3>
+                                <p>The badge, theme and home screen icon switch to your club's colours, and your club is highlighted wherever it appears - the table, the fixtures, the Golden Boot race.</p>
+                            </div>
+                            <div class="step-card">
+                                <span class="step-number">3</span>
+                                <h3>Add it to your home screen</h3>
+                                <p>No App Store and no download queue. Add 4thebadge to your home screen from Safari or Chrome and it opens like any other app.</p>
+                            </div>
+                            <div class="step-card">
+                                <span class="step-number">4</span>
+                                <h3>Live on matchday</h3>
+                                <p>Scores update every minute while the match is on, with every goal, card and substitution as it happens. Between matches, the next fixture and latest result are always up front.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Features Section -->
+                    <div class="content-section">
+                        <h2>Everything a fan needs</h2>
+                        <ul>
+                            <li><strong>Live scores</strong> - updated every minute during matches, so you are never a refresh behind</li>
+                            <li><strong>Match centre</strong> - scorers and assists, cards and substitutions, formations with player ratings, and the match stats side by side</li>
+                            <li><strong>Fixtures and results</strong> - the next five fixtures in your local time and every result of the season, with form at a glance</li>
+                            <li><strong>League table</strong> - live standings with form and goal difference, your club picked out wherever it sits</li>
+                            <li><strong>The squad</strong> - the full first-team squad by position, with season stats a tap away</li>
+                            <li><strong>Golden Boot</strong> - top scorers and assists across each competition, updated as the goals go in</li>
+                            <li><strong>My Leagues</strong> - follow whole competitions, with matchweeks, results and the top and bottom of every table, Champions League included</li>
+                            <li><strong>Up to five clubs</strong> - the local side, the boyhood club and the one you picked up on holiday, each in its own colours</li>
+                        </ul>
+                    </div>
+
+                    <!-- Competitions Section -->
+                    <div class="content-section">
+                        <h2>Competitions covered</h2>
+                        <p>Twelve domestic leagues you can follow club by club, plus the three UEFA club competitions in My Leagues.</p>
+                        <div class="tech-badges">
+                            <span class="tech-badge">Premier League</span>
+                            <span class="tech-badge">EFL Championship</span>
+                            <span class="tech-badge">EFL League One</span>
+                            <span class="tech-badge">EFL League Two</span>
+                            <span class="tech-badge">Scottish Premiership</span>
+                            <span class="tech-badge">A-League Men</span>
+                            <span class="tech-badge">Bundesliga</span>
+                            <span class="tech-badge">La Liga</span>
+                            <span class="tech-badge">Serie A</span>
+                            <span class="tech-badge">Ligue 1</span>
+                            <span class="tech-badge">Eredivisie</span>
+                            <span class="tech-badge">Primeira Liga</span>
+                            <span class="tech-badge">UEFA Champions League</span>
+                            <span class="tech-badge">UEFA Europa League</span>
+                            <span class="tech-badge">UEFA Conference League</span>
+                        </div>
+                    </div>
+
+                    <!-- Pricing Section -->
+                    <div class="content-section">
+                        <h2>Free to start, Pro when you want more</h2>
+                        <p>Every new supporter gets 30 days of Pro free, with no card and no sign-up needed. After that, Free keeps your club close and Pro brings the whole season to life.</p>
+                        <ul>
+                            <li><strong>Free</strong> - one club from any of the 12 domestic leagues, next match and last result, league table and season stats, and the full squad</li>
+                            <li><strong>Pro</strong> - A$5 a month or A$50 a year: live scores every minute, full match detail, every fixture and result of the season, the Golden Boot race and head-to-head records, My Leagues across all 15 competitions, and up to five clubs</li>
+                        </ul>
+                    </div>
+
+                    <!-- Accessibility Section -->
+                    <div class="content-section">
+                        <h2>Accessible by design</h2>
+                        <p>4thebadge is built to work for every fan, including supporters with a visual impairment. It works fully with VoiceOver on iPhone and TalkBack on Android, so every score, event and stat can be read aloud. The dark theme with gold accents meets WCAG contrast standards, text scales with your device settings, and every control can be reached from a keyboard or switch device.</p>
+                    </div>
+
+                    <!-- Technology -->
+                    <div class="content-section">
+                        <h2>Built with</h2>
+                        <p>4thebadge is a progressive web app: one codebase serving iPhone, Android and desktop browsers, installable without an app store, with match data synced live into a cloud database while play is under way.</p>
+                        <div class="tech-badges">
+                            <span class="tech-badge">React 18</span>
+                            <span class="tech-badge">TypeScript</span>
+                            <span class="tech-badge">Vite</span>
+                            <span class="tech-badge">Progressive Web App</span>
+                            <span class="tech-badge">Firebase</span>
+                            <span class="tech-badge">Stripe</span>
+                        </div>
+                    </div>
+
+                    <!-- CTA Section -->
+                    <div class="contact-box">
+                        <h2>Ready to wear the badge?</h2>
+                        <p>Open 4thebadge in Safari or Chrome, choose your club and add it to your home screen. Free to start, no account required, and it works on iPhone and Android.</p>
+                        <a href="https://www.4thebadge.com" class="btn btn-primary btn-large" target="_blank" rel="noopener">Open 4thebadge</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p>&copy; 2026 Digital Nomad Studio, Sydney, Australia. All rights reserved.</p>
+                <div class="footer-links">
+                    <a href="./">Home</a>
+                    <a href="products.html">Products</a>
+                    <a href="ai-services.html">AI Solutions</a>
+                    <a href="about.html">About</a>
+                    <a href="privacy.html">Privacy Policy</a>
+                    <a href="terms.html">Terms of Use</a>
+                    <a href="support.html">Support</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const navMenu = document.getElementById('navMenu');
+        const menuBackdrop = document.getElementById('menuBackdrop');
+
+        mobileMenuToggle.addEventListener('click', () => {
+            mobileMenuToggle.classList.toggle('active');
+            navMenu.classList.toggle('active');
+            menuBackdrop.classList.toggle('active');
+            document.body.style.overflow = navMenu.classList.contains('active') ? 'hidden' : '';
+        });
+
+        menuBackdrop.addEventListener('click', () => {
+            mobileMenuToggle.classList.remove('active');
+            navMenu.classList.remove('active');
+            menuBackdrop.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.nav')) {
+                mobileMenuToggle.classList.remove('active');
+                navMenu.classList.remove('active');
+                menuBackdrop.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
+
+        navMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenuToggle.classList.remove('active');
+                navMenu.classList.remove('active');
+                menuBackdrop.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+        });
+    </script>
+    <script src="chat-config.js" defer></script>
+    <script src="chat-widget.js" defer></script>
+</body>
+</html>
