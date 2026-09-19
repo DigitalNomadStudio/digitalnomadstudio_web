@@ -1,9 +1,23 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
-    createHandler, normaliseMessages, isAllowedOrigin, CAPTURE_ENQUIRY_TOOL, SHOW_SUMMARY_TOOL, MODEL,
-    MAX_TOKENS, MAX_MESSAGES, HARD_MAX_MESSAGES, MAX_MESSAGE_CHARS, LIMIT_MESSAGE,
-    GATE_MODEL, GATE_PROMPT, MAX_OFF_TOPIC, REFUSAL_FIRST, REFUSAL_FINAL
+  createHandler,
+  normaliseMessages,
+  isAllowedOrigin,
+  CAPTURE_ENQUIRY_TOOL,
+  SHOW_SUMMARY_TOOL,
+  MODEL,
+  MAX_TOKENS,
+  MAX_MESSAGES,
+  HARD_MAX_MESSAGES,
+  MAX_MESSAGE_CHARS,
+  LIMIT_MESSAGE,
+  GATE_MODEL,
+  GATE_PROMPT,
+  MAX_OFF_TOPIC,
+  REFUSAL_FIRST,
+  REFUSAL_FINAL,
+  SYSTEM_PROMPT,
 } from "../src/index.js";
 
 const ORIGIN = "https://www.digitalnomadstudio.io";
@@ -453,4 +467,13 @@ test("normaliseMessages merges same-role runs and drops a leading assistant mess
     ]);
     assert.equal(normaliseMessages([]).error, "messages must be a non-empty array");
     assert.equal(normaliseMessages([{ role: "user", content: "   " }]).error, "message content must not be empty");
+});
+
+test("both prompts know the studio's own products, so questions about them are not refused", () => {
+  for (const product of ["TeamRelay", "MatchTagr", "Touchline HQ", "4thebadge", "PropertyBuyWise", "Mindset 4 Sports Performance", "Witness Capture Proof"]) {
+    assert.ok(GATE_PROMPT.includes(product), `gate prompt names ${product}`);
+    assert.ok(SYSTEM_PROMPT.includes(product), `system prompt names ${product}`);
+  }
+  assert.ok(GATE_PROMPT.includes('"4 the badge"'), "gate prompt knows the spaced spelling of 4thebadge");
+  assert.ok(SYSTEM_PROMPT.includes("https://www.4thebadge.com"), "system prompt has the 4thebadge address");
 });

@@ -98,6 +98,7 @@ jobs:
           body='{"messages":[{"role":"user","content":"Hi, I run a small plumbing business in Sydney and typing up quotes takes me every evening. Can you help?"}],"page":"/deploy-check"}'
           trivia='{"messages":[{"role":"user","content":"whats the capital of france"}],"page":"/deploy-check"}'
           competitor='{"messages":[{"role":"user","content":"I want to build a web app for site plans for traffic management"},{"role":"assistant","content":"Got it - site plans. What does your business do, and roughly how many people would use it?"},{"role":"user","content":"this will be a competitor to RapidPLan. Do you know them?"}],"page":"/deploy-check"}'
+          product='{"messages":[{"role":"user","content":"what is 4 the badge?"}],"page":"/deploy-check"}'
           canned='I can only help with enquiries about software and AI projects for your business.'
           join_deltas() { python3 -c 'import sys, json; print("".join(json.loads(l[5:])["delta"] for l in sys.stdin if l.startswith("data:") and "\"delta\"" in l))'; }
           echo "Preflight from the website origin:"
@@ -138,6 +139,18 @@ jobs:
             exit 1
           fi
           echo "Competitor mention was handled as part of the project."
+          echo "Question about one of the studio's own products (must be answered, not refused):"
+          reply=$(curl -sS -N --max-time 120 "$URL" -H "Origin: https://www.digitalnomadstudio.io" -H "Content-Type: application/json" -d "$product")
+          joined=$(printf '%s\n' "$reply" | join_deltas)
+          echo "  Reply: $joined"
+          if printf '%s' "$joined" | grep -qF "$canned"; then
+            echo "::error::A question about the studio's own product (4thebadge) was treated as off-topic. Review GATE_PROMPT and the Scope rules in chat-worker/src/index.js."
+            exit 1
+          fi
+          if ! printf '%s' "$joined" | grep -qi 'badge'; then
+            echo "::warning::The reply about 4thebadge did not mention it. Review the product facts in SYSTEM_PROMPT."
+          fi
+          echo "Product question was answered."
           echo "Off-topic probe (expect the canned refusal, no answer):"
           reply=$(curl -sS -N --max-time 120 "$URL" -H "Origin: https://www.digitalnomadstudio.io" -H "Content-Type: application/json" -d "$trivia")
           joined=$(printf '%s\n' "$reply" | join_deltas)
