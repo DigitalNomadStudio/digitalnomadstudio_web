@@ -477,3 +477,19 @@ test("both prompts know the studio's own products, so questions about them are n
   assert.ok(GATE_PROMPT.includes('"4 the badge"'), "gate prompt knows the spaced spelling of 4thebadge");
   assert.ok(SYSTEM_PROMPT.includes("https://www.4thebadge.com"), "system prompt has the 4thebadge address");
 });
+
+test("the studio is described as software and AI, with software services listed first", () => {
+  const focus = SYSTEM_PROMPT.split("\n").find((l) => l.startsWith("- Focus:"));
+  assert.ok(focus, "the About block has a Focus line");
+  assert.match(focus, /software/i, "the Focus line names software, not AI alone");
+  assert.match(focus, /\bAI\b/, "the Focus line still names AI");
+  // An app enquiry must not be the last thing Marco thinks of, so software leads the services line.
+  const services = SYSTEM_PROMPT.split("\n").find((l) => l.startsWith("- Services"));
+  assert.ok(services, "the About block has a Services line");
+  assert.ok(services.indexOf("iOS") < services.indexOf("AI automation"), "iOS work is listed before AI automation");
+  assert.ok(services.indexOf("SaaS") < services.indexOf("AI automation"), "SaaS work is listed before AI automation");
+  // Android enquiries used to have nowhere to go: the enum forced them into "iOS app".
+  const service = CAPTURE_ENQUIRY_TOOL.input_schema.properties.service_type;
+  assert.ok(service.enum.includes("iOS or mobile app"), "the captured service covers mobile, not iOS alone");
+  assert.equal(service.enum[0], "iOS or mobile app", "the first option offered is an app build");
+});

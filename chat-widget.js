@@ -30,7 +30,7 @@
     var TURNSTILE_SRC = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
 
     var GREETING = "Hi, I'm Marco, Digital Nomad Studio's AI assistant. I'm here to understand your project and get the details to the team. What are you looking to build or automate?";
-    var AI_STARTERS = ['Automate my admin', 'Prototype an AI idea', 'Build an app or SaaS product', 'Not sure yet'];
+    var AI_STARTERS = ['Build an iOS app', 'Build a SaaS product', 'Automate my admin', 'Not sure yet'];
     var FALLBACK_NOTICE = "I'm in guided mode right now, so I'll ask a few quick questions and pass everything to the team.";
     var LIMIT_TEXT = "That's as far as I can take it here. Leave your details and the team will pick it up from here.";
     var LIMIT_NOTICE = 'Let me take your details so the team can follow up properly.';
@@ -39,7 +39,7 @@
     var FLOW = [
         {
             key: 'service',
-            chips: ['AI automation', 'AI rapid prototype', 'Custom AI agent or assistant', 'AI features for my product', 'iOS app', 'SaaS or web product', 'Not sure yet'],
+            chips: ['iOS or mobile app', 'SaaS or web product', 'Internal tool or dashboard', 'AI automation', 'Custom AI agent or assistant', 'AI rapid prototype', 'AI features for my product', 'Not sure yet'],
             placeholder: 'Or type your own answer',
             prompt: function () { return "I'll ask a few quick questions so the team knows exactly how to help. First - what are you looking for?"; }
         },

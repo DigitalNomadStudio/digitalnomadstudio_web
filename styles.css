@@ -100,6 +100,18 @@ body {
     font-size: 1rem;
     transition: color 0.3s ease;
     position: relative;
+    white-space: nowrap;
+}
+
+/* Six nav items need a tighter gap between the mobile breakpoint and about 900px */
+@media (min-width: 769px) and (max-width: 900px) {
+    .nav-menu {
+        gap: 1.25rem;
+    }
+
+    .nav-menu a {
+        font-size: 0.95rem;
+    }
 }
 
 .nav-menu a:hover {
