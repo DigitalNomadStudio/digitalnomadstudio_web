@@ -39,7 +39,7 @@
     var FLOW = [
         {
             key: 'service',
-            chips: ['iOS or mobile app', 'SaaS or web product', 'Internal tool or dashboard', 'AI automation', 'Custom AI agent or assistant', 'AI rapid prototype', 'AI features for my product', 'Not sure yet'],
+            chips: ['iOS or mobile app', 'SaaS or web product', 'Internal tool or dashboard', 'AI automation', 'Custom AI agent or assistant', 'AI rapid prototype', 'AI features for an existing product', 'Not sure yet'],
             placeholder: 'Or type your own answer',
             prompt: function () { return "I'll ask a few quick questions so the team knows exactly how to help. First - what are you looking for?"; }
         },

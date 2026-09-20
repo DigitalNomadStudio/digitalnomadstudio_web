@@ -493,3 +493,28 @@ test("the studio is described as software and AI, with software services listed 
   assert.ok(service.enum.includes("iOS or mobile app"), "the captured service covers mobile, not iOS alone");
   assert.equal(service.enum[0], "iOS or mobile app", "the first option offered is an app build");
 });
+
+test("the three service lists agree, so one enquiry cannot arrive under two labels", async () => {
+  // The widget posts its chip text straight to Web3Forms when the Worker is unreachable,
+  // so a chip that disagrees with the enum means the team's inbox sees two names for one service.
+  const { readFile } = await import("node:fs/promises");
+  const root = new URL("../../", import.meta.url);
+  const widget = await readFile(new URL("chat-widget.js", root), "utf8");
+  const form = await readFile(new URL("submit-idea.html", root), "utf8");
+
+  const enumValues = CAPTURE_ENQUIRY_TOOL.input_schema.properties.service_type.enum;
+
+  const chips = widget
+    .match(/chips: \[([^\]]*)\],\n\s*placeholder: 'Or type your own answer'/)[1]
+    .split(",")
+    .map((c) => c.trim().replace(/^'|'$/g, ""));
+  assert.deepEqual(chips, enumValues, "widget chips match the Worker enum");
+
+  // The form's visible labels read naturally ("An iOS or mobile app"), but the submitted
+  // value must be the enum wording, or the inbox sees two names for one service.
+  const select = form.match(/<select id="projectType"[\s\S]*?<\/select>/)[0];
+  const options = [...select.matchAll(/<option value="([^"]*)"/g)]
+    .map((m) => m[1])
+    .filter((v) => v !== "");
+  assert.deepEqual(options, enumValues, "form option values match the Worker enum");
+});
