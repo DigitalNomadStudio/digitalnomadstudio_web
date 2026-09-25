@@ -10,8 +10,9 @@
  *                 "ads_conversion_Submit_lead_form_1"; fired without send_to so it reaches the Ads
  *                 tag and Analytics alike
  *
- * The site calls window.dnsTrack("form") when the project form is delivered and
- * window.dnsTrack("chat") when Marco delivers an enquiry. Clicks on email and App Store links
+ * The site calls window.dnsTrack("form") when the project form is delivered,
+ * window.dnsTrack("chat") when Marco delivers an enquiry, and window.dnsTrack("chatopen") the
+ * first time the chat is opened in a session. Clicks on email and App Store links
  * are tracked automatically. Each call sends a Google Ads conversion (when a label exists) and a
  * Google Analytics event (when ga4Id is set).
  */
@@ -24,16 +25,18 @@
             form: '',       // Project form enquiry
             chat: '',       // Marco chat enquiry
             email: '',      // Email link click
-            appstore: ''    // App Store click
+            appstore: '',   // App Store click
+            chatopen: ''    // Marco chat opened
         },
         events: {
             form: 'ads_conversion_Submit_lead_form_1',   // Google Ads conversion (source: Analytics property 554805907)
             chat: 'ads_conversion_Submit_lead_form_1',   // Marco enquiries count as the same lead-form conversion
             email: '',
-            appstore: ''
+            appstore: '',
+            chatopen: ''
         }
     };
-    var GA4_EVENTS = { form: 'generate_lead', chat: 'generate_lead', email: 'contact_click', appstore: 'app_store_click' };
+    var GA4_EVENTS = { form: 'generate_lead', chat: 'generate_lead', email: 'contact_click', appstore: 'app_store_click', chatopen: 'chat_open' };
 
     var ids = [CONFIG.googleAdsId, CONFIG.ga4Id].filter(Boolean);
     var enabled = ids.length > 0;

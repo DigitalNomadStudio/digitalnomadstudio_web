@@ -100,9 +100,19 @@
         return node;
     }
     function fresh() {
-        return { mode: cfg.endpoint ? 'ai' : 'guided', messages: [], step: 0, answers: {}, sent: false, open: false, capped: false, lastActivity: Date.now(), welcomedAt: 0, welcomePending: false, nudged: false, tracked: false };
+        return { mode: cfg.endpoint ? 'ai' : 'guided', messages: [], step: 0, answers: {}, sent: false, open: false, capped: false, lastActivity: Date.now(), welcomedAt: 0, welcomePending: false, nudged: false, tracked: false, openTracked: false };
     }
     // Report a delivered enquiry to the site's conversion tracking (tracking.js), once per conversation.
+    // Opening the chat is a weak signal, recorded once per conversation so Performance Max
+    // has something to learn from at a budget where real enquiries are rare.
+    function trackOpen() {
+        if (state.openTracked) { return; }
+        state.openTracked = true;
+        if (typeof window.dnsTrack === 'function') {
+            try { window.dnsTrack('chatopen', { chat_mode: state.mode }); } catch (e) { /* tracking must never break the chat */ }
+        }
+    }
+
     function trackEnquiry() {
         if (state.tracked) { return; }
         state.tracked = true;
@@ -757,6 +767,7 @@
         panel.hidden = false;
         launcher.setAttribute('aria-expanded', 'true');
         state.open = true;
+        trackOpen();
         lockScroll();
         fitToViewport();
         renderAll();
