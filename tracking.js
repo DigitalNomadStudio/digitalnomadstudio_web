@@ -22,11 +22,11 @@
         googleAdsId: 'AW-18458647532',
         ga4Id: 'G-M7QPHS152N',
         conversions: {
-            form: '',       // Project form enquiry
-            chat: '',       // Marco chat enquiry
-            email: '',      // Email link click
-            appstore: '',   // App Store click
-            chatopen: ''    // Marco chat opened
+            form: 'AW-18458647532/vNMYCIC4yIUdEOy34uFE',      // Enquiry Received (primary)
+            chat: 'AW-18458647532/vNMYCIC4yIUdEOy34uFE',      // same action - a lead is a lead
+            email: 'AW-18458647532/MOAbCIO4yIUdEOy34uFE',     // Email link clicked (secondary)
+            appstore: '',                                      // App Store click - no action created
+            chatopen: 'AW-18458647532/VwnrCIa4yIUdEOy34uFE'   // Chat opened (secondary)
         },
         events: {
             form: 'ads_conversion_Submit_lead_form_1',   // Google Ads conversion (source: Analytics property 554805907)
