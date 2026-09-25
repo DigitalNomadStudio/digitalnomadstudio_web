@@ -388,6 +388,17 @@ body {
     color: var(--primary-color);
 }
 
+.contact .btn-secondary {
+    color: white;
+    border-color: rgba(255, 255, 255, 0.7);
+}
+
+.contact .btn-secondary:hover {
+    background-color: white;
+    color: var(--primary-color);
+    border-color: white;
+}
+
 .contact .btn-primary:hover {
     background-color: var(--bg-section);
     transform: translateY(-2px);
@@ -424,6 +435,22 @@ body {
 }
 
 .footer-links a:hover {
+    color: white;
+}
+
+.footer-areas {
+    margin: 0;
+    max-width: 640px;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.footer-areas a {
+    color: rgba(255, 255, 255, 0.85);
+    text-decoration: underline;
+    transition: color 0.3s ease;
+}
+
+.footer-areas a:hover {
     color: white;
 }
 

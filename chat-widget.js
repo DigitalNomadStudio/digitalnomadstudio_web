@@ -18,13 +18,17 @@
     if (window.__dnsChatLoaded) { return; }
     window.__dnsChatLoaded = true;
 
-    var cfg = Object.assign({ endpoint: '', web3formsKey: '', email: 'team@digitalnomadstudio.io', turnstileSiteKey: '', nudgeAfterMs: 180000 }, window.DNS_CHAT || {});
+    var cfg = Object.assign({ endpoint: '', web3formsKey: '', email: 'team@digitalnomadstudio.io', turnstileSiteKey: '', nudgeAfterMs: 180000, teaserAfterMs: 7000 }, window.DNS_CHAT || {});
     var STORAGE_KEY = 'dnsChat.v2';
     var MAX_HISTORY = 28;      // 14 visitor turns, matching the Worker's cap
     var WELCOME_BACK_AFTER_MS = 30 * 60 * 1000;
     var NUDGE_AFTER_MS = Number(cfg.nudgeAfterMs) > 0 ? Number(cfg.nudgeAfterMs) : 180000;
+    // The launcher is otherwise silent, so a visitor who never clicks it never hears from Marco.
+    // Set window.DNS_CHAT.teaserAfterMs to 0 to turn the bubble off.
+    var TEASER_AFTER_MS = Number(cfg.teaserAfterMs) >= 0 ? Number(cfg.teaserAfterMs) : 7000;
     var WELCOME_BACK = 'Welcome back. Shall we carry on where we left off, or start again?';
     var NUDGE_TEXT = "No rush - I'm here when you're ready. If it's easier, leave your name and email and the team will follow up.";
+    var TEASER_TEXT = "Hi, I'm Marco. What are you looking to build?";
     var MAX_LEN = 1200;
     var WEB3FORMS_URL = 'https://api.web3forms.com/submit';
     var TURNSTILE_SRC = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
@@ -100,7 +104,7 @@
         return node;
     }
     function fresh() {
-        return { mode: cfg.endpoint ? 'ai' : 'guided', messages: [], step: 0, answers: {}, sent: false, open: false, capped: false, lastActivity: Date.now(), welcomedAt: 0, welcomePending: false, nudged: false, tracked: false, openTracked: false };
+        return { mode: cfg.endpoint ? 'ai' : 'guided', messages: [], step: 0, answers: {}, sent: false, open: false, capped: false, lastActivity: Date.now(), welcomedAt: 0, welcomePending: false, nudged: false, tracked: false, openTracked: false, teaserDone: false };
     }
     // Report a delivered enquiry to the site's conversion tracking (tracking.js), once per conversation.
     // Opening the chat is a weak signal, recorded once per conversation so Performance Max
@@ -142,7 +146,7 @@
     /* ----------------------------------------------------------------- styles */
     var style = document.createElement('style');
     style.textContent = [
-        '.dns-chat{position:fixed;right:20px;bottom:calc(20px + env(safe-area-inset-bottom, 0px));z-index:1500;font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;line-height:1.5;-webkit-tap-highlight-color:transparent}',
+        '.dns-chat{position:fixed;right:20px;bottom:calc(20px + env(safe-area-inset-bottom, 0px));z-index:1500;display:flex;flex-direction:column;align-items:flex-end;gap:.6rem;font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;line-height:1.5;-webkit-tap-highlight-color:transparent}',
         '.dns-chat *{box-sizing:border-box}',
         '.dns-chat button{touch-action:manipulation}',
         '.dns-chat-launcher{display:flex;align-items:center;gap:.65rem;background:#1a365d;color:#fff;border:0;border-radius:999px;padding:.45rem 1.3rem .45rem .45rem;font-family:inherit;font-size:1rem;font-weight:600;box-shadow:0 10px 25px rgba(26,54,93,.35);cursor:pointer;transition:transform .2s ease,background .2s ease}',
@@ -151,6 +155,15 @@
         '.dns-chat-launcher-avatar{width:40px;height:40px;border-radius:50%;object-fit:cover;background:#fff;flex:none;display:block}',
         '.dns-chat.open .dns-chat-launcher{display:none}',
         'body:has(.nav-menu.active) .dns-chat-launcher{display:none}',
+        '.dns-chat-teaser{display:flex;align-items:flex-start;max-width:min(270px,calc(100vw - 48px));background:#fff;color:#1a365d;border:1px solid #e2e8f0;border-radius:14px;box-shadow:0 10px 25px rgba(26,54,93,.2);padding:.15rem;animation:dnsTeaserIn .25s ease-out}',
+        '.dns-chat-teaser[hidden]{display:none}',
+        '.dns-chat-teaser-text{flex:1;background:transparent;border:0;border-radius:12px;font-family:inherit;font-size:.9rem;font-weight:500;color:inherit;text-align:left;line-height:1.4;padding:.55rem .3rem .55rem .7rem;cursor:pointer}',
+        '.dns-chat-teaser-text:hover{background:#f7fafc}',
+        '.dns-chat-teaser-close{flex:none;background:transparent;border:0;border-radius:10px;color:#718096;font-size:1.15rem;line-height:1;padding:.45rem .55rem;cursor:pointer}',
+        '.dns-chat-teaser-close:hover{color:#1a365d;background:#edf2f7}',
+        '.dns-chat.open .dns-chat-teaser{display:none}',
+        'body:has(.nav-menu.active) .dns-chat-teaser{display:none}',
+        '@keyframes dnsTeaserIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}',
         '.dns-chat-panel{position:fixed;right:20px;bottom:calc(20px + env(safe-area-inset-bottom, 0px));width:380px;max-width:calc(100vw - 40px);height:600px;max-height:calc(100vh - 40px);background:#fff;border-radius:16px;box-shadow:0 20px 50px rgba(0,0,0,.25);display:flex;flex-direction:column;overflow:hidden;border:1px solid #e2e8f0}',
         '.dns-chat-panel[hidden]{display:none}',
         '.dns-chat-header{display:flex;align-items:center;gap:.75rem;padding:.75rem .75rem .75rem 1rem;background:linear-gradient(135deg,#1a365d,#2d5a87);color:#fff}',
@@ -213,7 +226,7 @@
         '  html.dns-chat-lock body > :not(.dns-chat){visibility:hidden}',
         '  .dns-chat.open .dns-chat-backdrop{display:block}',
         '}',
-        '@media (prefers-reduced-motion:reduce){.dns-chat-launcher,.dns-chat-typing i{transition:none;animation:none}}'
+        '@media (prefers-reduced-motion:reduce){.dns-chat-launcher,.dns-chat-teaser,.dns-chat-typing i{transition:none;animation:none}}'
     ].join('\n');
     document.head.appendChild(style);
 
@@ -222,6 +235,10 @@
 
     var root = el('div', 'dns-chat');
     root.innerHTML =
+        '<div class="dns-chat-teaser" id="dnsChatTeaser" hidden>' +
+            '<button type="button" class="dns-chat-teaser-text" id="dnsChatTeaserOpen">' + TEASER_TEXT + '</button>' +
+            '<button type="button" class="dns-chat-teaser-close" id="dnsChatTeaserClose" aria-label="Dismiss">&times;</button>' +
+        '</div>' +
         '<button type="button" class="dns-chat-launcher" id="dnsChatLauncher" aria-label="Chat with Marco, our AI assistant" aria-expanded="false" aria-controls="dnsChatPanel">' +
             '<img class="dns-chat-launcher-avatar" src="marco-avatar.jpg" alt="" width="40" height="40" decoding="async">' +
             '<span class="dns-chat-launcher-label">Chat with Marco</span>' +
@@ -247,6 +264,7 @@
     document.body.appendChild(root);
 
     var launcher = root.querySelector('#dnsChatLauncher');
+    var teaser = root.querySelector('#dnsChatTeaser');
     var panel = root.querySelector('#dnsChatPanel');
     var statusEl = root.querySelector('#dnsChatStatus');
     var messagesEl = root.querySelector('#dnsChatMessages');
@@ -713,6 +731,28 @@
         save();
         renderChips();
     }
+    // A one-off bubble beside the launcher, so Marco says hello to a visitor who would never
+    // have clicked. Showing it is not an enquiry and deliberately fires no conversion - only a
+    // real open does, via trackOpen().
+    var teaserTimer = null;
+    function teaserEligible() {
+        return TEASER_AFTER_MS > 0 && !state.teaserDone && !state.open && !state.messages.length && panel.hidden;
+    }
+    function scheduleTeaser() {
+        if (teaserTimer) { clearTimeout(teaserTimer); teaserTimer = null; }
+        if (!teaserEligible()) { return; }
+        teaserTimer = setTimeout(showTeaser, TEASER_AFTER_MS);
+    }
+    function showTeaser() {
+        teaserTimer = null;
+        if (!teaserEligible() || document.visibilityState === 'hidden') { return; }
+        teaser.hidden = false;
+    }
+    function dismissTeaser(remember) {
+        if (teaserTimer) { clearTimeout(teaserTimer); teaserTimer = null; }
+        teaser.hidden = true;
+        if (remember && !state.teaserDone) { state.teaserDone = true; save(); }
+    }
     function scheduleNudge() {
         if (nudgeTimer) { clearTimeout(nudgeTimer); nudgeTimer = null; }
         if (panel.hidden || document.visibilityState === 'hidden') { return; }
@@ -763,6 +803,7 @@
         renderChips();
     }
     function open(focus) {
+        dismissTeaser(true);
         root.classList.add('open');
         panel.hidden = false;
         launcher.setAttribute('aria-expanded', 'true');
@@ -801,6 +842,8 @@
     }
 
     launcher.addEventListener('click', function () { open(); });
+    root.querySelector('#dnsChatTeaserOpen').addEventListener('click', function () { open(); });
+    root.querySelector('#dnsChatTeaserClose').addEventListener('click', function () { dismissTeaser(true); });
     root.querySelector('#dnsChatClose').addEventListener('click', close);
     root.querySelector('#dnsChatReset').addEventListener('click', reset);
     form.addEventListener('submit', function (e) { e.preventDefault(); handleInput(input.value); });
@@ -818,4 +861,5 @@
     });
 
     if (state.open && state.messages.length) { open(false); }
+    scheduleTeaser();
 })();
