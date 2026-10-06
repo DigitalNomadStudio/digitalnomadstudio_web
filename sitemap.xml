@@ -79,6 +79,18 @@
         <priority>0.8</priority>
     </url>
     <url>
+        <loc>https://www.digitalnomadstudio.io/lowfuel.html</loc>
+        <lastmod>2026-10-07</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://www.digitalnomadstudio.io/marblemayhem.html</loc>
+        <lastmod>2026-10-07</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
         <loc>https://www.digitalnomadstudio.io/about.html</loc>
         <lastmod>2026-09-25</lastmod>
         <changefreq>monthly</changefreq>
@@ -98,7 +110,7 @@
     </url>
     <url>
         <loc>https://www.digitalnomadstudio.io/privacy.html</loc>
-        <lastmod>2026-09-25</lastmod>
+        <lastmod>2026-10-07</lastmod>
         <changefreq>yearly</changefreq>
         <priority>0.3</priority>
     </url>

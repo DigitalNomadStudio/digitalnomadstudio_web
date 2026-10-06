@@ -470,7 +470,7 @@ test("normaliseMessages merges same-role runs and drops a leading assistant mess
 });
 
 test("both prompts know the studio's own products, so questions about them are not refused", () => {
-  for (const product of ["TeamRelay", "MatchTagr", "Touchline HQ", "4thebadge", "PropertyBuyWise", "Mindset 4 Sports Performance", "Witness Capture Proof"]) {
+  for (const product of ["TeamRelay", "MatchTagr", "Touchline HQ", "4thebadge", "PropertyBuyWise", "Mindset 4 Sports Performance", "Witness Capture Proof", "LOWFUEL", "Marble Mayhem"]) {
     assert.ok(GATE_PROMPT.includes(product), `gate prompt names ${product}`);
     assert.ok(SYSTEM_PROMPT.includes(product), `system prompt names ${product}`);
   }

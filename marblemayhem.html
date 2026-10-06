@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Marble Mayhem - A 3D isometric marble-roller for iPhone and iPad. Tilt to steer, race the clock through 55 courses, six zones, five bosses and an Endless Tower. Coming soon to the App Store.">
+    <meta name="theme-color" content="#1a365d">
+    <title>Marble Mayhem - 3D Tilt Marble Game for iPhone and iPad</title>
+
+    <!-- Canonical -->
+    <link rel="canonical" href="https://www.digitalnomadstudio.io/marblemayhem.html">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Marble Mayhem - 3D Tilt Marble Game for iPhone and iPad">
+    <meta property="og:description" content="Tilt your phone and the marble rolls with it. 55 courses, six zones, five bosses and an Endless Tower. Coming soon to the App Store.">
+    <meta property="og:url" content="https://www.digitalnomadstudio.io/marblemayhem.html">
+    <meta property="og:image" content="https://www.digitalnomadstudio.io/marblemayhem-card.jpg">
+    <meta property="og:site_name" content="Digital Nomad Studio">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Marble Mayhem - 3D Tilt Marble Game for iPhone and iPad">
+    <meta name="twitter:description" content="Tilt your phone and the marble rolls with it. 55 courses, six zones, five bosses and an Endless Tower. Coming soon to the App Store.">
+    <meta name="twitter:image" content="https://www.digitalnomadstudio.io/marblemayhem-card.jpg">
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png?v=2">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png?v=2">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=2">
+    <link rel="manifest" href="site.webmanifest?v=2">
+
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@graph": [
+        {
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                {
+                    "@type": "ListItem",
+                    "position": 1,
+                    "name": "Home",
+                    "item": "https://www.digitalnomadstudio.io/"
+                },
+                {
+                    "@type": "ListItem",
+                    "position": 2,
+                    "name": "Products",
+                    "item": "https://www.digitalnomadstudio.io/products.html"
+                },
+                {
+                    "@type": "ListItem",
+                    "position": 3,
+                    "name": "Marble Mayhem",
+                    "item": "https://www.digitalnomadstudio.io/marblemayhem.html"
+                }
+            ]
+        },
+        {
+            "@type": "MobileApplication",
+            "name": "Marble Mayhem",
+            "applicationCategory": "GameApplication",
+            "applicationSubCategory": "Arcade",
+            "url": "https://www.digitalnomadstudio.io/marblemayhem.html",
+            "description": "Marble Mayhem - A 3D isometric marble-roller for iPhone and iPad. Tilt to steer, race the clock through 55 courses, six zones, five bosses and an Endless Tower. Coming soon to the App Store.",
+            "author": {
+                "@id": "https://www.digitalnomadstudio.io/#organization"
+            },
+            "publisher": {
+                "@id": "https://www.digitalnomadstudio.io/#organization"
+            },
+            "operatingSystem": "iOS 17.0 or later",
+            "image": "https://www.digitalnomadstudio.io/marblemayhem-card.jpg",
+            "offers": {
+                "@type": "Offer",
+                "price": "0",
+                "priceCurrency": "USD",
+                "name": "Free to start",
+                "description": "Free to download with optional one-time level packs. No ads, no subscriptions, coins are earned and never sold."
+            }
+        }
+    ]
+}
+    </script>
+    <script src="tracking.js" defer></script>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="logo-container">
+                <a href="./">
+                    <img src="logo.png" alt="Digital Nomad Studio logo" class="logo" width="260" height="240">
+                </a>
+            </div>
+            <nav class="nav">
+                <ul class="nav-menu" id="navMenu">
+                    <li><a href="./">Home</a></li>
+                    <li><a href="products.html">Products</a></li>
+                    <li><a href="software-development.html">Software Development</a></li>
+                    <li><a href="ai-services.html">AI Solutions</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="./#contact">Contact</a></li>
+                </ul>
+                <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu">
+                    <span class="hamburger"></span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <div class="menu-backdrop" id="menuBackdrop"></div>
+
+    <main>
+        <section class="page-content">
+            <div class="container">
+                <div class="content-wrapper">
+                    <div class="page-header">
+                        <span class="product-badge product-badge-coming-soon" style="margin-bottom: 1rem;">Coming Soon</span>
+                        <h1 class="page-title">Marble Mayhem</h1>
+                        <p class="page-subtitle">Tilt. Roll. Beat the clock.</p>
+                    </div>
+
+                    <!-- Hero Image -->
+                    <div class="content-section">
+                        <img src="marblemayhem-card.jpg" width="1024" height="1024" fetchpriority="high" alt="Marble Mayhem - a glossy blue marble rolls along a yellow ramp across red and blue isometric blocks toward the goal hole on an iPhone" style="width: 100%; height: auto; border-radius: 12px; box-shadow: var(--shadow-md);">
+                    </div>
+
+                    <!-- About Section -->
+                    <div class="content-section">
+                        <h2>Tilt Your Phone and the Marble Rolls With It</h2>
+                        <p>Marble Mayhem is a 3D isometric marble-roller for iPhone and iPad. Tilt your device to steer a glossy marble down multi-level elevation courses, past munchers, spinning spikes, turrets, crumbling tiles and open voids, and drop it into the goal hole before the clock runs out. Prefer touch? Drag anywhere on the screen and it works like a joystick.</p>
+                        <p>Snatch gems to build your combo, grab shields and magnets when you need them, and earn up to three stars on every course. Stars unlock new marbles, and coins you earn by playing buy trails and permanent upgrades. When the campaign is done, the Endless Tower keeps going for as long as you can.</p>
+                    </div>
+
+                    <!-- How It Plays Section -->
+                    <div class="content-section">
+                        <h2>How It Plays</h2>
+                        <ul>
+                            <li>Tilt to steer - the game calibrates to however you are holding the device, with a sensitivity slider</li>
+                            <li>Or drag anywhere on the screen as a virtual joystick</li>
+                            <li>Collect every gem and finish with half the clock left for three stars</li>
+                            <li>Dodge munchers, sweepers, chasers, ghosts, turrets, spikes and crumbling floors</li>
+                            <li>Grab a dropped blaster, missiles or beam in boss arenas and strike while the shield is down</li>
+                        </ul>
+                    </div>
+
+                    <!-- Zones Section -->
+                    <div class="content-section">
+                        <h2>Six Zones, Five Bosses, One Endless Tower</h2>
+                        <p>The 55-course campaign runs from gentle descents to brutal gauntlets across six themed zones, each with its own palette, sky and light.</p>
+                        <ul>
+                            <li><strong>Amusement Park</strong> - a ferris wheel against a dusk sky</li>
+                            <li><strong>Toy Shop</strong> - bright blocks and tight terraces</li>
+                            <li><strong>Rollercoaster</strong> - fast drops and tight turns</li>
+                            <li><strong>Skate Park</strong> - halfpipes and boost runs</li>
+                            <li><strong>Ice World</strong> - low grip and long slides</li>
+                            <li><strong>Canyon</strong> - the home of Inferno's Pit, the final boss arena</li>
+                        </ul>
+                        <p>Five boss arenas sit along the way, each with its own attack patterns. Beyond the campaign, the Endless Tower generates a never-ending run that gets faster and harder the deeper you fall, tracking your best depth and score.</p>
+                    </div>
+
+                    <!-- Features Section -->
+                    <div class="content-section">
+                        <h2>Key Features</h2>
+                        <ul>
+                            <li>55-course campaign across six themed zones</li>
+                            <li>Five boss fights with their own attack patterns and weapon pickups</li>
+                            <li>Endless Tower - a free, never-ending generated mode</li>
+                            <li>Tilt or touch controls, with calibration and a sensitivity slider</li>
+                            <li>Eight marbles that each play differently - a beach ball that double-jumps, a bowling ball that smashes through baddies, a disco ball that vacuums gems and more</li>
+                            <li>Shields, magnets, slow-mo, speed and boulder power-ups</li>
+                            <li>Three stars per course, cosmetic trails and permanent upgrades like Extra Life, Head Start and Coin Doubler</li>
+                            <li>Coins are earned by playing and never sold</li>
+                            <li>Universal build for iPhone and iPad</li>
+                        </ul>
+                    </div>
+
+                    <!-- Pricing Section -->
+                    <div class="content-section">
+                        <h2>Free to Start, Buy Only the Levels You Want</h2>
+                        <p>The first ten courses and the entire Endless Tower are free forever. Three one-time level packs unlock the rest of the campaign - Adventure, Expert, and Master and Boss - or pick up the Complete Bundle and get all three at a saving. Restore Purchases is built in.</p>
+                        <p>There are no ads, no subscriptions and no coin purchases. Everything in the in-game shop is paid for with coins you earn by rolling.</p>
+                    </div>
+
+                    <!-- Privacy Section -->
+                    <div class="content-section">
+                        <h2>Nothing Collected, Nothing Tracked</h2>
+                        <p>Marble Mayhem has no accounts, no login, no tracking and no third-party analytics or advertising SDKs. Your progress, settings and purchases stay on your device. The only network traffic is Apple's own purchase flow.</p>
+                    </div>
+
+                    <!-- CTA Section -->
+                    <div class="contact-box">
+                        <h2>Coming Soon to the App Store</h2>
+                        <p>Marble Mayhem is in its final pre-release checks for iPhone and iPad. Want to hear the moment it lands? Drop us a line and we'll let you know on launch day.</p>
+                        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                            <a href="mailto:team@digitalnomadstudio.io?subject=Marble%20Mayhem%20launch%20-%20let%20me%20know" class="btn btn-primary btn-large">Notify Me at Launch</a>
+                            <a href="products.html" class="btn btn-secondary btn-large">See All Products</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p>&copy; 2026 Digital Nomad Studio, NSW, Australia. All rights reserved.</p>
+                <div class="footer-links">
+                    <a href="./">Home</a>
+                    <a href="products.html">Products</a>
+                    <a href="software-development.html">Software Development</a>
+                    <a href="ai-services.html">AI Solutions</a>
+                    <a href="about.html">About</a>
+                    <a href="privacy.html">Privacy Policy</a>
+                    <a href="terms.html">Terms of Use</a>
+                    <a href="support.html">Support</a>
+                </div>
+                <p class="footer-areas">App development on the <a href="app-developer-central-coast.html">Central Coast</a> and in <a href="app-developer-newcastle.html">Newcastle</a>, working with businesses across Sydney and Australia.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const navMenu = document.getElementById('navMenu');
+        const menuBackdrop = document.getElementById('menuBackdrop');
+
+        mobileMenuToggle.addEventListener('click', () => {
+            mobileMenuToggle.classList.toggle('active');
+            navMenu.classList.toggle('active');
+            menuBackdrop.classList.toggle('active');
+            document.body.style.overflow = navMenu.classList.contains('active') ? 'hidden' : '';
+        });
+
+        // Close menu when clicking backdrop
+        menuBackdrop.addEventListener('click', () => {
+            mobileMenuToggle.classList.remove('active');
+            navMenu.classList.remove('active');
+            menuBackdrop.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.nav')) {
+                mobileMenuToggle.classList.remove('active');
+                navMenu.classList.remove('active');
+                menuBackdrop.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
+
+        // Close menu when clicking a link
+        navMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenuToggle.classList.remove('active');
+                navMenu.classList.remove('active');
+                menuBackdrop.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+        });
+    </script>
+    <script src="chat-config.js" defer></script>
+    <script src="chat-widget.js" defer></script>
+</body>
+</html>
