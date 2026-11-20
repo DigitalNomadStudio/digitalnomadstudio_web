@@ -913,6 +913,7 @@ body {
     display: flex;
     flex-direction: column;
     margin-bottom: 0.25rem;
+    min-width: 0; /* let a long select shrink with its grid column on narrow screens */
 }
 
 .form-group label {
